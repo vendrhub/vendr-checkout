@@ -1,0 +1,29 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    Layout = null;
+}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.1.4/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
+    <link href="/css/vendr/checkout.css" rel="stylesheet">
+    @RenderSection("head", false)
+</head>
+<body>
+    @RenderBody()
+    <script src="https://instant.page/3.0.0" integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1" type="module" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha384-6UVI3atWyL/qZbDIJb7HW8PyHhFNMiX5rYNY2gAYcaYJjYk5cNIQShSQPBleGMYu" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplestatemanager/2.2.5/ssm.min.js" integrity="sha384-XnVIWbxzq0gb9RKt1v5zw74IEsfpPVIz723OMFYy3jodu41eRL54OyLzf5atZdu+" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js" integrity="sha384-Do+5OJtZWMX37hrDYTqojFu36Xu+4qctFUGv2RI1rXGR1D0BgDBsav8leMJRMwjS" crossorigin="anonymous" defer></script>
+    <script src="/scripts/vendr/checkout.js"></script>
+    @RenderSection("foot", false)
+</body> 
+</html>
