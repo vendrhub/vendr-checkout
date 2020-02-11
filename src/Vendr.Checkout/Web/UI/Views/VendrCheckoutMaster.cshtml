@@ -63,11 +63,11 @@
             </div>
 
             <a id="order-summary-toggle" href="#" class="flex items-center justify-between border-t border-b border-gray-300 bg-gray-100 lg:hidden">
-                <span class="py-4 px-8 text-lg">
+                <span class="py-4 pl-8 pr-2 text-lg">
                     <span id="order-summary-toggle__text-closed"><i class="fa fa-shopping-cart mr-2"></i> Show Order Summary <i class="fa fa-angle-down ml-1"></i></span>
                     <span id="order-summary-toggle__text-open" class="hidden"><i class="fa fa-shopping-cart mr-2"></i> Hide Order Summary <i class="fa fa-angle-up ml-1"></i></span>
                 </span>
-                <span class="py-4 px-8 text-lg font-medium">
+                <span class="py-4 pr-8 pl-2 text-lg font-medium">
                     @if (totalView == "Subtotal")
                     {
                         @currentOrder.SubtotalPrice.Value.Formatted()
