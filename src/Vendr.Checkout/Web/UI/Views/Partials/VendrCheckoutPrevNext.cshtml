@@ -1,12 +1,14 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+﻿@using Vendr.Checkout.Web;
+@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{ 
-    var canGoBack = Model.Value<bool>("canGoBack");
+    var canGoBack = (bool)ViewData["canGoBack"];
 
-    var checkoutPage = Model.AncestorOrSelf("vendrCheckoutPage");
-    var prevStep = checkoutPage.Children.TakeWhile(x => !x.Id.Equals(Model.Id)).LastOrDefault();
-    var nextStep = checkoutPage.Children.SkipWhile(x => !x.Id.Equals(Model.Id)).Skip(1).FirstOrDefault();
-    var cartPage = checkoutPage.Value<IPublishedContent>("cartPage");
-    var themeColor = checkoutPage.Value<string>("themeColor");
+    var checkoutPage = Model.GetCheckoutPage();
+    var cartPage = Model.GetCartPage();
+    var prevStep = Model.GetPreviousPage();
+    var nextStep = Model.GetNextPage();
+
+    var themeColor = Model.GetThemeColor();
 }
 <div class="flex flex-col-reverse items-center justify-between mt-8 md:flex-row">
     @if (canGoBack)

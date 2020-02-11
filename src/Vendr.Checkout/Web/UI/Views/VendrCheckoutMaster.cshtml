@@ -10,6 +10,9 @@
 @{
     Layout = null;
 
+    var canGoBack = (bool)ViewData["canGoBack"];
+    var totalView = (string)ViewData["totalView"];
+
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
     var currentPaymentMethod = currentOrder.PaymentInfo.PaymentMethodId.HasValue
@@ -19,8 +22,8 @@
         ? VendrApi.Instance.GetPaymentMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
         : null;
 
-    var checkoutPage = Model.AncestorOrSelf("vendrCheckoutPage");
-    var themeColor = checkoutPage.Value<string>("themeColor");
+    var checkoutPage = Model.GetCheckoutPage();
+    var themeColor = Model.GetThemeColor();
 
 }
 <html lang="en">
@@ -33,8 +36,6 @@
     <meta name="keywords" content="@(Model.Value<string>("metaKeywords"))" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.1.4/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
-    <link href="/css/vendrcheckout.css" rel="stylesheet">
 
     @RenderSection("head", false)
 
@@ -92,7 +93,7 @@
                     <div class="font-medium">@(currentOrder.SubtotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
                 </div>
 
-                @if (Model.Value<string>("totalView") == "Subtotal")
+                @if (totalView == "Subtotal")
                 {
                     if (currentOrder.SubtotalPrice.TotalDiscount > 0)
                     {
@@ -183,7 +184,7 @@
                                         {
                                             <i class="fa fa-angle-right text-gray-500 pr-2"></i>
                                         }
-                                        @if (!passedStep && item.Step.Id != Model.Id && Model.Value<bool>("canGoBack"))
+                                        @if (!passedStep && item.Step.Id != Model.Id && canGoBack)
                                         {
                                             <a href="@item.Step.Url" class="hover:text-@(themeColor)">@(item.Step.Value<string>("shortStepName", defaultValue: item.Step.Name))</a>
                                         }
@@ -200,19 +201,19 @@
 
                 </div>
 
+                @Html.ValidationSummary(true, "", new { @class = "bg-red-500 p-4 rounded mb-4" })
+
                 @RenderBody()
+
             </div>
         </div>
 
     </div>
 
-    @Html.ValidationSummary(true, "", new { @class = "hidden" })
-
     <script src="https://instant.page/3.0.0" integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1" type="module" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha384-6UVI3atWyL/qZbDIJb7HW8PyHhFNMiX5rYNY2gAYcaYJjYk5cNIQShSQPBleGMYu" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplestatemanager/2.2.5/ssm.min.js" integrity="sha384-XnVIWbxzq0gb9RKt1v5zw74IEsfpPVIz723OMFYy3jodu41eRL54OyLzf5atZdu+" crossorigin="anonymous" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js" integrity="sha384-Do+5OJtZWMX37hrDYTqojFu36Xu+4qctFUGv2RI1rXGR1D0BgDBsav8leMJRMwjS" crossorigin="anonymous" defer></script>
     <script src="/scripts/vendrcheckout.js"></script>
 
     @RenderSection("foot", false)

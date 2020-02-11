@@ -40,7 +40,7 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException ex)
+            catch (ValidationException)
             {
                 ModelState.AddModelError("", "Failed to redeem discount code");
 
@@ -66,7 +66,7 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException ex)
+            catch (ValidationException)
             {
                 ModelState.AddModelError("", "Failed to unredeem discount code");
 
@@ -117,7 +117,7 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException ex)
+            catch (ValidationException)
             {
                 ModelState.AddModelError("", "Failed to update information");
 
@@ -147,7 +147,7 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException ex)
+            catch (ValidationException)
             {
                 ModelState.AddModelError("", "Failed to update shipping / payment method");
 

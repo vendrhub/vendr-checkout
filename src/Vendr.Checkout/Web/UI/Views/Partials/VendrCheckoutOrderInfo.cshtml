@@ -1,10 +1,7 @@
 ﻿@using Vendr.Core.Web.Api;
-@using Vendr.Checkout.Web;
-@inherits Umbraco.Web.Mvc.UmbracoViewPage
-@{ 
-    var store = Model.GetStore();
-    // TODO: Get finalized order if confirmation page
-    var order = VendrApi.Instance.GetCurrentOrder(store.Id);
+@model Vendr.Core.Models.OrderReadOnly
+@{
+    var order = Model;
     var paymentCountryName = order.PaymentInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(order.PaymentInfo.CountryId.Value).Name
         : null;
