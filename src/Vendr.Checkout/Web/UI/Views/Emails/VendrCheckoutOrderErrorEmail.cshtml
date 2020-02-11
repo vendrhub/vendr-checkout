@@ -30,17 +30,17 @@
                         <td style="padding: 40px;">
                             <div style="text-align: center;">
 
-                                @if (!string.IsNullOrEmpty(vendrStoreLogoUrl))
+                                @if (!string.IsNullOrWhiteSpace(vendrStoreLogoUrl))
                                 {
                                     <a href="@(baseUrl)" target="_blank"><img src="@(baseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=200" alt="@(vendrStoreName)" border="0" /></a>
                                 }
                                 else
                                 {
-                                    <!-- TODO Site name as text -->
+                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(baseUrl)" style="color: #000;" target="_blank">@(vendrStoreName)</a></h1>
                                 }
 
                                 <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
-                                <h1 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #4fd1c5;">Order Error - #@(Model.OrderNumber)</h1>
+                                <h2 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #4fd1c5;">Order Error - #@(Model.OrderNumber)</h2>
                                 <p>
                                     There is a problem with your payment for order <strong>@Model.OrderNumber</strong>.
                                 </p>

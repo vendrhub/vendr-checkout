@@ -13,6 +13,8 @@
     var canGoBack = (bool)ViewData["canGoBack"];
     var totalView = (string)ViewData["totalView"];
 
+    var storeName = Model.Value<string>("vendrStoreName", fallback:Fallback.ToAncestors);
+
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
     var currentPaymentMethod = currentOrder.PaymentInfo.PaymentMethodId.HasValue
@@ -48,13 +50,17 @@
 
         <!-- Layout -->
         <div class="relative flex flex-col min-h-full max-w-6xl mx-auto lg:flex-row-reverse lg:flex-row">
-
-            @if (checkoutPage.HasValue("logo"))
-            {
-                <div class="bg-white p-8 text-center lg:hidden">
-                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("logo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" /></a>
-                </div>
-            }
+            
+            <div class="bg-white p-8 text-center lg:hidden">
+                @if (checkoutPage.HasValue("logo"))
+                {
+                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("logo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(storeName)" /></a>
+                }
+                else
+                {
+                    <h1 class="text-3xl font-bold"><a href="/">@(storeName)</a></h1>
+                }
+            </div>
 
             <a id="order-summary-toggle" href="#" class="flex items-center justify-between border-t border-b border-gray-300 bg-gray-100 lg:hidden">
                 <span class="py-4 px-8 text-lg">
@@ -175,12 +181,17 @@
 
                 <div class="hidden lg:block">
 
-                    @if (checkoutPage.HasValue("logo"))
-                    {
-                        <div class="text-center mb-4">
-                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("logo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" /></a>
-                        </div>
-                    }
+                    <div class="text-center mb-4">
+                        @if (checkoutPage.HasValue("logo"))
+                        {
+                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("logo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(storeName)" /></a>
+
+                        }
+                        else
+                        {
+                            <h1 class="text-3xl font-bold"><a href="/">@(storeName)</a></h1>
+                        }
+                    </div>
 
                     <div class="mb-8">
                         <ul class="flex justify-center">
