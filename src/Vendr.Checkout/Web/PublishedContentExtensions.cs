@@ -2,9 +2,9 @@
 using Umbraco.Core.Models.PublishedContent;
 using Vendr.Core.Models;
 using Umbraco.Core;
+using System.Linq;
 
 using Constants = Vendr.Core.Constants;
-using System.Linq;
 
 namespace Vendr.Checkout.Web
 {
