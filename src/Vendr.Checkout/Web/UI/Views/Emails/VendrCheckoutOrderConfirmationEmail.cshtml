@@ -3,6 +3,12 @@
 @using Vendr.Core.Models;
 @model OrderReadOnly
 @{
+    var vendrStoreName = "Untitled";
+    var vendrStoreAddress = "";
+    var vendrStoreLogoUrl = "";
+    var vendrStoreTsAndCsUrl = "";
+    var vendrStorePrivacyPolicyUrl = "";
+
     var store = VendrApi.Instance.GetStore(Model.StoreId);
     var paymentMethod = VendrApi.Instance.GetPaymentMethod(Model.PaymentInfo.PaymentMethodId.Value);
     var paymentCountry = VendrApi.Instance.GetCountry(Model.PaymentInfo.CountryId.Value);
@@ -32,12 +38,19 @@
                         <td style="padding: 40px;">
                             <div style="text-align: center;">
 
-                                <a href="https://vendr.demo.outfield.digital" target="_blank"><img src="@(baseUrl)/images/logo.png?mode=max&width=200&height=200" alt="Blendid." border="0" /></a>
+                                @if (!string.IsNullOrEmpty(vendrStoreLogoUrl))
+                                {
+                                    <a href="@(baseUrl)" target="_blank"><img src="@(baseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=200" alt="@(vendrStoreName)" border="0" /></a>
+                                }
+                                else
+                                {
+                                    <!-- TODO Site name as text -->
+                                }
 
                                 <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
                                 <h1 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #4fd1c5;">Order Confirmation - #@(Model.OrderNumber)</h1>
                                 <p>
-                                    Thank you for your order with <a href="https://vendr.demo.outfield.digital" target="_blank" style="color: #4fd1c5;">Blendid</a>, your order details can be found below.
+                                    Thank you for your order with <a href="@(baseUrl)" target="_blank" style="color: #4fd1c5;">@(vendrStoreName)</a>, your order details can be found below.
                                 </p>
                             </div>
 
@@ -257,9 +270,9 @@
                             </table>
                             <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
                             <p style="text-align: center;">
-                                <a href="@(baseUrl)/terms-and-conditions" target="_blank" style="color: #4fd1c5;">Terms of Service</a> | <a href="@(baseUrl)/privacy-and-cookies-policy" target="_blank" style="color: #4fd1c5;">Privacy Policy</a>
+                                <a href="@(baseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #4fd1c5;">Terms of Service</a> | <a href="@(baseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #4fd1c5;">Privacy Policy</a>
                             </p>
-                            <p style="text-align: center; margin-bottom: 0;">Blendid Ltd, 10 Brew Street, Sheffield, S1 2OD</p>
+                            <p style="text-align: center; margin-bottom: 0;">@(vendrStoreAddress)</p>
 
                         </td>
                     </tr>
