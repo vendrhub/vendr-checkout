@@ -270,10 +270,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
-    <Content Include="Web\UI\Css\Vendr\checkout.css" />
-    <Content Include="Web\UI\Scripts\Vendr\checkout.js" />
+    <Content Include="Web\UI\Config\vendrcheckout.order.editor.config.js" />
+    <Content Include="Web\UI\Css\vendrcheckout.css" />
+    <Content Include="Web\UI\Scripts\vendrcheckout.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutSurfaceController.cs" />
     <Compile Include="Web\Dtos\VendrDiscountOrGiftCardCodeDto.cs" />
@@ -290,11 +292,16 @@
     <Content Include="Web\UI\Views\VendrCheckoutPaymentPage.cshtml" />
     <Content Include="Web\UI\Views\VendrCheckoutReviewPage.cshtml" />
     <Content Include="Web\UI\Views\VendrCheckoutShippingAndPaymentMethodPage.cshtml" />
+    <Content Include="Web\UI\Views\Emails\VendrCheckoutOrderConfirmationEmail.cshtml" />
+    <Content Include="Web\UI\Views\Emails\VendrCheckoutOrderErrorEmail.cshtml" />
+    <Content Include="Web\UI\Views\Web.config" />
+    <Content Include="Web\UI\Views\Partials\VendrCheckoutPrevNext.cshtml" />
+    <Content Include="Web\UI\Views\Partials\VendrCheckoutOrderInfo.cshtml" />
+    <Content Include="Web\UI\Views\VendrCheckoutPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Composing\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Web\UI\Views\Partials\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
