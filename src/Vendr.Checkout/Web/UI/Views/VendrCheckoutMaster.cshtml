@@ -61,7 +61,16 @@
                     <span id="order-summary-toggle__text-closed"><i class="fa fa-shopping-cart mr-2"></i> Show Order Summary <i class="fa fa-angle-down ml-1"></i></span>
                     <span id="order-summary-toggle__text-open" class="hidden"><i class="fa fa-shopping-cart mr-2"></i> Hide Order Summary <i class="fa fa-angle-up ml-1"></i></span>
                 </span>
-                <span class="py-4 px-8 text-lg font-medium">@currentOrder.TotalPrice.Value.Formatted().WithoutTax</span>
+                <span class="py-4 px-8 text-lg font-medium">
+                    @if (totalView == "Subtotal")
+                    {
+                        @currentOrder.SubtotalPrice.Value.Formatted()
+                    }
+                    else
+                    {
+                        @currentOrder.TotalPrice.Value.Formatted()
+                    }
+                </span>
             </a>
 
             <div id="order-summary" class="hidden bg-gray-100 w-full p-8 lg:w-2/5 lg:border-l lg:block">
