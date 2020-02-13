@@ -17,6 +17,7 @@
         telephone: { alias: "billingTelephone", label: "Telephone" },
     },
     shipping: {
+        enabled: true,
         sameAsBilling: { alias: "shippingSameAsBilling", label: "Same as billing address", trueValue: "1" },
         firstName: { alias: "shippingFirstName", label: "First Name" },
         lastName: { alias: "shippingLastName", label: "Last Name" },

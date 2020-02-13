@@ -268,12 +268,29 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
-    <Content Include="Web\UI\Config\vendrcheckout.order.editor.config.js" />
-    <Content Include="Web\UI\Scripts\vendrcheckout.js" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dashboards\installer.controller.js" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dashboards\installer.html" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Scripts\vendrcheckout.js" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Stores\Default\Config\vendrcheckout.order.editor.config.js" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Composing\VendrCheckoutComponent.cs" />
+    <Compile Include="Composing\VendrCheckoutComposer.cs" />
+    <Compile Include="PathHelper.cs" />
+    <Compile Include="Pipeline\Implement\InstallPipeline.cs" />
+    <Compile Include="Pipeline\Implement\InstallPipelineContext.cs" />
+    <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutDataTypesTask.cs" />
+    <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutDocumentTypesTask.cs" />
+    <Compile Include="Pipeline\IPipelineTask.cs" />
+    <Compile Include="Pipeline\Pipeline.cs" />
+    <Compile Include="Pipeline\PipelineTaskExtensions.cs" />
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\InstallService.cs" />
+    <Compile Include="VendrCheckoutConstants.cs" />
+    <Compile Include="Web\Controllers\VendrCheckoutApiController.cs" />
+    <Compile Include="Web\Controllers\VendrCheckoutStepPageController.cs" />
+    <Compile Include="Web\Controllers\VendrCheckoutPageController.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutSurfaceController.cs" />
     <Compile Include="Web\Dtos\VendrDiscountOrGiftCardCodeDto.cs" />
     <Compile Include="Web\Dtos\VendrOrderAddressDto.cs" />
@@ -283,22 +300,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="Web\UI\Views\VendrCheckoutConfirmationPage.cshtml" />
-    <Content Include="Web\UI\Views\VendrCheckoutInformationPage.cshtml" />
-    <Content Include="Web\UI\Views\VendrCheckoutMaster.cshtml" />
-    <Content Include="Web\UI\Views\VendrCheckoutPaymentPage.cshtml" />
-    <Content Include="Web\UI\Views\VendrCheckoutReviewPage.cshtml" />
-    <Content Include="Web\UI\Views\VendrCheckoutShippingAndPaymentMethodPage.cshtml" />
-    <Content Include="Web\UI\Views\Emails\VendrCheckoutOrderConfirmationEmail.cshtml" />
-    <Content Include="Web\UI\Views\Emails\VendrCheckoutOrderErrorEmail.cshtml" />
-    <Content Include="Web\UI\Views\Web.config" />
-    <Content Include="Web\UI\Views\Partials\VendrCheckoutPrevNext.cshtml" />
-    <Content Include="Web\UI\Views\Partials\VendrCheckoutOrderInfo.cshtml" />
-    <Content Include="Web\UI\Views\VendrCheckoutPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\Partials\VendrCheckoutOrderInfo.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\Partials\VendrCheckoutPrevNext.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutConfirmationPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutInformationPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutMaster.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutPaymentPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutReviewPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\VendrCheckoutShippingAndPaymentMethodPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Common\Views\Web.config" />
+    <None Include="Web\UI\App_Plugins\VendrCheckout\package.manifest" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Stores\Default\Views\Emails\VendrCheckoutOrderConfirmationEmail.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Stores\Default\Views\Emails\VendrCheckoutOrderErrorEmail.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Stores\Default\Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Composing\" />
-    <Folder Include="Migrations\" />
+    <Folder Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\assets\css\" />
+    <Folder Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\assets\img\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

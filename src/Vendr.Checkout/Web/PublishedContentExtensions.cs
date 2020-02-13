@@ -28,17 +28,19 @@ namespace Vendr.Checkout.Web
 
         public static IPublishedContent GetCheckoutPage(this IPublishedContent content)
         {
-            return content.AncestorOrSelf("vendrCheckoutPage");
+            return content.AncestorOrSelf("vendrCheckoutCheckoutPage");
         }
 
-        public static IPublishedContent GetCartPage(this IPublishedContent content)
+        public static IPublishedContent GetCheckoutBackPage(this IPublishedContent content)
         {
-            return GetCheckoutPage(content).Value<IPublishedContent>("cartPage");
+            return GetCheckoutPage(content).Value<IPublishedContent>("vendrCheckoutBackPage");
         }
 
         public static string GetThemeColor(this IPublishedContent content)
         {
-            return GetCheckoutPage(content).Value<string>("themeColor");
+            var themeColor = GetCheckoutPage(content).Value("vendrThemeColor", defaultValue: "000000");
+
+            return VendrCheckoutConstants.ColorMap[themeColor];
         }
 
         public static IPublishedContent GetPreviousPage(this IPublishedContent content)

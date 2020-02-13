@@ -1,0 +1,12 @@
+﻿{
+    "dashboards": [
+        {
+            "alias": "vendrcheckout",
+            "view": "~/App_Plugins/VendrCheckout/backoffice/views/dashboards/installer.html",
+            "sections": [ "settings" ]
+        }
+    ],
+    "javascript": [
+        "~/App_Plugins/VendrCheckout/backoffice/views/dashboards/installer.controller.js"
+    ]
+}
