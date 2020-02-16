@@ -127,12 +127,6 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                                 SortOrder = 10
                             },
                             new PropertyType(textstringDataType.Value) {
-                                Alias = "vendrStoreName",
-                                Name = "Store Name",
-                                Description = "The name of the web store.",
-                                SortOrder = 20
-                            },
-                            new PropertyType(textstringDataType.Value) {
                                 Alias = "vendrStoreAddress",
                                 Name = "Store Address",
                                 Description = "The address of the web store.",
@@ -141,25 +135,25 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                             new PropertyType(themeColorPickerDataType.Value) {
                                 Alias = "vendrThemeColor",
                                 Name = "Theme Color",
-                                Description = "The address of the web store.",
-                                SortOrder = 40
-                            },
-                            new PropertyType(themeColorPickerDataType.Value) {
-                                Alias = "vendrThemeColor",
-                                Name = "Theme Color",
                                 Description = "The theme color to use for colored elements of the checkout pages.",
-                                SortOrder = 50
+                                SortOrder = 40
                             },
                             new PropertyType(booleanDataType.Value) {
                                 Alias = "vendrCollectShippingDetails",
                                 Name = "Collect Shipping Details",
-                                Description = "Select whether to collect shipping details. Not necesarry if you are only dealing with digital downloads.",
-                                SortOrder = 60
+                                Description = "Select whether to collect shipping details. Not necessary if you are only dealing with digital downloads.",
+                                SortOrder = 50
                             },
                             new PropertyType(textstringDataType.Value) {
                                 Alias = "vendrOrderLinePropertyAliases",
                                 Name = "Order Line Property Aliases",
-                                Description = "Comma seperated list of order line property aliases to display in the order summary.",
+                                Description = "Comma separated list of order line property aliases to display in the order summary.",
+                                SortOrder = 60
+                            },
+                            new PropertyType(textstringDataType.Value) {
+                                Alias = "vendrCheckoutBackPage",
+                                Name = "Checkout Back Page",
+                                Description = "The page to go back to when backing out of the checkout flow.",
                                 SortOrder = 70
                             },
                             new PropertyType(contentPickerDataType.Value) {

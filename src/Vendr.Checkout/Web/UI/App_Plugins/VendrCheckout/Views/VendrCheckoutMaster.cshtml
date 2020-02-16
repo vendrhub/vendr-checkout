@@ -1,22 +1,15 @@
-﻿@using System.Web.Mvc.Html;
-@using Umbraco.Core.Models.PublishedContent;
-@using Umbraco.Web;
-@using Umbraco.Web.Mvc;
-@using Umbraco.Web.Models;
-@using Vendr.Checkout.Web;
-@using Vendr.Core;
-@using Vendr.Core.Web.Api;
-@inherits UmbracoViewPage
+﻿@inherits UmbracoViewPage
 @{
     Layout = null;
-
-    var canGoBack = (bool)ViewData["canGoBack"];
-    var totalView = (string)ViewData["totalView"];
-
-    var storeName = Model.Value<string>("vendrStoreName", fallback:Fallback.ToAncestors);
+    
+    var finalized = (bool)(ViewData["finalized"] ?? false);
+    var canGoBack = (bool)(ViewData["canGoBack"] ?? true);
+    var totalView = (string)(ViewData["totalView"] ?? "Subtotal");
 
     var store = Model.GetStore();
-    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+    var currentOrder = !finalized
+        ? VendrApi.Instance.GetCurrentOrder(store.Id)
+        : VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);
     var currentPaymentMethod = currentOrder.PaymentInfo.PaymentMethodId.HasValue
         ? VendrApi.Instance.GetPaymentMethod(currentOrder.PaymentInfo.PaymentMethodId.Value)
         : null;
@@ -36,11 +29,9 @@
     <title>@(Model.GetMetaTitle())</title>
     <meta name="description" content="@(Model.Value<string>("metaDescription"))" />
     <meta name="keywords" content="@(Model.Value<string>("metaKeywords"))" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.1.4/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.2.0/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
     @RenderSection("head", false)
-
 </head>
 <body>
     <div class="relative text-sm">
@@ -50,15 +41,15 @@
 
         <!-- Layout -->
         <div class="relative flex flex-col min-h-full max-w-6xl mx-auto lg:flex-row-reverse lg:flex-row">
-            
+
             <div class="bg-white p-8 text-center lg:hidden">
-                @if (checkoutPage.HasValue("logo"))
+                @if (checkoutPage.HasValue("vendrStoreLogo"))
                 {
-                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("logo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(storeName)" /></a>
+                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
                 }
                 else
                 {
-                    <h1 class="text-3xl font-bold"><a href="/">@(storeName)</a></h1>
+                    <h1 class="text-3xl font-bold"><a href="/">@(store.Name)</a></h1>
                 }
             </div>
 
@@ -90,9 +81,9 @@
                                 <div class="flex flex-1 items-center">
 
                                     @* TODO: Add support for product thumbnail image
-                                    <span class="bg-gray-300 h-12 w-12 flex items-center justify-center rounded mr-4">
-                                        <i class="fa fa-coffee fa-lg"></i>
-                                    </span>
+                                        <span class="bg-gray-300 h-12 w-12 flex items-center justify-center rounded mr-4">
+                                            <i class="fa fa-coffee fa-lg"></i>
+                                        </span>
                                     *@
 
                                     <div><span class="font-medium">@(orderLine.Name) x @((int)orderLine.Quantity)</span><br /><span class="text-xs text-gray-500">@(orderLine.Sku)</span></div>
@@ -186,14 +177,14 @@
                 <div class="hidden lg:block">
 
                     <div class="text-center mb-4">
-                        @if (checkoutPage.HasValue("logo"))
+                        @if (checkoutPage.HasValue("vendrStoreLogo"))
                         {
-                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("logo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(storeName)" /></a>
+                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 100, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
 
                         }
                         else
                         {
-                            <h1 class="text-3xl font-bold"><a href="/">@(storeName)</a></h1>
+                            <h1 class="text-3xl font-bold"><a href="/">@(store.Name)</a></h1>
                         }
                     </div>
 
@@ -210,11 +201,11 @@
                                         }
                                         @if (!passedStep && item.Step.Id != Model.Id && canGoBack)
                                         {
-                                            <a href="@item.Step.Url" class="hover:text-@(themeColor)">@(item.Step.Value<string>("shortStepName", defaultValue: item.Step.Name))</a>
+                                            <a href="@item.Step.Url" class="hover:text-@(themeColor)">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</a>
                                         }
                                         else
                                         {
-                                            <span class="@(item.Step.Id == Model.Id ? "font-bold" : "")">@(item.Step.Value<string>("shortStepName", defaultValue: item.Step.Name))</span>
+                                            <span class="@(item.Step.Id == Model.Id ? "font-bold" : "")">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</span>
                                         }
                                     </li>
                                     passedStep = passedStep || item.Step.Id == Model.Id;
@@ -238,7 +229,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha384-6UVI3atWyL/qZbDIJb7HW8PyHhFNMiX5rYNY2gAYcaYJjYk5cNIQShSQPBleGMYu" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplestatemanager/2.2.5/ssm.min.js" integrity="sha384-XnVIWbxzq0gb9RKt1v5zw74IEsfpPVIz723OMFYy3jodu41eRL54OyLzf5atZdu+" crossorigin="anonymous" defer></script>
-    <script src="/app_plugins/vendrcheckout/common/scripts/vendrcheckout.js"></script>
+    <script src="/app_plugins/vendrcheckout/scripts/vendrcheckout.js" defer></script>
 
     @RenderSection("foot", false)
 

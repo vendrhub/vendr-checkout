@@ -1,11 +1,20 @@
-﻿@using Vendr.Core.Models;
+﻿@using Umbraco.Web.Composing;
 @model OrderReadOnly
 @{
-    var vendrStoreName = "Untitled";
-    var vendrStoreAddress = "";
-    var vendrStoreLogoUrl = "";
-    var vendrStoreTsAndCsUrl = "";
-    var vendrStorePrivacyPolicyUrl = "";
+    // Get order entities
+    var store = VendrApi.Instance.GetStore(Model.StoreId);
+
+    // Lookup the vendr checkout page for the associated orders store
+    // so that we can extract relevant settings to configure the email template
+    var checkoutContentType = Current.UmbracoContext.Content.GetContentType("vendrCheckoutCheckoutPage");
+    var checkoutPages = Current.UmbracoContext.Content.GetByContentType(checkoutContentType);
+    var checkoutPage = checkoutPages.First(x => x.GetStore()?.Id == Model.StoreId);
+
+    var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url;
+    var vendrStoreTsAndCsUrl = checkoutPage.Value<IPublishedContent>("vendrTermsAndConditionsPage")?.Url;
+    var vendrStorePrivacyPolicyUrl = checkoutPage.Value<IPublishedContent>("vendrPrivacyPolicyPage")?.Url;
+    var vendrStoreAddress = checkoutPage.Value<string>("vendrStoreAddress");
+    var vendrThemeColor = checkoutPage.Value<string>("vendrThemeColor", defaultValue: "000000");
 
     var baseUrl = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
 }
@@ -21,7 +30,7 @@
     }
 </style>
 <div id="vendr" style="font-family: sans-serif; font-size: 14px; line-height: 18px; color: #5f6a70;">
-    <table style="background-color: #edf2f7; width: 100%;">
+    <table style="background-color: #f5f5f5; width: 100%;">
         <tr>
             <td style="padding: 40px;">
 
@@ -32,15 +41,15 @@
 
                                 @if (!string.IsNullOrWhiteSpace(vendrStoreLogoUrl))
                                 {
-                                    <a href="@(baseUrl)" target="_blank"><img src="@(baseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=200" alt="@(vendrStoreName)" border="0" /></a>
+                                    <a href="@(baseUrl)" target="_blank"><img src="@(baseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=100" alt="@(store.Name)" border="0" /></a>
                                 }
                                 else
                                 {
-                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(baseUrl)" style="color: #000;" target="_blank">@(vendrStoreName)</a></h1>
+                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(baseUrl)" style="color: #000;" target="_blank">@(store.Name)</a></h1>
                                 }
 
                                 <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
-                                <h2 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #4fd1c5;">Order Error - #@(Model.OrderNumber)</h2>
+                                <h2 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #@(vendrThemeColor);">Order Error - #@(Model.OrderNumber)</h2>
                                 <p>
                                     There is a problem with your payment for order <strong>@Model.OrderNumber</strong>.
                                 </p>
@@ -54,9 +63,9 @@
 
                             <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
                             <p style="text-align: center;">
-                                <a href="@(baseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #4fd1c5;">Terms of Service</a> | <a href="@(baseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #4fd1c5;">Privacy Policy</a>
+                                <a href="@(baseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #@(vendrThemeColor);">Terms of Service</a> | <a href="@(baseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #@(vendrThemeColor);">Privacy Policy</a>
                             </p>
-                            <p style="text-align: center; margin-bottom: 0;">@(vendrStoreAddress)</p>
+                            <p style="text-align: center; margin-bottom: 0;">@(store.Name), @(vendrStoreAddress)</p>
 
                         </td>
                     </tr>

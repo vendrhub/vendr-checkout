@@ -1,11 +1,6 @@
-﻿@using Vendr.Core.Web.Api;
-@using Vendr.Checkout.Web;
-@inherits Umbraco.Web.Mvc.UmbracoViewPage
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{
     Layout = "VendrCheckoutMaster.cshtml";
-
-    ViewData["canGoBack"] = true;
-    ViewData["totalView"] = "Subtotal";
 
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
@@ -116,5 +111,5 @@
     <h3 class="text-xl font-medium mb-4 mt-8">Comments</h3>
     <textarea name="comments" placeholder="Enter any comments here" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 w-full h-32">@(currentOrder.Properties["comments"])</textarea>
 
-    @Html.Partial("VendrCheckoutPrevNext")
+    @Html.VendrCheckoutPartial("VendrCheckoutPrevNext")
 }

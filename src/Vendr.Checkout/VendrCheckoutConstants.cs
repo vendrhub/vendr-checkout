@@ -11,6 +11,7 @@ namespace Vendr.Checkout
             { "f56565", "red-500" },
             { "ed8936", "orange-500" },
             { "ecc94b", "yellow-500" },
+            { "48bb78", "green-500" },
             { "38b2ac", "teal-500" },
             { "4299e1", "blue-500" },
             { "667eea", "indigo-500" },

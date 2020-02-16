@@ -6,10 +6,10 @@ namespace Vendr.Checkout.Services
     {
         public void Install(int siteRootNodeId)
         {
-            var installContext = new InstallPipelineContext
-            {
-                SiteRootNodeId = siteRootNodeId
-            };
+            var installContext = new InstallPipelineContext();
+            //{
+            //    SiteRootNodeId = siteRootNodeId
+            //};
 
             var installPipeline = new InstallPipeline();
 

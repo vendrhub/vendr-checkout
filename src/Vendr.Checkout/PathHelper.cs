@@ -4,25 +4,24 @@ namespace Vendr.Checkout
 {
     public static class PathHelper
     {
-        public const string StoresPath = "/App_Plugins/VendrCheckout";
-        public const string VirtualStoresPath = "~" + StoresPath;
-        private const string VirtualStorePathToken = "~" + StoresPath + "/{0}/";
-        private const string VirtualStoreViewPathToken = "~" + StoresPath + "/{0}/Views/{1}.cshtml";
-        private const string VirtualStorePartialViewPathToken = "~" + StoresPath + "/{0}/Views/Partials/{1}.cshtml";
+        public const string RootPath = "/App_Plugins/VendrCheckout";
+        public const string VirtualRootPath = "~" + RootPath;
+        private const string VirtualViewPathToken = "~" + RootPath + "/Views/{0}.cshtml";
+        private const string VirtualPartialViewPathToken = "~" + RootPath + "/Views/Partials/{0}.cshtml";
+        private const string VirtualEmailViewPathToken = "~" + RootPath + "/Views/Emails/{0}.cshtml";
 
-        public static string GetStorePath(string storeAlias)
+        public static string GetVendrCheckoutViewPath(string viewName)
         {
-            return string.Format(VirtualStorePathToken, storeAlias);
+            return string.Format(VirtualViewPathToken, viewName);
         }
 
-        public static string GetStoreViewPath(string storeAlias, string viewName)
+        public static string GetVendrCheckoutPartialViewPath(string viewName)
         {
-            return string.Format(VirtualStoreViewPathToken, storeAlias, viewName);
+            return string.Format(VirtualPartialViewPathToken, viewName);
         }
-
-        public static string GetStorePartialViewPath(string storeAlias, string viewName)
+        public static string GetVendrCheckoutEmailViewPath(string viewName)
         {
-            return string.Format(VirtualStorePartialViewPathToken, storeAlias, viewName);
+            return string.Format(VirtualEmailViewPathToken, viewName);
         }
 
         public static string GetDomain(Uri requestUrl)

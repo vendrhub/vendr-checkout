@@ -28,7 +28,11 @@
             showHideShippingInfo(true);
         });
 
-        $("#acceptTerms").on("click", enableDisableContinueButton);
+        var acceptTerms = $("#acceptTerms");
+        if (acceptTerms.length > 0) {
+            acceptTerms.on("click", enableDisableContinueButton);
+            enableDisableContinueButton();
+        }
 
         var errors = $(".validation-summary-errors");
         if (errors.length > 0) {
@@ -74,11 +78,15 @@
 
         var enableContinueButton = $("#acceptTerms").is(":checked");
         if (enableContinueButton) {
-            $("#continue-disabled").hide();
-            $("#continue").show();
+            $("#continue").attr("disabled", false)
+                .css("backgroundColor", "")
+                .css("color", "")
+                .css("cursor", "");
         } else {
-            $("#continue-disabled").show();
-            $("#continue").hide();
+            $("#continue").attr("disabled", true)
+                .css("backgroundColor", "#f7fafc")
+                .css("color", "#ddd")
+                .css("cursor", "no-drop");
         }
 
     }

@@ -5,7 +5,7 @@ using Umbraco.Web.Mvc;
 
 namespace Vendr.Checkout.Web.Controllers
 {
-    public class VendrCheckoutPageController : RenderMvcController
+    public class VendrCheckoutCheckoutPageController : RenderMvcController
     {
         public override ActionResult Index(ContentModel model)
         {

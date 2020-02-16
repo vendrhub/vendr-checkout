@@ -4,7 +4,6 @@ using Umbraco.Core.Migrations;
 using Umbraco.Core.Migrations.Upgrade;
 using Umbraco.Core.Scoping;
 using Umbraco.Core.Services;
-using Vendr.Checkout.Migrations;
 
 namespace Vendr.Checkout.Composing
 {

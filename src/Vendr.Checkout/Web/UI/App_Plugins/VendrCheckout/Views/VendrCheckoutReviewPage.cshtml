@@ -1,0 +1,23 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    Layout = "VendrCheckoutMaster.cshtml";
+
+    ViewData["totalView"] = "Total";
+
+    var store = Model.GetStore();
+    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+}
+
+@Html.VendrCheckoutPartial("VendrCheckoutOrderInfo", currentOrder)
+
+@using (Html.BeginPaymentForm(currentOrder))
+{
+    <div class="border border-gray-300 rounded">
+        <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-100">
+            <input id="acceptTerms" type="checkbox" value="1" class="mr-3" />
+            <span class="font-medium">I agree and accept the sites terms of service</span>
+        </label>
+    </div>
+
+    @Html.VendrCheckoutPartial("VendrCheckoutPrevNext")
+}
