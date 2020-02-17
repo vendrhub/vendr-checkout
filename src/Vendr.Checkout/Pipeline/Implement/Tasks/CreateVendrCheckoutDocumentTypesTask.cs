@@ -114,9 +114,9 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                                 SortOrder = 30
                             },
                             new PropertyType(booleanDataType.Value) {
-                                Alias = "vendrCollectShippingDetails",
-                                Name = "Collect Shipping Details",
-                                Description = "Select whether to collect shipping details or not. Not necessary if you are only dealing with digital downloads.",
+                                Alias = "vendrCollectShippingInfo",
+                                Name = "Collect Shipping Info",
+                                Description = "Select whether to collect shipping information or not. Not necessary if you are only dealing with digital downloads.",
                                 SortOrder = 40
                             },
                             new PropertyType(textstringDataType.Value) {

@@ -257,13 +257,13 @@
       <HintPath>..\..\packages\UmbracoCms.Web.8.4.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
     </Reference>
     <Reference Include="Vendr.Core, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Vendr.Core.0.1.0-alpha0339\lib\net472\Vendr.Core.dll</HintPath>
+      <HintPath>..\..\packages\Vendr.Core.0.1.0-alpha0352\lib\net472\Vendr.Core.dll</HintPath>
     </Reference>
     <Reference Include="Vendr.Core.Web, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Vendr.Core.Web.0.1.0-alpha0339\lib\net472\Vendr.Core.Web.dll</HintPath>
+      <HintPath>..\..\packages\Vendr.Core.Web.0.1.0-alpha0352\lib\net472\Vendr.Core.Web.dll</HintPath>
     </Reference>
     <Reference Include="Vendr.Web, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Vendr.Web.0.1.0-alpha0339\lib\net472\Vendr.Web.dll</HintPath>
+      <HintPath>..\..\packages\Vendr.Web.0.1.0-alpha0352\lib\net472\Vendr.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +288,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\InstallService.cs" />
     <Compile Include="VendrCheckoutConstants.cs" />
+    <Compile Include="Web\Composing\VendrCheckoutWebComposer.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutApiController.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutCheckoutStepPageController.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutCheckoutPageController.cs" />
@@ -296,6 +297,7 @@
     <Compile Include="Web\Dtos\VendrOrderAddressDto.cs" />
     <Compile Include="Web\Dtos\VendrUpdateOrderInformationDto.cs" />
     <Compile Include="Web\Dtos\VendrUpdateOrderShippingAndPaymentMethodDto.cs" />
+    <Compile Include="Web\Events\Notification\Handlers\VendrCheckoutOrderEditorConfigParsingNotificationHandler.cs" />
     <Compile Include="Web\HtmlHelperExtensions.cs" />
     <Compile Include="Web\PublishedContentExtensions.cs" />
   </ItemGroup>
