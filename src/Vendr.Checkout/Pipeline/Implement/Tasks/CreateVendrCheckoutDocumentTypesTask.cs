@@ -31,32 +31,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                 {
                     Key = VendrCheckoutConstants.ContentTypes.Guids.BasePageGuid,
                     Alias = "vendrCheckoutBasePage",
-                    Name = "[Vendr Checkout] Page",
-                    PropertyGroups = new PropertyGroupCollection(new[]{
-                        new PropertyGroup(new PropertyTypeCollection(true, new[]{
-                            new PropertyType(textstringDataType.Value) {
-                                Alias = "pageTitle",
-                                Name = "Page Title",
-                                Description = "Overrides the default page title.",
-                                SortOrder = 10
-                            },
-                            new PropertyType(textareaDataType.Value) {
-                                Alias = "metaDescription",
-                                Name = "Meta Description",
-                                Description = "Appears in Google search results. It should be descriptive and in complete sentences. Include value statements and a call-to-action (click here, learn more by clicking here, download here, view video, etc) so people click the link. Include relevant keywords. 50-155 characters.",
-                                SortOrder = 20
-                            },
-                            new PropertyType(textareaDataType.Value) {
-                                Alias = "metaKeywords",
-                                Name = "Meta Keywords",
-                                Description = "Used by smaller search engines but not Google, Bing or Yahoo. The meta keywords to display to search engines. List in order of relevance and importance. Separate words or phrases with a comma. Include misspellings and variations. Include action words such as buy, shop, find, download or words related to your industry.",
-                                SortOrder = 30
-                            }
-                        })) {
-                            Name = "Meta Data",
-                            SortOrder =100
-                        }
-                    })
+                    Name = "[Vendr Checkout] Page"
                 };
 
                 Current.Services.ContentTypeService.Save(contentType);
@@ -129,43 +104,49 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                             new PropertyType(textstringDataType.Value) {
                                 Alias = "vendrStoreAddress",
                                 Name = "Store Address",
-                                Description = "The address of the web store.",
-                                SortOrder = 30
+                                Description = "The address of the web store to appear in the footer of order emails.",
+                                SortOrder = 20
                             },
                             new PropertyType(themeColorPickerDataType.Value) {
                                 Alias = "vendrThemeColor",
                                 Name = "Theme Color",
                                 Description = "The theme color to use for colored elements of the checkout pages.",
-                                SortOrder = 40
+                                SortOrder = 30
                             },
                             new PropertyType(booleanDataType.Value) {
                                 Alias = "vendrCollectShippingDetails",
                                 Name = "Collect Shipping Details",
-                                Description = "Select whether to collect shipping details. Not necessary if you are only dealing with digital downloads.",
-                                SortOrder = 50
+                                Description = "Select whether to collect shipping details or not. Not necessary if you are only dealing with digital downloads.",
+                                SortOrder = 40
                             },
                             new PropertyType(textstringDataType.Value) {
                                 Alias = "vendrOrderLinePropertyAliases",
                                 Name = "Order Line Property Aliases",
                                 Description = "Comma separated list of order line property aliases to display in the order summary.",
-                                SortOrder = 60
+                                SortOrder = 50
                             },
                             new PropertyType(textstringDataType.Value) {
                                 Alias = "vendrCheckoutBackPage",
                                 Name = "Checkout Back Page",
                                 Description = "The page to go back to when backing out of the checkout flow.",
-                                SortOrder = 70
+                                SortOrder = 60
                             },
                             new PropertyType(contentPickerDataType.Value) {
                                 Alias = "vendrTermsAndConditionsPage",
                                 Name = "Terms and Conditions Page",
                                 Description = "The page on the site containing the terms and conditions.",
-                                SortOrder = 80
+                                SortOrder = 70
                             },
                             new PropertyType(contentPickerDataType.Value) {
                                 Alias = "vendrPrivacyPolicyPage",
                                 Name = "Privacy Policy Page",
-                                Description = "The page on the site containing the privacy policy details.",
+                                Description = "The page on the site containing the privacy policy.",
+                                SortOrder = 80
+                            },
+                            new PropertyType(contentPickerDataType.Value) {
+                                Alias = "umbracoNaviHide",
+                                Name = "Hide from Navigation",
+                                Description = "Hide the checkout page from the sites main navigation.",
                                 SortOrder = 90
                             }
                         })) {
