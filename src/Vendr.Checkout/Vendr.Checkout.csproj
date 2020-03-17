@@ -46,8 +46,8 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Portable.BouncyCastle.1.8.5\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="ClientDependency.Core, Version=1.9.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ClientDependency.1.9.8\lib\net45\ClientDependency.Core.dll</HintPath>
+    <Reference Include="ClientDependency.Core, Version=1.9.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ClientDependency.1.9.9\lib\net45\ClientDependency.Core.dll</HintPath>
     </Reference>
     <Reference Include="ClientDependency.Core.Mvc, Version=1.9.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ClientDependency-Mvc5.1.9.3\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
@@ -271,6 +271,7 @@
     <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dashboards\installer.controller.js" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dashboards\installer.html" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Config\vendrcheckout.order.editor.config.js" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Lang\en-US.xml" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Scripts\vendrcheckout.js" />
   </ItemGroup>
   <ItemGroup>
