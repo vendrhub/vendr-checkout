@@ -282,6 +282,8 @@
     <Compile Include="Pipeline\Implement\InstallPipelineContext.cs" />
     <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutDataTypesTask.cs" />
     <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutDocumentTypesTask.cs" />
+    <Compile Include="Pipeline\Implement\Tasks\ConfigureVendrStoreTask.cs" />
+    <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutNodesTask.cs" />
     <Compile Include="Pipeline\IPipelineTask.cs" />
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineTaskExtensions.cs" />
