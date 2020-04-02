@@ -1,19 +1,19 @@
 ﻿using Vendr.Checkout.Pipeline.Implement;
+using Vendr.Core.Models;
 
 namespace Vendr.Checkout.Services
 {
     public class InstallService
     {
-        public void Install(int siteRootNodeId)
+        public void Install(int siteRootNodeId, StoreReadOnly store)
         {
-            var installContext = new InstallPipelineContext();
-            //{
-            //    SiteRootNodeId = siteRootNodeId
-            //};
-
             var installPipeline = new InstallPipeline();
 
-            installPipeline.Process(installContext);
+            installPipeline.Process(new InstallPipelineContext
+            {
+                SiteRootNodeId = siteRootNodeId,
+                Store = store
+            });
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Vendr.Checkout.Pipeline.Implement
 {
     public class InstallPipelineContext
     {
-        public Udi SiteRootNodeId { get; set; }
+        public int SiteRootNodeId { get; set; }
 
         public StoreReadOnly Store { get; set; }
     }

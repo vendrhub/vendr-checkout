@@ -26,7 +26,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                             Items = VendrCheckoutConstants.ColorMap.Select((kvp, idx) => new ValueListConfiguration.ValueListItem
                             {
                                 Id = idx,
-                                Value = "{\"value\":\"" + kvp.Key + "\", \"label\":\"" + kvp.Value + "\""
+                                Value = "{\"value\":\"" + kvp.Key + "\", \"label\":\"" + kvp.Value + "\"}"
                             }).ToList(),
                             UseLabel = false
                         }
@@ -53,8 +53,8 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                                 new ValueListConfiguration.ValueListItem { Id = 1, Value = "Information" },
                                 new ValueListConfiguration.ValueListItem { Id = 2, Value = "ShippingAndPaymentMethod" },
                                 new ValueListConfiguration.ValueListItem { Id = 3, Value = "Review" },
-                                new ValueListConfiguration.ValueListItem { Id = 3, Value = "Payment" },
-                                new ValueListConfiguration.ValueListItem { Id = 3, Value = "Confirmation" }
+                                new ValueListConfiguration.ValueListItem { Id = 4, Value = "Payment" },
+                                new ValueListConfiguration.ValueListItem { Id = 5, Value = "Confirmation" }
                             },
                             Multiple = false
                         }

@@ -268,8 +268,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\resources\vendrcheckout.resource.js" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dashboards\installer.controller.js" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dashboards\installer.html" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dialogs\installer.controller.js" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\views\dialogs\installer.html" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Config\vendrcheckout.order.editor.config.js" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Lang\en-US.xml" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Scripts\vendrcheckout.js" />

@@ -1,0 +1,61 @@
+﻿<style>
+    *[ng-messages] .help-inline {
+        margin-top: 10px;
+    }
+</style>
+<div ng-controller="Vendr.Checkout.Controllers.InstallerDialogController as vm">
+
+    <form name="contentForm"
+          ng-submit="vm.install()"
+          novalidate
+          val-form-manager>
+
+        <umb-load-indicator ng-if="vm.loading"></umb-load-indicator>
+
+        <umb-editor-view>
+
+            <umb-editor-header name="'Install Vendr Checkout'"
+                name-locked="true"
+                hide-alias="true"
+                hide-icon="true"
+                hide-description="true">
+            </umb-editor-header>
+
+            <umb-editor-container>
+
+                <umb-box ng-if="!vm.loading">
+                    <umb-box-content>
+
+                        <umb-property data-element="property-{{vm.property.alias}}" property="vm.property">
+                            <umb-property-editor model="vm.property" style="margin-top: 10px;"></umb-property-editor>
+                        </umb-property>
+
+                    </umb-box-content>
+                </umb-box>
+
+            </umb-editor-container>
+
+            <umb-editor-footer>
+                <umb-editor-footer-content-right>
+
+                    <umb-button type="button"
+                        button-style="link"
+                        state="vm.buttonStates.cancel"
+                        label="Cancel"
+                        action="vm.cancel()">
+                    </umb-button>
+
+                    <umb-button type="submit"
+                        button-style="success"
+                        state="vm.buttonStates.install"
+                        label="Install">
+                    </umb-button>
+
+                </umb-editor-footer-content-right>
+            </umb-editor-footer>
+
+        </umb-editor-view>
+
+    </form>
+
+</div>

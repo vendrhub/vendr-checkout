@@ -32,7 +32,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                 var contentType = new ContentType(-1)
                 {
                     Key = VendrCheckoutConstants.ContentTypes.Guids.BasePageGuid,
-                    Alias = "vendrCheckoutBasePage",
+                    Alias = VendrCheckoutConstants.ContentTypes.Aliases.BasePage,
                     Name = "[Vendr Checkout] Page"
                 };
 
@@ -53,7 +53,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                 var contentType = new ContentType(checkoutPageContentTypeId)
                 {
                     Key = VendrCheckoutConstants.ContentTypes.Guids.CheckoutStepPageGuid,
-                    Alias = "vendrCheckoutCheckoutStepPage",
+                    Alias = VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage,
                     Name = "[Vendr Checkout] Checkout Step Page",
                     Icon = "icon-settings-alt color-green",
                     PropertyGroups = new PropertyGroupCollection(new[]{
@@ -94,7 +94,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                 var contentType = new ContentType(checkoutPageContentTypeId)
                 {
                     Key = VendrCheckoutConstants.ContentTypes.Guids.CheckoutPageGuid,
-                    Alias = "vendrCheckoutCheckoutPage",
+                    Alias = VendrCheckoutConstants.ContentTypes.Aliases.CheckoutPage,
                     Name = "[Vendr Checkout] Checkout Page",
                     Icon = "icon-cash-register color-green",
                     AllowedContentTypes = new[]{

@@ -8,9 +8,9 @@ namespace Vendr.Checkout.Pipeline.Implement
         {
             Tasks = input => input
                 .Pipe(new CreateVendrCheckoutDataTypesTask())
-                .Pipe(new CreateVendrCheckoutDocumentTypesTask());
-                //.Pipe(new CreateVendrCheckoutNodesTask());
-                //.Pipe(new ConfigureVendrStoreTask());
+                .Pipe(new CreateVendrCheckoutDocumentTypesTask())
+                .Pipe(new CreateVendrCheckoutNodesTask())
+                .Pipe(new ConfigureVendrStoreTask());
         }
     }
 }

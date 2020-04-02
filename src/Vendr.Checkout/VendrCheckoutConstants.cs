@@ -21,9 +21,6 @@ namespace Vendr.Checkout
 
         public static class DataTypes
         {
-            public const int ThemeColorPicker = -62101;
-            public const int StepPicker = -62102;
-
             public static class Guids
             {
                 public const string ThemeColorPicker = "46322397-3b7b-4d53-a5db-a1b17553d397";
@@ -36,9 +33,12 @@ namespace Vendr.Checkout
 
         public static class ContentTypes
         {
-            public const int Page = -62200;
-            public const int CheckoutPage = -62201;
-            public const int CheckoutStepPage = -62202;
+            public static class Aliases
+            {
+                public const string BasePage = "vendrCheckoutBasePage";
+                public const string CheckoutPage = "vendrCheckoutCheckoutPage";
+                public const string CheckoutStepPage = "vendrCheckoutCheckoutStepPage";
+            }
 
             public static class Guids
             {
