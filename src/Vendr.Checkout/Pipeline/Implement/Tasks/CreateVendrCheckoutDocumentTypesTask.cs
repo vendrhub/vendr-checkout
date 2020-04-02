@@ -9,7 +9,9 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
     {
         public InstallPipelineContext Process(InstallPipelineContext ctx)
         {
+            // Setup variables
             IContentType existing;
+
             int checkoutPageContentTypeId;
             int checkoutStepPageContentTypeId;
 
@@ -24,9 +26,9 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
 
             // Checkout Base Page
             existing = Current.Services.ContentTypeService.Get(VendrCheckoutConstants.ContentTypes.Guids.BasePageGuid);
+            
             if (existing == null)
             {
-
                 var contentType = new ContentType(-1)
                 {
                     Key = VendrCheckoutConstants.ContentTypes.Guids.BasePageGuid,
@@ -45,6 +47,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
 
             // Checkout Step Page
             existing = Current.Services.ContentTypeService.Get(VendrCheckoutConstants.ContentTypes.Guids.CheckoutStepPageGuid);
+            
             if (existing == null)
             {
                 var contentType = new ContentType(checkoutPageContentTypeId)
@@ -52,6 +55,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                     Key = VendrCheckoutConstants.ContentTypes.Guids.CheckoutStepPageGuid,
                     Alias = "vendrCheckoutCheckoutStepPage",
                     Name = "[Vendr Checkout] Checkout Step Page",
+                    Icon = "icon-settings-alt color-green",
                     PropertyGroups = new PropertyGroupCollection(new[]{
                         new PropertyGroup(new PropertyTypeCollection(true, new[]{
                             new PropertyType(textstringDataType.Value) {
@@ -83,13 +87,16 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
             }
 
             // Checkout Page
-            if (Current.Services.ContentTypeService.Get(VendrCheckoutConstants.ContentTypes.Guids.CheckoutPageGuid) == null)
+            existing = Current.Services.ContentTypeService.Get(VendrCheckoutConstants.ContentTypes.Guids.CheckoutPageGuid);
+
+            if (existing == null)
             {
                 var contentType = new ContentType(checkoutPageContentTypeId)
                 {
                     Key = VendrCheckoutConstants.ContentTypes.Guids.CheckoutPageGuid,
                     Alias = "vendrCheckoutCheckoutPage",
                     Name = "[Vendr Checkout] Checkout Page",
+                    Icon = "icon-cash-register color-green",
                     AllowedContentTypes = new[]{
                         new ContentTypeSort(checkoutStepPageContentTypeId, 1)
                     },
