@@ -3,10 +3,18 @@
 @{
     // Get order entities
     var store = VendrApi.Instance.GetStore(Model.StoreId);
-    var paymentMethod = VendrApi.Instance.GetPaymentMethod(Model.PaymentInfo.PaymentMethodId.Value);
-    var paymentCountry = VendrApi.Instance.GetCountry(Model.PaymentInfo.CountryId.Value);
-    var shippingMethod = VendrApi.Instance.GetShippingMethod(Model.ShippingInfo.ShippingMethodId.Value);
-    var shippingCountry = VendrApi.Instance.GetCountry(Model.ShippingInfo.CountryId.Value);
+    var paymentMethod = Model.PaymentInfo.PaymentMethodId.HasValue
+        ? VendrApi.Instance.GetPaymentMethod(Model.PaymentInfo.PaymentMethodId.Value)
+        : null;
+    var paymentCountry = Model.PaymentInfo.CountryId.HasValue 
+        ? VendrApi.Instance.GetCountry(Model.PaymentInfo.CountryId.Value)
+        : null;
+    var shippingMethod = Model.ShippingInfo.ShippingMethodId.HasValue 
+        ? VendrApi.Instance.GetShippingMethod(Model.ShippingInfo.ShippingMethodId.Value)
+        : null;
+    var shippingCountry = Model.ShippingInfo.CountryId.HasValue
+        ? VendrApi.Instance.GetCountry(Model.ShippingInfo.CountryId.Value)
+        : null;
 
     // Lookup the vendr checkout page for the associated orders store
     // so that we can extract relevant settings to configure the email template
@@ -91,27 +99,30 @@
                                             <p style="margin: 0;padding-top: 10px;">Tel: @Model.Properties["billingTelephone"]</p>
                                         }
                                     </td>
-                                    <td style="width: 50%;">
-                                        <h2 style="margin: 0 0 20px; font-size: 16px; line-height: 20px;">Shipping Information</h2>
-                                        <p style="margin: 0;">
-                                            @{
-                                                var shippingParts = new[]
-                                                {
-                                                    $"{Model.Properties["shippingFirstName"]} {Model.Properties["shippingLastName"]}".Trim(),
-                                                    Model.Properties["shippingAddressLine1"],
-                                                    Model.Properties["shippingAddressLine2"],
-                                                    Model.Properties["shippingCity"],
-                                                    Model.Properties["shippingZipCode"],
-                                                    paymentCountry.Name
-                                                };
-                                                @Html.Raw(string.Join("<br />", shippingParts.Where(x => !string.IsNullOrWhiteSpace(x))))
+                                    @if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+                                    { 
+                                        <td style="width: 50%;">
+                                            <h2 style="margin: 0 0 20px; font-size: 16px; line-height: 20px;">Shipping Information</h2>
+                                            <p style="margin: 0;">
+                                                @{
+                                                    var shippingParts = new[]
+                                                    {
+                                                        $"{Model.Properties["shippingFirstName"]} {Model.Properties["shippingLastName"]}".Trim(),
+                                                        Model.Properties["shippingAddressLine1"],
+                                                        Model.Properties["shippingAddressLine2"],
+                                                        Model.Properties["shippingCity"],
+                                                        Model.Properties["shippingZipCode"],
+                                                        paymentCountry.Name
+                                                    };
+                                                    @Html.Raw(string.Join("<br />", shippingParts.Where(x => !string.IsNullOrWhiteSpace(x))))
+                                                }
+                                            </p>
+                                            @if (Model.Properties["shippingTelephone"] != null)
+                                            {
+                                                <p style="margin: 0;padding-top: 10px;">Tel: @Model.Properties["shippingTelephone"]</p>
                                             }
-                                        </p>
-                                        @if (Model.Properties["shippingTelephone"] != null)
-                                        {
-                                            <p style="margin: 0;padding-top: 10px;">Tel: @Model.Properties["shippingTelephone"]</p>
-                                        }
-                                    </td>
+                                        </td>
+                                    }
                                 </tr>
                             </table>
 
@@ -182,7 +193,7 @@
                                         </td>
                                     </tr>
                                 }
-                                @if (shippingMethod != null)
+                                @if (shippingMethod != null && checkoutPage.Value<bool>("vendrCollectShippingInfo"))
                                 {
                                     <tr>
                                         <td style="vertical-align: top;">

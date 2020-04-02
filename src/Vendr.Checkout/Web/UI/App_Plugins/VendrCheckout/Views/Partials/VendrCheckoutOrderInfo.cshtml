@@ -1,6 +1,11 @@
-﻿@model Vendr.Core.Models.OrderReadOnly
+﻿@using Umbraco.Web.Composing;
+@model Vendr.Core.Models.OrderReadOnly
 @{
     var order = Model;
+
+    var currentPage = Current.UmbracoContext.PublishedRequest.PublishedContent;
+    var checkoutPage = currentPage.GetCheckoutPage();
+
     var paymentCountryName = order.PaymentInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(order.PaymentInfo.CountryId.Value).Name
         : null;
@@ -27,20 +32,22 @@
                 }.Where(x => !x.IsNullOrWhiteSpace())))
             </p>
         </div>
-        <div class="flex-1 mx-2">
-            <h3 class="text-xl font-medium mb-4">Shipping Information</h3>
-            <p class="">
-                <strong>@order.Properties["shippingFirstName"] @order.Properties["shippingLastName"]</strong>
-                <br />
-                @Html.Raw(string.Join("<br />", new string[] {
-                    order.Properties["shippingAddressLine1"],
-                    order.Properties["shippingAddressLine2"],
-                    order.Properties["shippingCity"],
-                    shippingCountryName,
-                    order.Properties["shippingZipCode"]
-                }.Where(x => !x.IsNullOrWhiteSpace())))
-            </p>
-        </div>
+        @if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+        {
+            <div class="flex-1 mx-2">
+                <h3 class="text-xl font-medium mb-4">Shipping Information</h3>
+                <p class="">
+                    <strong>@order.Properties["shippingFirstName"] @order.Properties["shippingLastName"]</strong>
+                    <br />
+                    @Html.Raw(string.Join("<br />", new string[] {
+                        order.Properties["shippingAddressLine1"],
+                        order.Properties["shippingAddressLine2"],
+                        order.Properties["shippingCity"],
+                        shippingCountryName,
+                        order.Properties["shippingZipCode"]
+                    }.Where(x => !x.IsNullOrWhiteSpace())))
+                </p>
+            </div>
+        }
     </div>
-
 </div>

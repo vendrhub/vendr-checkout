@@ -1,41 +1,35 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
 using Vendr.Checkout.Web.Dtos;
 using Vendr.Core;
+using Vendr.Core.Web.Api;
 using Vendr.Core.Exceptions;
-using Vendr.Core.Services;
-using Vendr.Core.Session;
 
 namespace Vendr.Checkout.Web.Controllers
 {
     public class VendrCheckoutSurfaceController : SurfaceController, IRenderController
     {
-        private readonly ISessionManager _sessionManager;
-        private readonly IOrderService _orderService;
-        private readonly IUnitOfWorkProvider _uowProvider;
+        private readonly IVendrApi _vendrApi;
 
-        public VendrCheckoutSurfaceController(ISessionManager sessionManager,
-            IOrderService orderService,
-            IUnitOfWorkProvider uowProvider)
+        public VendrCheckoutSurfaceController(IVendrApi vendrAPi)
         {
-            _sessionManager = sessionManager;
-            _orderService = orderService;
-            _uowProvider = uowProvider;
+            _vendrApi = vendrAPi;
         }
 
         public ActionResult ApplyDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
             {
-                using (var uow = _uowProvider.Create())
+                using (var uow = _vendrApi.Uow.Create())
                 {
                     var store = CurrentPage.GetStore();
-                    var order = _sessionManager.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .Redeem(model.Code);
 
-                    _orderService.SaveOrder(order);
+                    _vendrApi.SaveOrder(order);
 
                     uow.Complete();
                 }
@@ -54,14 +48,14 @@ namespace Vendr.Checkout.Web.Controllers
         {
             try
             {
-                using (var uow = _uowProvider.Create())
+                using (var uow = _vendrApi.Uow.Create())
                 {
                     var store = CurrentPage.GetStore();
-                    var order = _sessionManager.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .Unredeem(model.Code);
 
-                    _orderService.SaveOrder(order);
+                    _vendrApi.SaveOrder(order);
 
                     uow.Complete();
                 }
@@ -80,10 +74,12 @@ namespace Vendr.Checkout.Web.Controllers
         {
             try
             {
-                using (var uow = _uowProvider.Create())
+                var checkoutPage = CurrentPage.GetCheckoutPage();
+
+                using (var uow = _vendrApi.Uow.Create())
                 {
                     var store = CurrentPage.GetStore();
-                    var order = _sessionManager.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .SetProperties(new Dictionary<string, string>
                         {
@@ -98,21 +94,31 @@ namespace Vendr.Checkout.Web.Controllers
                             { "billingZipCode", model.BillingAddress.ZipCode },
                             { "billingTelephone", model.BillingAddress.Telephone },
 
-                            { "shippingSameAsBilling", model.ShippingSameAsBilling ? "1" : "0" },
-                            { "shippingFirstName", model.ShippingSameAsBilling ? model.BillingAddress.FirstName : model.ShippingAddress.FirstName },
-                            { "shippingLastName", model.ShippingSameAsBilling ? model.BillingAddress.LastName : model.ShippingAddress.LastName },
-                            { "shippingAddressLine1", model.ShippingSameAsBilling ? model.BillingAddress.Line1 : model.ShippingAddress.Line1 },
-                            { "shippingAddressLine2", model.ShippingSameAsBilling ? model.BillingAddress.Line2 : model.ShippingAddress.Line2 },
-                            { "shippingCity", model.ShippingSameAsBilling ? model.BillingAddress.City : model.ShippingAddress.City },
-                            { "shippingZipCode", model.ShippingSameAsBilling ? model.BillingAddress.ZipCode : model.ShippingAddress.ZipCode },
-                            { "shippingTelephone", model.ShippingSameAsBilling ? model.BillingAddress.Telephone : model.ShippingAddress.Telephone },
-
                             { "comments", model.Comments }
                         })
-                        .SetPaymentCountryRegion(model.BillingAddress.Country, null)
-                        .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country, null);
+                        .SetPaymentCountryRegion(model.BillingAddress.Country, null);
 
-                    _orderService.SaveOrder(order);
+                    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+                    {
+                        order.SetProperties(new Dictionary<string, string>
+                        {
+                            { "shippingSameAsBilling", model.ShippingSameAsBilling ? "1" : "0" },
+                            { "shippingFirstName", model.ShippingSameAsBilling? model.BillingAddress.FirstName : model.ShippingAddress.FirstName },
+                            { "shippingLastName", model.ShippingSameAsBilling? model.BillingAddress.LastName : model.ShippingAddress.LastName },
+                            { "shippingAddressLine1", model.ShippingSameAsBilling? model.BillingAddress.Line1 : model.ShippingAddress.Line1 },
+                            { "shippingAddressLine2", model.ShippingSameAsBilling? model.BillingAddress.Line2 : model.ShippingAddress.Line2 },
+                            { "shippingCity", model.ShippingSameAsBilling? model.BillingAddress.City : model.ShippingAddress.City },
+                            { "shippingZipCode", model.ShippingSameAsBilling? model.BillingAddress.ZipCode : model.ShippingAddress.ZipCode },
+                            { "shippingTelephone", model.ShippingSameAsBilling? model.BillingAddress.Telephone : model.ShippingAddress.Telephone }
+                        })
+                        .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country, null);
+                    }
+                    else
+                    {
+                        order.SetShippingCountryRegion(model.BillingAddress.Country, null);
+                    }
+
+                    _vendrApi.SaveOrder(order);
 
                     uow.Complete();
                 }
@@ -134,15 +140,28 @@ namespace Vendr.Checkout.Web.Controllers
         {
             try
             {
-                using (var uow = _uowProvider.Create())
+                using (var uow = _vendrApi.Uow.Create())
                 {
+                    var checkoutPage = CurrentPage.GetCheckoutPage();
                     var store = CurrentPage.GetStore();
-                    var order = _sessionManager.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
                         .AsWritable(uow)
-                        .SetShippingMethod(model.ShippingMethod)
                         .SetPaymentMethod(model.PaymentMethod);
 
-                    _orderService.SaveOrder(order);
+                    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+                    {
+                        order.SetShippingMethod(model.ShippingMethod);
+                    }
+                    else if (order.ShippingInfo.CountryId.HasValue)
+                    {
+                        var shippingCountry = _vendrApi.GetCountry(order.ShippingInfo.CountryId.Value);
+                        if (shippingCountry.DefaultShippingMethodId.HasValue)
+                        {
+                            order.SetShippingMethod(shippingCountry.DefaultShippingMethodId.Value);
+                        }
+                    }
+
+                    _vendrApi.SaveOrder(order);
 
                     uow.Complete();
                 }

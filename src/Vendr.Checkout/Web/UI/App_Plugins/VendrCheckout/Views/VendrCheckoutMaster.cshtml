@@ -13,9 +13,6 @@
     var currentPaymentMethod = currentOrder.PaymentInfo.PaymentMethodId.HasValue
         ? VendrApi.Instance.GetPaymentMethod(currentOrder.PaymentInfo.PaymentMethodId.Value)
         : null;
-    var currentShippingMethod = currentOrder.ShippingInfo.ShippingMethodId.HasValue
-        ? VendrApi.Instance.GetPaymentMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
-        : null;
 
     var checkoutPage = Model.GetCheckoutPage();
     var themeColor = Model.GetThemeColor();
@@ -128,16 +125,23 @@
                 }
                 else
                 {
-                    <div class="flex w-full justify-between items-center mt-2">
-                        <div class="">
-                            Shipping
-                            @if (currentShippingMethod != null)
-                            {
-                                <text>via @(currentShippingMethod.Name)</text>
-                            }
+                    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+                    {
+                        var currentShippingMethod = currentOrder.ShippingInfo.ShippingMethodId.HasValue
+                            ? VendrApi.Instance.GetPaymentMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
+                            : null;
+
+                        <div class="flex w-full justify-between items-center mt-2">
+                            <div class="">
+                                Shipping
+                                @if (currentShippingMethod != null)
+                                {
+                                    <text>via @(currentShippingMethod.Name)</text>
+                                }
+                            </div>
+                            <div class="font-medium">@(currentOrder.ShippingInfo.TotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
                         </div>
-                        <div class="font-medium">@(currentOrder.ShippingInfo.TotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
-                    </div>
+                    }
 
                     <div class="flex w-full justify-between items-center mt-2">
                         <div class="">
