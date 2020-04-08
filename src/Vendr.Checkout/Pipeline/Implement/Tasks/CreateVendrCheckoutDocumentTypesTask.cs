@@ -150,7 +150,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                                 Description = "The page on the site containing the privacy policy.",
                                 SortOrder = 80
                             },
-                            new PropertyType(contentPickerDataType.Value) {
+                            new PropertyType(booleanDataType.Value) {
                                 Alias = "umbracoNaviHide",
                                 Name = "Hide from Navigation",
                                 Description = "Hide the checkout page from the sites main navigation.",
