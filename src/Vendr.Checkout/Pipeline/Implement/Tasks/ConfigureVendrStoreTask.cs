@@ -21,7 +21,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                 {
                     var orderConfirmationEmail = VendrApi.Instance.GetEmailTemplate(orderConfirmationEmailId.Value)
                         .AsWritable(uow)
-                        .SetTemplateView("~/app_plugins/vendrcheckout/views/email/VendrCheckoutOrderConfirmationEmail.cshtml");
+                        .SetTemplateView("~/app_plugins/vendrcheckout/views/emails/VendrCheckoutOrderConfirmationEmail.cshtml");
 
                     VendrApi.Instance.SaveEmailTemplate(orderConfirmationEmail);
                 }
@@ -32,7 +32,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                 {
                     var orderErrorEmail = VendrApi.Instance.GetEmailTemplate(orderErrorEmailId.Value)
                         .AsWritable(uow)
-                        .SetTemplateView("~/app_plugins/vendrcheckout/views/email/VendrCheckoutOrderErrorEmail.cshtml");
+                        .SetTemplateView("~/app_plugins/vendrcheckout/views/emails/VendrCheckoutOrderErrorEmail.cshtml");
 
                     VendrApi.Instance.SaveEmailTemplate(orderErrorEmail);
                 }
