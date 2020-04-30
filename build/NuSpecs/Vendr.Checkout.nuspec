@@ -32,6 +32,11 @@
         <file src="$SrcDir$\bin\Vendr.Checkout.pdb" target="lib\net472\Vendr.Checkout.pdb" />
 
         <!-- content -->
-        <file src="$SrcDir$\content\**\*" target="content" />
+        <file src="$SrcDir$\content\**\*" target="VendrFiles" />
+
+        <!-- tools -->
+        <!-- beware! install.ps1 not supported by PackageReference -->
+        <file src="tools\install.ps1" target="tools\install.ps1" />
+        
     </files>
 </package>
