@@ -17,7 +17,7 @@ if ($project) {
 
     Write-Host "copying files to $projectPath ..."
     # see https://support.microsoft.com/en-us/help/954404/return-codes-that-are-used-by-the-robocopy-utility-in-windows-server-2
-    robocopy $vendrFilesSource $projectPath /is /it /e
+    robocopy "$vendrFilesSource " "$projectPath " /is /it /e
     if (($lastexitcode -eq 1) -or ($lastexitcode -eq 3) -or ($lastexitcode -eq 5) -or ($lastexitcode -eq 7))
     {
         write-host "Copy succeeded!"
