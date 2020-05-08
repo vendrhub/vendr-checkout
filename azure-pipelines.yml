@@ -1,0 +1,72 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+  branches:
+    include: 
+      - dev
+  tags:
+    include:
+      - v*
+
+variables:
+  vmImageName: 'vs2017-win2016'
+  nuGetOrgServiceCreds: 'NuGet.org (Vendr)'
+
+stages:
+- stage: Build
+  displayName: Build stage
+
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+
+    steps:
+    - task: MSBuild@1
+      displayName: 'Build solution'
+      inputs:
+        solution: 'build/build.proj'
+        configuration: 'Release'
+        msbuildArguments: '-target:PrepareAndPackageAll -property:ArtifactsDir=$(Build.ArtifactStagingDirectory)'
+
+    - publish: $(Build.ArtifactStagingDirectory)
+      displayName: 'Publish Artifacts'
+      artifact: BuildArtifacts
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+  condition: succeeded()
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    environment: 'development'
+    pool:
+      vmImage: $(vmImageName)
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+          - task: NuGetCommand@2
+            displayName: 'Deploy to unstable feed'
+            inputs:
+              command: 'push'
+              packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
+              nuGetFeedType: 'internal'
+              publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
+
+          - task: NuGetCommand@2
+            displayName: 'Deploy to NuGet.org'
+            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+            inputs:
+              command: push
+              nuGetFeedType: external
+              packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
+              publishFeedCredentials: '$(nuGetOrgServiceCreds)'

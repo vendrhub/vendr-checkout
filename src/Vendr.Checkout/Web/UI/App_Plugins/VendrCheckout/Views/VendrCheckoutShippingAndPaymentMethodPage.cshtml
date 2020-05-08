@@ -1,0 +1,59 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    Layout = "VendrCheckoutMaster.cshtml";
+
+    var store = Model.GetStore();
+    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+    var paymentMethods = VendrApi.Instance.GetPaymentMethods(store.Id);
+
+    var checkoutPage = Model.GetCheckoutPage();
+    var nextStepPage = Model.GetNextPage();
+
+    var currentPaymentMethodId = currentOrder.PaymentInfo.PaymentMethodId.HasValue
+        ? currentOrder.PaymentInfo.PaymentMethodId.Value
+        : paymentMethods.First().Id;
+}
+
+@using (Html.BeginUmbracoForm("UpdateOrderShippingAndPaymentMethod", "VendrCheckoutSurface"))
+{
+    <input type="hidden" name="nextStep" value="@(nextStepPage?.Id)" />
+
+    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+    {
+        var shippingMethods = VendrApi.Instance.GetShippingMethods(store.Id);
+
+        var currentShippingMethodId = currentOrder.ShippingInfo.ShippingMethodId.HasValue
+            ? currentOrder.ShippingInfo.ShippingMethodId.Value
+            : shippingMethods.First().Id;
+
+        <h3 class="text-xl font-medium mb-4">Shipping Method</h3>
+        <ul class="border border-gray-300 rounded">
+            @foreach (var item in shippingMethods.Select((sm, i) => new { ShippingMethod = sm, Index = i }))
+            {
+                <li class="border-gray-300 @(item.Index > 0 ? "border-t " : "")">
+                    <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-100">
+                        <input name="shippingMethod" type="radio" value="@item.ShippingMethod.Id" class="mr-3" @Html.Raw(currentShippingMethodId == item.ShippingMethod.Id ? "checked=\"checked\"" : "") required />
+                        <span class="font-medium">@(item.ShippingMethod.Name)</span>
+                        <span class="flex-1 text-right">@(item.ShippingMethod.CalculatePrice()?.Formatted())</span>
+                    </label>
+                </li>
+            }
+        </ul>
+    }
+
+    <h3 class="text-xl font-medium mb-4 mt-8">Payment Method</h3>
+    <ul class="border border-gray-300 rounded">
+        @foreach (var item in paymentMethods.Select((pm, i) => new { PaymentMethod = pm, Index = i }))
+        {
+            <li class="border-gray-300 @(item.Index > 0 ? "border-t " : "")">
+                <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-100">
+                    <input name="paymentMethod" type="radio" value="@item.PaymentMethod.Id" class="mr-3" @Html.Raw(currentPaymentMethodId == item.PaymentMethod.Id ? "checked=\"checked\"" : "") required />
+                    <span class="font-medium">@(item.PaymentMethod.Name)</span>
+                    <span class="flex-1 text-right">@(item.PaymentMethod.CalculatePrice()?.Formatted())</span>
+                </label>
+            </li>
+        }
+    </ul>
+
+    @Html.VendrCheckoutPartial("VendrCheckoutPrevNext")
+}

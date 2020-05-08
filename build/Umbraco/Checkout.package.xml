@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<umbPackage>
+    
+    <info>
+        <package>
+            <name>Vendr.Checkout</name>
+            <version>0.0.0</version>
+            <license url="https://opensource.org/licenses/MIT">MIT</license>
+            <url>https://vendr.net/add-ons/vendr-checkout</url>
+            <requirements>
+                <major>8</major>
+                <minor>2</minor>
+                <patch>0</patch>
+            </requirements>
+        </package>
+        <author>
+            <name>Outfield Digital Ltd</name>
+            <website>https://outfield.digital</website>
+        </author>
+        <readme>A ready made checkout flow for Vendr, the eCommerce package for Umbrao v8+</readme>
+    </info>
+    
+    <DocumentTypes></DocumentTypes>
+    <Templates></Templates>
+    <Stylesheets></Stylesheets>
+    <Macros></Macros>
+    <DictionaryItems></DictionaryItems>
+    <Languages></Languages>
+    <DataTypes></DataTypes>
+    <Actions></Actions>
+    <control></control>
+
+    <files></files>
+    
+</umbPackage>

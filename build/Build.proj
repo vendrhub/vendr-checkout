@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="PrepareOnly" ToolsVersion="14.0">
+    
+	<!-- PROPERTIES -->
+	<PropertyGroup>
+        <BuildConfiguration Condition="'$(BuildConfiguration)'==''">$(BUILD_CONFIG)</BuildConfiguration>
+        <BuildConfiguration Condition="'$(BuildConfiguration)'==''">Debug</BuildConfiguration>
+
+        <RootDir>$(MSBuildProjectDirectory)\..</RootDir>
+        <BuildDir>$(MSBuildProjectDirectory)</BuildDir>
+        <BuildToolsDir>$(BuildDir)\_tools</BuildToolsDir>
+        <SourceDir>$(RootDir)\src</SourceDir>
+        
+        <ArtifactsDir Condition="'$(ArtifactsDir)'==''">$(RootDir)\artifacts</ArtifactsDir>
+        <ArtifactFilesDir>$(ArtifactsDir)\files</ArtifactFilesDir>
+        <ArtifactPackagesDir>$(ArtifactsDir)\packages</ArtifactPackagesDir>
+        
+        <ProjectName>Checkout</ProjectName>
+        <ProjectId>Vendr.$(ProjectName)</ProjectId>
+        <MinUmbracoVersion>8.2.0</MinUmbracoVersion>
+	</PropertyGroup>
+
+    <ItemGroup>
+        <SolutionFile Include="$(RootDir)\$(ProjectId).sln" />
+        <ProjectFiles Include="$(SourceDir)\$(ProjectId)\$(ProjectId).csproj" />
+    </ItemGroup>
+
+	<!-- IMPORT SUB TASKS -->
+    <Import Project="$(BuildToolsDir)\GitVersion\GitVersionTask.props" />
+    <Import Project="$(BuildToolsDir)\GitVersion\GitVersionTask.targets" />
+    
+    <Import Project="Build.Compile.targets"/>
+    <Import Project="Build.Prepare.targets"/>
+    <Import Project="Build.Package.Umbraco.targets"/>
+    <Import Project="Build.Package.Nuget.targets"/>
+
+	<!-- BUILD TARGET -->
+	<Target Name="PrepareOnly" DependsOnTargets="GetGitVersion;Compile;Prepare" />
+	<Target Name="PrepareAndPackageUmbraco" DependsOnTargets="PrepareOnly;PackageUmbraco" />
+	<Target Name="PrepareAndPackageNuget" DependsOnTargets="PrepareOnly;PackageNuget" />
+	<Target Name="PrepareAndPackageAll" DependsOnTargets="PrepareOnly;PackageUmbraco;PackageNuget" />
+
+</Project>

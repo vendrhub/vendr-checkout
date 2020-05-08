@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Prepare" ToolsVersion="14.0">
+    
+	<!-- COPY FILES TO ARTIFACTS FOLDER -->
+	<Target Name="CopyFiles" DependsOnTargets="CompileProjects">
+        
+        <!-- Copy static files --> 
+		<ItemGroup>
+			<BinFiles Include="$(SourceDir)\Vendr.*\bin\$(ProjectId).dll" />
+            <BinFiles Include="$(SourceDir)\Vendr.*\bin\$(ProjectId).pdb" />
+            <BinFiles Include="$(SourceDir)\Vendr.*\bin\$(ProjectId).xml" />
+            <!-- BEGIN DLL DEPENDENCIES-->
+            <!--<BinFiles Include="$(SourceDir)\Vendr.*\bin\Your.Dependency.dll" />-->
+            <!-- END DLL DEPENDENCIES-->
+            <ContentFiles Include="$(SourceDir)\$(ProjectId)\Web\UI\**\*" />
+            <AssetFiles Include="$(RootDir)\assets\*" />
+            <LicenseFile Include="$(RootDir)\LICENSE.md" />
+		</ItemGroup>
+		<Copy SourceFiles="@(BinFiles)" DestinationFolder="$(ArtifactFilesDir)\bin" />
+        <Copy SourceFiles="@(ContentFiles)" DestinationFiles="@(ContentFiles-> '$(ArtifactFilesDir)\content\%(RecursiveDir)%(Filename)%(Extension)')" />
+        <Copy SourceFiles="@(AssetFiles)" DestinationFiles="@(AssetFiles-> '$(ArtifactFilesDir)\assets\%(Filename)%(Extension)')" />
+        <Copy SourceFiles="@(LicenseFile)" DestinationFolder="$(ArtifactFilesDir)" />
+        
+    </Target>
+    
+	<!-- Package -->
+	<Target Name="Prepare" DependsOnTargets="CopyFiles"></Target>
+
+</Project>

@@ -1,0 +1,242 @@
+﻿@inherits UmbracoViewPage
+@{
+    Layout = null;
+    
+    var finalized = (bool)(ViewData["finalized"] ?? false);
+    var canGoBack = (bool)(ViewData["canGoBack"] ?? true);
+    var totalView = (string)(ViewData["totalView"] ?? "Subtotal");
+
+    var store = Model.GetStore();
+    var currentOrder = !finalized
+        ? VendrApi.Instance.GetCurrentOrder(store.Id)
+        : VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);
+    var currentPaymentMethod = currentOrder.PaymentInfo.PaymentMethodId.HasValue
+        ? VendrApi.Instance.GetPaymentMethod(currentOrder.PaymentInfo.PaymentMethodId.Value)
+        : null;
+
+    var checkoutPage = Model.GetCheckoutPage();
+    var themeColor = Model.GetThemeColor();
+
+}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@(Model.Name) | @(store.Name)</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.2.0/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    @RenderSection("head", false)
+</head>
+<body>
+    <div class="relative text-sm">
+
+        <!-- Faux column -->
+        <div class="absolute right-0 w-1/2 h-full lg:bg-gray-100"></div>
+
+        <!-- Layout -->
+        <div class="relative flex flex-col min-h-full max-w-6xl mx-auto lg:flex-row-reverse lg:flex-row">
+
+            <div class="bg-white p-8 text-center lg:hidden">
+                @if (checkoutPage.HasValue("vendrStoreLogo"))
+                {
+                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
+                }
+                else
+                {
+                    <h1 class="text-3xl font-bold"><a href="/">@(store.Name)</a></h1>
+                }
+            </div>
+
+            <a id="order-summary-toggle" href="#" class="flex items-center justify-between border-t border-b border-gray-300 bg-gray-100 lg:hidden">
+                <span class="py-4 pl-8 pr-2 text-lg">
+                    <span id="order-summary-toggle__text-closed"><i class="fa fa-shopping-cart mr-2"></i> Show Order Summary <i class="fa fa-angle-down ml-1"></i></span>
+                    <span id="order-summary-toggle__text-open" class="hidden"><i class="fa fa-shopping-cart mr-2"></i> Hide Order Summary <i class="fa fa-angle-up ml-1"></i></span>
+                </span>
+                <span class="py-4 pr-8 pl-2 text-lg font-medium">
+                    @if (totalView == "Subtotal")
+                    {
+                        @currentOrder.SubtotalPrice.Value.Formatted()
+                    }
+                    else
+                    {
+                        @currentOrder.TotalPrice.Value.Formatted()
+                    }
+                </span>
+            </a>
+
+            <div id="order-summary" class="hidden bg-gray-100 w-full p-8 lg:w-2/5 lg:border-l lg:block">
+
+                <ul>
+                    @foreach (var orderLine in currentOrder.OrderLines)
+                    {
+                        <li class="border-b border-gray-300 pb-4 mb-4">
+                            <div class="flex items-center">
+
+                                <div class="flex flex-1 items-center">
+
+                                    @* TODO: Add support for product thumbnail image
+                                        <span class="bg-gray-300 h-12 w-12 flex items-center justify-center rounded mr-4">
+                                            <i class="fa fa-coffee fa-lg"></i>
+                                        </span>
+                                    *@
+
+                                    <div><span class="font-medium">@(orderLine.Name) x @((int)orderLine.Quantity)</span><br /><span class="text-xs text-gray-500">@(orderLine.Sku)</span></div>
+                                </div>
+
+                                <div class="pl-4 font-medium">@(orderLine.TotalPrice.Value.Formatted().WithoutTax)</div>
+
+                            </div>
+                        </li>
+                    }
+                </ul>
+
+                @RenderSection("aside", false)
+
+                <div class="flex w-full justify-between items-center">
+                    <div class="">Subtotal</div>
+                    <div class="font-medium">@(currentOrder.SubtotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
+                </div>
+
+                @if (totalView == "Subtotal")
+                {
+                    if (currentOrder.SubtotalPrice.TotalDiscount > 0)
+                    {
+                        <div class="flex w-full justify-between items-center mt-2 ">
+                            <div class="">Discounts</div>
+                            <div class="font-medium">-@currentOrder.SubtotalPrice.TotalDiscount.Formatted().WithoutTax</div>
+                        </div>
+                    }
+
+                    <div class="flex w-full justify-between items-center mt-2 ">
+                        <div class="">TAX</div>
+                        <div class="font-medium">@(currentOrder.SubtotalPrice.Value.Formatted().Tax)</div>
+                    </div>
+
+                    <hr class="border-t border-gray-300 my-4" />
+
+                    <div class="flex w-full justify-between items-center">
+                        <div class="font-medium text-base">Total</div>
+                        <div class="font-medium text-2xl">@currentOrder.SubtotalPrice.Value.Formatted()</div>
+                    </div>
+                }
+                else
+                {
+                    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
+                    {
+                        var currentShippingMethod = currentOrder.ShippingInfo.ShippingMethodId.HasValue
+                            ? VendrApi.Instance.GetPaymentMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
+                            : null;
+
+                        <div class="flex w-full justify-between items-center mt-2">
+                            <div class="">
+                                Shipping
+                                @if (currentShippingMethod != null)
+                                {
+                                    <text>via @(currentShippingMethod.Name)</text>
+                                }
+                            </div>
+                            <div class="font-medium">@(currentOrder.ShippingInfo.TotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
+                        </div>
+                    }
+
+                    <div class="flex w-full justify-between items-center mt-2">
+                        <div class="">
+                            Payment
+                            @if (currentPaymentMethod != null)
+                            {
+                                <text>via @(currentPaymentMethod.Name)</text>
+                            }
+                        </div>
+                        <div class="font-medium">@(currentOrder.PaymentInfo.TotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
+                    </div>
+
+                    if (currentOrder.TotalPrice.TotalDiscount > 0)
+                    {
+                        <div class="flex w-full justify-between items-center mt-2 ">
+                            <div class="">Discounts</div>
+                            <div class="font-medium">-@currentOrder.TotalPrice.TotalDiscount.Formatted().WithoutTax</div>
+                        </div>
+                    }
+
+                    <div class="flex w-full justify-between items-center mt-2">
+                        <div class="">TAX</div>
+                        <div class="font-medium">@(currentOrder.TotalPrice.Value.Formatted().Tax)</div>
+                    </div>
+
+                    <hr class="border-t border-gray-300 my-4" />
+
+                    <div class="flex w-full justify-between items-center">
+                        <div class="font-medium text-base">Total</div>
+                        <div class="font-medium text-2xl">@currentOrder.TotalPrice.Value.Formatted()</div>
+                    </div>
+                }
+
+            </div>
+
+            <div class="bg-white flex-1 p-8">
+
+                <div class="hidden lg:block">
+
+                    <div class="text-center mb-4">
+                        @if (checkoutPage.HasValue("vendrStoreLogo"))
+                        {
+                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 100, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
+
+                        }
+                        else
+                        {
+                            <h1 class="text-3xl font-bold"><a href="/">@(store.Name)</a></h1>
+                        }
+                    </div>
+
+                    <div class="mb-8">
+                        <ul class="flex justify-center">
+                            @{
+                                var passedStep = false;
+                                foreach (var item in checkoutPage.Children.Select((s, i) => new { Step = s, Index = i }))
+                                {
+                                    <li class="@(item.Index > 0 ? "pl-2" : "") flex items-baseline">
+                                        @if (item.Index > 0)
+                                        {
+                                            <i class="fa fa-angle-right text-gray-500 pr-2"></i>
+                                        }
+                                        @if (!passedStep && item.Step.Id != Model.Id && canGoBack)
+                                        {
+                                            <a href="@item.Step.Url" class="hover:text-@(themeColor)">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="@(item.Step.Id == Model.Id ? "font-bold" : "")">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</span>
+                                        }
+                                    </li>
+                                    passedStep = passedStep || item.Step.Id == Model.Id;
+                                }
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+
+                @Html.ValidationSummary(true, "", new { @class = "bg-red-500 p-4 rounded mb-4" })
+
+                @RenderBody()
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://instant.page/3.0.0" integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1" type="module" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha384-6UVI3atWyL/qZbDIJb7HW8PyHhFNMiX5rYNY2gAYcaYJjYk5cNIQShSQPBleGMYu" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplestatemanager/2.2.5/ssm.min.js" integrity="sha384-XnVIWbxzq0gb9RKt1v5zw74IEsfpPVIz723OMFYy3jodu41eRL54OyLzf5atZdu+" crossorigin="anonymous" defer></script>
+    <script src="/app_plugins/vendrcheckout/scripts/vendrcheckout.js" defer></script>
+
+    @RenderSection("foot", false)
+
+</body>
+</html>

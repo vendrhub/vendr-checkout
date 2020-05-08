@@ -1,0 +1,22 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    Layout = "VendrCheckoutMaster.cshtml";
+    
+    ViewData["finalized"] = true;
+    ViewData["canGoBack"] = false;
+    ViewData["totalView"] = "Total";
+
+    var store = Model.GetStore();
+    var currentOrder = VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);
+
+    var themeColor = Model.GetThemeColor();
+}
+
+<div class="border border-gray-300 p-6 rounded mb-8 text-center">
+    <span class="inline-flex items-center justify-center text-6xl border-2 border-green-500 rounded-full mb-4 w-24 h-24"><i class="fa fa-check text-green-500"></i></span>
+    <h3 class="text-xl font-medium mb-4">Thank you for your order #@(currentOrder.OrderNumber ?? currentOrder.CartNumber)</h3>
+    <p class="mb-4">A confirmation email has been sent to <strong>@(currentOrder.CustomerInfo.Email)</strong></p>
+    <p><a href="/" class="inline-block bg-@(themeColor) text-white px-4 py-4 rounded hover:bg-gray-900">Return to Store</a></p>
+</div>
+
+@Html.VendrCheckoutPartial("VendrCheckoutOrderInfo", currentOrder)
