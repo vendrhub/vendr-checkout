@@ -6,7 +6,7 @@
             <name>Vendr.Checkout</name>
             <version>0.0.0</version>
             <license url="https://opensource.org/licenses/MIT">MIT</license>
-            <url></url>
+            <url>https://vendr.net/add-ons/vendr-checkout</url>
             <requirements>
                 <major>8</major>
                 <minor>2</minor>
@@ -14,8 +14,8 @@
             </requirements>
         </package>
         <author>
-            <name></name>
-            <website></website>
+            <name>Outfield Digital Ltd</name>
+            <website>https://outfield.digital</website>
         </author>
         <readme>A ready made checkout flow for Vendr, the eCommerce package for Umbrao v8+</readme>
     </info>
