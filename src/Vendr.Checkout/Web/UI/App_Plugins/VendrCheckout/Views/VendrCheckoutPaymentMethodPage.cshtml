@@ -1,0 +1,49 @@
+﻿@using Vendr.Checkout;
+@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@{
+    Layout = "VendrCheckoutMaster.cshtml";
+
+    var store = Model.GetStore();
+    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+    var paymentMethods = VendrApi.Instance.GetPaymentMethods(store.Id);
+
+    var checkoutPage = Model.GetCheckoutPage();
+    var nextStepPage = Model.GetNextStepPage();
+
+    var currentPaymentMethodId = currentOrder.PaymentInfo.PaymentMethodId.HasValue
+        ? currentOrder.PaymentInfo.PaymentMethodId.Value
+        : paymentMethods.First().Id;
+
+    var zeroValuePaymentMethod = paymentMethods.FirstOrDefault(x => x.Alias == VendrCheckoutConstants.PaymentMethods.Aliases.ZeroValue);
+}
+
+@using (Html.BeginUmbracoForm("UpdateOrderPaymentMethod", "VendrCheckoutSurface"))
+{
+    <input type="hidden" name="nextStep" value="@(nextStepPage?.Id)" />
+
+    <h3 class="text-xl font-medium mb-4 mt-8">Payment Method</h3>
+
+    if (currentOrder.TotalPrice.Value.WithTax > 0 || zeroValuePaymentMethod == null)
+    {
+        <ul class="border border-gray-300 rounded">
+            @foreach (var item in paymentMethods.Where(x => zeroValuePaymentMethod == null || x.Alias != zeroValuePaymentMethod.Alias)
+                .Select((pm, i) => new { PaymentMethod = pm, Index = i }))
+            {
+                <li class="border-gray-300 @(item.Index > 0 ? "border-t " : "")">
+                    <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-100">
+                        <input name="paymentMethod" type="radio" value="@item.PaymentMethod.Id" class="mr-3" @Html.Raw(currentPaymentMethodId == item.PaymentMethod.Id ? "checked=\"checked\"" : "") required />
+                        <span class="font-medium">@(item.PaymentMethod.Name)</span>
+                        <span class="flex-1 text-right">@(item.PaymentMethod.CalculatePrice()?.Formatted())</span>
+                    </label>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <input type="hidden" name="paymentMethod" value="@(zeroValuePaymentMethod.Id)" />
+        <div class="border border-gray-300 rounded py-4 px-4 text-center">It looks like today is your lucky day, there is nothing for you to pay 🎉</div>
+    }
+
+    @Html.VendrCheckoutPartial("VendrCheckoutPrevNext")
+}

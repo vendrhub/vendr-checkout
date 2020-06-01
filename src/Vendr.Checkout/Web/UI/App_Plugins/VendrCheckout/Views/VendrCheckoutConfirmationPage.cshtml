@@ -4,7 +4,6 @@
     
     ViewData["finalized"] = true;
     ViewData["canGoBack"] = false;
-    ViewData["totalView"] = "Total";
 
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);

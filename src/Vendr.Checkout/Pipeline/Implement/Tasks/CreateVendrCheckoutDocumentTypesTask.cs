@@ -132,7 +132,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                                 Description = "Comma separated list of order line property aliases to display in the order summary.",
                                 SortOrder = 50
                             },
-                            new PropertyType(textstringDataType.Value) {
+                            new PropertyType(contentPickerDataType.Value) {
                                 Alias = "vendrCheckoutBackPage",
                                 Name = "Checkout Back Page",
                                 Description = "The page to go back to when backing out of the checkout flow.",

@@ -51,10 +51,11 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                             Items = new List<ValueListConfiguration.ValueListItem>
                             {
                                 new ValueListConfiguration.ValueListItem { Id = 1, Value = "Information" },
-                                new ValueListConfiguration.ValueListItem { Id = 2, Value = "ShippingAndPaymentMethod" },
-                                new ValueListConfiguration.ValueListItem { Id = 3, Value = "Review" },
-                                new ValueListConfiguration.ValueListItem { Id = 4, Value = "Payment" },
-                                new ValueListConfiguration.ValueListItem { Id = 5, Value = "Confirmation" }
+                                new ValueListConfiguration.ValueListItem { Id = 2, Value = "ShippingMethod" },
+                                new ValueListConfiguration.ValueListItem { Id = 3, Value = "PaymentMethod" },
+                                new ValueListConfiguration.ValueListItem { Id = 4, Value = "Review" },
+                                new ValueListConfiguration.ValueListItem { Id = 5, Value = "Payment" },
+                                new ValueListConfiguration.ValueListItem { Id = 6, Value = "Confirmation" }
                             },
                             Multiple = false
                         }

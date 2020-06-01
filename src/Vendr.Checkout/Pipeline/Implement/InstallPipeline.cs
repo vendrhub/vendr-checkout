@@ -10,7 +10,8 @@ namespace Vendr.Checkout.Pipeline.Implement
                 .Pipe(new CreateVendrCheckoutDataTypesTask())
                 .Pipe(new CreateVendrCheckoutDocumentTypesTask())
                 .Pipe(new CreateVendrCheckoutNodesTask())
-                .Pipe(new ConfigureVendrStoreTask());
+                .Pipe(new ConfigureVendrStoreTask())
+                .Pipe(new CreateZeroValuePaymentMethodTask());
         }
     }
 }

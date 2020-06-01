@@ -2,8 +2,6 @@
 @{
     Layout = "VendrCheckoutMaster.cshtml";
 
-    ViewData["totalView"] = "Total";
-
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
 }

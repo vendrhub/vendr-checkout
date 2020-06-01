@@ -2,11 +2,9 @@
 
 namespace Vendr.Checkout.Web.Dtos
 {
-    public class VendrUpdateOrderShippingAndPaymentMethodDto
+    public class VendrUpdateOrderShippingMethodDto
     {
         public Guid ShippingMethod { get; set; }
-
-        public Guid PaymentMethod { get; set; }
 
         public int? NextStep { get; set; }
     }
