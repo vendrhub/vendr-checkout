@@ -24,7 +24,8 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
 
                     // Create the checkout steps pages
                     CreateCheckoutStepPage(checkoutNode, "Customer Information", "Information", "Information");
-                    CreateCheckoutStepPage(checkoutNode, "Shipping/Payment Method", "Shipping/Payment", "ShippingAndPaymentMethod");
+                    CreateCheckoutStepPage(checkoutNode, "Shipping Method", "Shipping Method", "ShippingMethod");
+                    CreateCheckoutStepPage(checkoutNode, "Payment Method", "Payment Method", "PaymentMethod");
                     CreateCheckoutStepPage(checkoutNode, "Review Order", "Review", "Review");
                     CreateCheckoutStepPage(checkoutNode, "Process Payment", "Payment", "Payment");
                     CreateCheckoutStepPage(checkoutNode, "Order Confirmation", "Confirmation", "Confirmation");

@@ -25,7 +25,7 @@ namespace Vendr.Checkout.Web.Controllers
                 using (var uow = _vendrApi.Uow.Create())
                 {
                     var store = CurrentPage.GetStore();
-                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .Redeem(model.Code);
 
@@ -34,9 +34,9 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException)
+            catch (ValidationException ex)
             {
-                ModelState.AddModelError("", "Failed to redeem discount code");
+                ModelState.AddModelError("", "Failed to redeem discount code: "+ ex.Message);
 
                 return CurrentUmbracoPage();
             }
@@ -51,7 +51,7 @@ namespace Vendr.Checkout.Web.Controllers
                 using (var uow = _vendrApi.Uow.Create())
                 {
                     var store = CurrentPage.GetStore();
-                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .Unredeem(model.Code);
 
@@ -60,9 +60,9 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException)
+            catch (ValidationException ex)
             {
-                ModelState.AddModelError("", "Failed to unredeem discount code");
+                ModelState.AddModelError("", "Failed to unredeem discount code: " + ex.Message);
 
                 return CurrentUmbracoPage();
             }
@@ -79,7 +79,7 @@ namespace Vendr.Checkout.Web.Controllers
                 using (var uow = _vendrApi.Uow.Create())
                 {
                     var store = CurrentPage.GetStore();
-                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .SetProperties(new Dictionary<string, string>
                         {
@@ -115,7 +115,8 @@ namespace Vendr.Checkout.Web.Controllers
                     }
                     else
                     {
-                        order.SetShippingCountryRegion(model.BillingAddress.Country, null);
+                        order.SetShippingCountryRegion(model.BillingAddress.Country, null)
+                            .ClearShippingMethod();
                     }
 
                     _vendrApi.SaveOrder(order);
@@ -123,9 +124,9 @@ namespace Vendr.Checkout.Web.Controllers
                     uow.Complete();
                 }
             }
-            catch (ValidationException)
+            catch (ValidationException ex)
             {
-                ModelState.AddModelError("", "Failed to update information");
+                ModelState.AddModelError("", "Failed to update information: " + ex.Message);
 
                 return CurrentUmbracoPage();
             }
@@ -136,7 +137,7 @@ namespace Vendr.Checkout.Web.Controllers
             return RedirectToCurrentUmbracoPage();
         }
 
-        public ActionResult UpdateOrderShippingAndPaymentMethod(VendrUpdateOrderShippingAndPaymentMethodDto model)
+        public ActionResult UpdateOrderShippingMethod(VendrUpdateOrderShippingMethodDto model)
         {
             try
             {
@@ -144,31 +145,48 @@ namespace Vendr.Checkout.Web.Controllers
                 {
                     var checkoutPage = CurrentPage.GetCheckoutPage();
                     var store = CurrentPage.GetStore();
-                    var order = _vendrApi.GetOrCreateCurrentOrder(store.Id)
+                    var order = _vendrApi.GetCurrentOrder(store.Id)
                         .AsWritable(uow)
-                        .SetPaymentMethod(model.PaymentMethod);
-
-                    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
-                    {
-                        order.SetShippingMethod(model.ShippingMethod);
-                    }
-                    else if (order.ShippingInfo.CountryId.HasValue)
-                    {
-                        var shippingCountry = _vendrApi.GetCountry(order.ShippingInfo.CountryId.Value);
-                        if (shippingCountry.DefaultShippingMethodId.HasValue)
-                        {
-                            order.SetShippingMethod(shippingCountry.DefaultShippingMethodId.Value);
-                        }
-                    }
+                        .SetShippingMethod(model.ShippingMethod);
 
                     _vendrApi.SaveOrder(order);
 
                     uow.Complete();
                 }
             }
-            catch (ValidationException)
+            catch (ValidationException ex)
             {
-                ModelState.AddModelError("", "Failed to update shipping / payment method");
+                ModelState.AddModelError("", "Failed to update shipping method: " + ex.Message);
+
+                return CurrentUmbracoPage();
+            }
+
+            if (model.NextStep.HasValue)
+                return RedirectToUmbracoPage(model.NextStep.Value);
+
+            return RedirectToCurrentUmbracoPage();
+        }
+
+        public ActionResult UpdateOrderPaymentMethod(VendrUpdateOrderPaymentMethodDto model)
+        {
+            try
+            {
+                using (var uow = _vendrApi.Uow.Create())
+                {
+                    var checkoutPage = CurrentPage.GetCheckoutPage();
+                    var store = CurrentPage.GetStore();
+                    var order = _vendrApi.GetCurrentOrder(store.Id)
+                        .AsWritable(uow)
+                        .SetPaymentMethod(model.PaymentMethod);
+
+                    _vendrApi.SaveOrder(order);
+
+                    uow.Complete();
+                }
+            }
+            catch (ValidationException ex)
+            {
+                ModelState.AddModelError("", "Failed to update payment method: " + ex.Message);
 
                 return CurrentUmbracoPage();
             }

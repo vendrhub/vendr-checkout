@@ -31,6 +31,14 @@ namespace Vendr.Checkout
             }
         }
 
+        public static class PaymentMethods
+        {
+            public static class Aliases
+            {
+                public const string ZeroValue = "vendrCheckoutZeroValue";
+            }
+        }
+
         public static class ContentTypes
         {
             public static class Aliases

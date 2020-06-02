@@ -1,4 +1,5 @@
-﻿@using Umbraco.Web.Composing;
+﻿@using Vendr.Checkout;
+@using Umbraco.Web.Composing;
 @model OrderReadOnly
 @{
     // Get order entities
@@ -182,6 +183,7 @@
                                         </strong>
                                     </td>
                                 </tr>
+
                                 @if (Model.SubtotalPrice.TotalDiscount.WithoutTax != 0)
                                 {
                                     <tr>
@@ -193,6 +195,7 @@
                                         </td>
                                     </tr>
                                 }
+
                                 @if (shippingMethod != null && checkoutPage.Value<bool>("vendrCollectShippingInfo"))
                                 {
                                     <tr>
@@ -208,7 +211,8 @@
                                         </td>
                                     </tr>
                                 }
-                                @if (paymentMethod != null)
+
+                                @if (paymentMethod != null && paymentMethod.Alias != VendrCheckoutConstants.PaymentMethods.Aliases.ZeroValue)
                                 {
                                     <tr>
                                         <td style="vertical-align: top;">
@@ -223,6 +227,7 @@
                                         </td>
                                     </tr>
                                 }
+
                                 @if (Model.TransactionInfo.TransactionFee.Value > 0M)
                                 {
                                     <tr>
@@ -234,6 +239,7 @@
                                         </td>
                                     </tr>
                                 }
+
                                 <tr>
                                     <td style="vertical-align: top; padding-top: 20px;"><strong>Net Total</strong></td>
                                     <td style="vertical-align: top; padding-top: 20px; text-align: right; white-space: nowrap;">

@@ -8,5 +8,9 @@ namespace Vendr.Checkout.Pipeline.Implement
         public int SiteRootNodeId { get; set; }
 
         public StoreReadOnly Store { get; set; }
+
+        public string CartPageUrl { get; set; }
+
+        public string ConfirmationPageUrl { get; set; }
     }
 }

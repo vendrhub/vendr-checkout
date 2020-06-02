@@ -37,6 +37,17 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
                     VendrApi.Instance.SaveEmailTemplate(orderErrorEmail);
                 }
 
+                // Update gift card email
+                var giftCardEmailId = ctx.Store.DefaultGiftCardEmailTemplateId;
+                if (giftCardEmailId.HasValue)
+                {
+                    var giftCardEmail = VendrApi.Instance.GetEmailTemplate(giftCardEmailId.Value)
+                        .AsWritable(uow)
+                        .SetTemplateView("~/app_plugins/vendrcheckout/views/emails/VendrCheckoutGiftCardEmail.cshtml");
+
+                    VendrApi.Instance.SaveEmailTemplate(giftCardEmail);
+                }
+
                 uow.Complete();
             }
 

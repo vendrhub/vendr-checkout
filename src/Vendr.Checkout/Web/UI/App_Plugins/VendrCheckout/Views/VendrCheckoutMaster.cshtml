@@ -4,7 +4,6 @@
     
     var finalized = (bool)(ViewData["finalized"] ?? false);
     var canGoBack = (bool)(ViewData["canGoBack"] ?? true);
-    var totalView = (string)(ViewData["totalView"] ?? "Subtotal");
 
     var store = Model.GetStore();
     var currentOrder = !finalized
@@ -57,14 +56,7 @@
                     <span id="order-summary-toggle__text-open" class="hidden"><i class="fa fa-shopping-cart mr-2"></i> Hide Order Summary <i class="fa fa-angle-up ml-1"></i></span>
                 </span>
                 <span class="py-4 pr-8 pl-2 text-lg font-medium">
-                    @if (totalView == "Subtotal")
-                    {
-                        @currentOrder.SubtotalPrice.Value.Formatted()
-                    }
-                    else
-                    {
-                        @currentOrder.TotalPrice.Value.Formatted()
-                    }
+                    @currentOrder.TotalPrice.Value.Formatted()
                 </span>
             </a>
 
@@ -79,9 +71,9 @@
                                 <div class="flex flex-1 items-center">
 
                                     @* TODO: Add support for product thumbnail image
-                                        <span class="bg-gray-300 h-12 w-12 flex items-center justify-center rounded mr-4">
-                                            <i class="fa fa-coffee fa-lg"></i>
-                                        </span>
+                                    <span class="bg-gray-300 h-12 w-12 flex items-center justify-center rounded mr-4">
+                                        <i class="fa fa-coffee fa-lg"></i>
+                                    </span>
                                     *@
 
                                     <div><span class="font-medium">@(orderLine.Name) x @((int)orderLine.Quantity)</span><br /><span class="text-xs text-gray-500">@(orderLine.Sku)</span></div>
@@ -101,79 +93,63 @@
                     <div class="font-medium">@(currentOrder.SubtotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
                 </div>
 
-                @if (totalView == "Subtotal")
+                @if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
                 {
-                    if (currentOrder.SubtotalPrice.TotalDiscount > 0)
+                    var currentShippingMethod = currentOrder.ShippingInfo.ShippingMethodId.HasValue
+                    ? VendrApi.Instance.GetShippingMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
+                    : null;
+
+                    if (currentShippingMethod != null)
                     {
-                        <div class="flex w-full justify-between items-center mt-2 ">
-                            <div class="">Discounts</div>
-                            <div class="font-medium">-@currentOrder.SubtotalPrice.TotalDiscount.Formatted().WithoutTax</div>
-                        </div>
-                    }
-
-                    <div class="flex w-full justify-between items-center mt-2 ">
-                        <div class="">TAX</div>
-                        <div class="font-medium">@(currentOrder.SubtotalPrice.Value.Formatted().Tax)</div>
-                    </div>
-
-                    <hr class="border-t border-gray-300 my-4" />
-
-                    <div class="flex w-full justify-between items-center">
-                        <div class="font-medium text-base">Total</div>
-                        <div class="font-medium text-2xl">@currentOrder.SubtotalPrice.Value.Formatted()</div>
-                    </div>
-                }
-                else
-                {
-                    if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
-                    {
-                        var currentShippingMethod = currentOrder.ShippingInfo.ShippingMethodId.HasValue
-                            ? VendrApi.Instance.GetPaymentMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
-                            : null;
-
                         <div class="flex w-full justify-between items-center mt-2">
                             <div class="">
-                                Shipping
-                                @if (currentShippingMethod != null)
-                                {
-                                    <text>via @(currentShippingMethod.Name)</text>
-                                }
+                                Shipping via @(currentShippingMethod.Name)
                             </div>
                             <div class="font-medium">@(currentOrder.ShippingInfo.TotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
                         </div>
                     }
+                }
 
+                @if (currentPaymentMethod != null && currentPaymentMethod.PaymentProviderAlias != "zeroValue")
+                {
                     <div class="flex w-full justify-between items-center mt-2">
                         <div class="">
-                            Payment
-                            @if (currentPaymentMethod != null)
-                            {
-                                <text>via @(currentPaymentMethod.Name)</text>
-                            }
+                            Payment via @(currentPaymentMethod.Name)
                         </div>
                         <div class="font-medium">@(currentOrder.PaymentInfo.TotalPrice.WithoutDiscounts.Formatted().WithoutTax)</div>
                     </div>
+                }
 
-                    if (currentOrder.TotalPrice.TotalDiscount > 0)
-                    {
-                        <div class="flex w-full justify-between items-center mt-2 ">
-                            <div class="">Discounts</div>
-                            <div class="font-medium">-@currentOrder.TotalPrice.TotalDiscount.Formatted().WithoutTax</div>
-                        </div>
-                    }
-
-                    <div class="flex w-full justify-between items-center mt-2">
-                        <div class="">TAX</div>
-                        <div class="font-medium">@(currentOrder.TotalPrice.Value.Formatted().Tax)</div>
-                    </div>
-
-                    <hr class="border-t border-gray-300 my-4" />
-
-                    <div class="flex w-full justify-between items-center">
-                        <div class="font-medium text-base">Total</div>
-                        <div class="font-medium text-2xl">@currentOrder.TotalPrice.Value.Formatted()</div>
+                @if (currentOrder.TotalPrice.TotalDiscount > 0)
+                {
+                    <div class="flex w-full justify-between items-center mt-2 ">
+                        <div class="">Discounts</div>
+                        <div class="font-medium">-@currentOrder.TotalPrice.TotalDiscount.Formatted().WithoutTax</div>
                     </div>
                 }
+
+                <div class="flex w-full justify-between items-center mt-2">
+                    <div class="">TAX</div>
+                    <div class="font-medium">@(currentOrder.TotalPrice.Value.Formatted().Tax)</div>
+                </div>
+
+                @if (currentOrder.TotalPrice.GiftCardsAmount.Value > 0)
+                {
+                    foreach (var giftCard in currentOrder.GiftCards)
+                    {
+                        <div class="flex w-full justify-between items-center mt-2">
+                            <div class="">Gift Card (@(giftCard.Code))</div>
+                            <div class="font-medium">-@(giftCard.Amount.Formatted())</div>
+                        </div>
+                    }
+                }
+
+                <hr class="border-t border-gray-300 my-4" />
+
+                <div class="flex w-full justify-between items-center">
+                    <div class="font-medium text-base">Total</div>
+                    <div class="font-medium text-2xl">@currentOrder.TotalPrice.Value.Formatted()</div>
+                </div>
 
             </div>
 
@@ -197,7 +173,9 @@
                         <ul class="flex justify-center">
                             @{
                                 var passedStep = false;
-                                foreach (var item in checkoutPage.Children.Select((s, i) => new { Step = s, Index = i }))
+                                foreach (var item in checkoutPage.Children
+                                    .Where(x => checkoutPage.Value<bool>("vendrCollectShippingInfo") || x.Value<string>("vendrStepType") != "ShippingMethod")
+                                    .Select((s, i) => new { Step = s, Index = i }))
                                 {
                                     <li class="@(item.Index > 0 ? "pl-2" : "") flex items-baseline">
                                         @if (item.Index > 0)

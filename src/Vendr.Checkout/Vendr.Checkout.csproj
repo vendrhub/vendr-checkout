@@ -187,6 +187,9 @@
       <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.IO" />
+    <Reference Include="System.Linq.Dynamic.Core, Version=1.1.1.0, Culture=neutral, PublicKeyToken=0f07ec44de6ac832, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Linq.Dynamic.Core.1.1.1\lib\net46\System.Linq.Dynamic.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System.Linq.Expressions" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -256,14 +259,14 @@
     <Reference Include="Umbraco.Web.UI, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UmbracoCms.Web.8.4.1\lib\net472\Umbraco.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Vendr.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Vendr.Core.1.0.0\lib\net472\Vendr.Core.dll</HintPath>
+    <Reference Include="Vendr.Core, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Vendr.Core.1.2.2\lib\net472\Vendr.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Vendr.Core.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Vendr.Core.Web.1.0.0\lib\net472\Vendr.Core.Web.dll</HintPath>
+    <Reference Include="Vendr.Core.Web, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Vendr.Core.Web.1.2.2\lib\net472\Vendr.Core.Web.dll</HintPath>
     </Reference>
-    <Reference Include="Vendr.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Vendr.Web.1.0.0\lib\net472\Vendr.Web.dll</HintPath>
+    <Reference Include="Vendr.Web, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Vendr.Web.1.2.2\lib\net472\Vendr.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -280,6 +283,7 @@
   <ItemGroup>
     <Compile Include="Composing\VendrCheckoutComponent.cs" />
     <Compile Include="Composing\VendrCheckoutComposer.cs" />
+    <Compile Include="Events\ResetPaymentAndShippingMethods.cs" />
     <Compile Include="PathHelper.cs" />
     <Compile Include="Pipeline\Implement\InstallPipeline.cs" />
     <Compile Include="Pipeline\Implement\InstallPipelineContext.cs" />
@@ -287,6 +291,7 @@
     <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutDocumentTypesTask.cs" />
     <Compile Include="Pipeline\Implement\Tasks\ConfigureVendrStoreTask.cs" />
     <Compile Include="Pipeline\Implement\Tasks\CreateVendrCheckoutNodesTask.cs" />
+    <Compile Include="Pipeline\Implement\Tasks\CreateZeroValuePaymentMethodTask.cs" />
     <Compile Include="Pipeline\IPipelineTask.cs" />
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineTaskExtensions.cs" />
@@ -302,7 +307,8 @@
     <Compile Include="Web\Dtos\VendrDiscountOrGiftCardCodeDto.cs" />
     <Compile Include="Web\Dtos\VendrOrderAddressDto.cs" />
     <Compile Include="Web\Dtos\VendrUpdateOrderInformationDto.cs" />
-    <Compile Include="Web\Dtos\VendrUpdateOrderShippingAndPaymentMethodDto.cs" />
+    <Compile Include="Web\Dtos\VendrUpdateOrderShippingMethodDto.cs" />
+    <Compile Include="Web\Dtos\VendrUpdateOrderPaymentMethodDto.cs" />
     <Compile Include="Web\Events\Notification\Handlers\VendrCheckoutOrderEditorConfigParsingNotificationHandler.cs" />
     <Compile Include="Web\HtmlHelperExtensions.cs" />
     <Compile Include="Web\PublishedContentExtensions.cs" />
@@ -317,11 +323,13 @@
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\VendrCheckoutPage.cshtml" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\VendrCheckoutPaymentPage.cshtml" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\VendrCheckoutReviewPage.cshtml" />
-    <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\VendrCheckoutShippingAndPaymentMethodPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\VendrCheckoutPaymentMethodPage.cshtml" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\Web.config" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\Emails\VendrCheckoutOrderConfirmationEmail.cshtml" />
     <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\Emails\VendrCheckoutOrderErrorEmail.cshtml" />
     <None Include="Web\UI\App_Plugins\VendrCheckout\package.manifest" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\VendrCheckoutShippingMethodPage.cshtml" />
+    <Content Include="Web\UI\App_Plugins\VendrCheckout\Views\Emails\VendrCheckoutGiftCardEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Web\UI\App_Plugins\VendrCheckout\BackOffice\assets\css\" />

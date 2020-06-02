@@ -1,35 +1,110 @@
-﻿using Umbraco.Core.Composing;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Migrations;
-using Umbraco.Core.Migrations.Upgrade;
-using Umbraco.Core.Scoping;
-using Umbraco.Core.Services;
+﻿using System.Linq;
+using Umbraco.Core.Cache;
+using Umbraco.Core.Composing;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.Services.Changes;
+using Umbraco.Web;
+using Umbraco.Web.Cache;
+using Vendr.Core.Api;
+using Vendr.Core.Models;
 
 namespace Vendr.Checkout.Composing
 {
     public class VendrCheckoutComponent : IComponent
     {
-        private readonly IScopeProvider _scopeProvider;
-        private readonly IMigrationBuilder _migrationBuilder;
-        private readonly IKeyValueService _keyValueService;
-        private readonly ILogger _logger;
+        private readonly IUmbracoContextFactory _umbracoContextFactory;
 
-        public VendrCheckoutComponent(IScopeProvider scopeProvider,
-            IMigrationBuilder migrationBuilder,
-            IKeyValueService keyValueService,
-            ILogger logger)
+        public VendrCheckoutComponent(IUmbracoContextFactory umbracoContextFactory)
         {
-            _scopeProvider = scopeProvider;
-            _migrationBuilder = migrationBuilder;
-            _keyValueService = keyValueService;
-            _logger = logger;
+            _umbracoContextFactory = umbracoContextFactory;
         }
 
         public void Initialize()
         {
-            // Execute the core migration plan
-            //new Upgrader(new VendrCheckoutMigrationPlan())
-            //    .Execute(_scopeProvider, _migrationBuilder, _keyValueService, _logger);
+            ContentCacheRefresher.CacheUpdated += SyncZeroValuePaymentProviderContinueUrl;
+        }
+
+        private void SyncZeroValuePaymentProviderContinueUrl(ContentCacheRefresher sender, CacheRefresherEventArgs e)
+        {
+            var payloads = e.MessageObject as ContentCacheRefresher.JsonPayload[];
+            if (payloads == null)
+                return;
+
+            using (var umbNew = _umbracoContextFactory.EnsureUmbracoContext())
+            {
+                foreach (var payload in payloads)
+                {
+                    if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshNode))
+                    {
+                        // Single node refresh
+
+                        var node = umbNew.UmbracoContext.Content.GetById(payload.Id);
+
+                        if (IsConfirmationPageType(node))
+                        {
+                            SyncZeroValuePaymentProviderContinueUrl(node);
+                        }
+                    }
+                    else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshBranch))
+                    {
+                        // Branch refresh
+
+                        var rootNode = umbNew.UmbracoContext.Content.GetById(payload.Id);
+
+                        var nodeType = umbNew.UmbracoContext.Content.GetContentType(VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage);
+                        if (nodeType == null)
+                            continue;
+
+                        var nodes = umbNew.UmbracoContext.Content.GetByContentType(nodeType);
+
+                        foreach (var node in nodes.Where(x => IsConfirmationPageType(x) && x.Path.StartsWith(rootNode.Path)))
+                        {
+                            SyncZeroValuePaymentProviderContinueUrl(node);
+                        }
+                    }
+                    else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll)) 
+                    {
+                        // All refresh
+
+                        var nodeType = umbNew.UmbracoContext.Content.GetContentType(VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage);
+                        if (nodeType == null)
+                            continue;
+
+                        var nodes = umbNew.UmbracoContext.Content.GetByContentType(nodeType);
+
+                        foreach (var node in nodes.Where(x => IsConfirmationPageType(x)))
+                        {
+                            SyncZeroValuePaymentProviderContinueUrl(node);
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool IsConfirmationPageType(IPublishedContent node)
+        {
+            return node.ContentType.Alias == VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage && node.Value<string>("vendrStepType") == "Confirmation";
+        }
+
+        private void SyncZeroValuePaymentProviderContinueUrl(IPublishedContent confirmationNode)
+        {
+            var store = confirmationNode.Value<StoreReadOnly>(Core.Constants.Properties.StorePropertyAlias, fallback: Fallback.ToAncestors);
+            if (store == null)
+                return;
+
+            var paymentMethod = VendrApi.Instance.GetPaymentMethod(store.Id, VendrCheckoutConstants.PaymentMethods.Aliases.ZeroValue);
+            if (paymentMethod == null)
+                return;
+
+            using (var uow = VendrApi.Instance.Uow.Create())
+            {
+                var writable = paymentMethod.AsWritable(uow)
+                    .SetSetting("ContinueUrl", confirmationNode.Url());
+
+                VendrApi.Instance.SavePaymentMethod(writable);
+
+                uow.Complete();
+            }
         }
 
         public void Terminate()
