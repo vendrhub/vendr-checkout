@@ -9,7 +9,7 @@ namespace Vendr.Checkout
         {
             get
             {
-                var rootPath = ConfigurationManager.AppSettings["vendr:RootPath"]?.ToString();
+                var rootPath = ConfigurationManager.AppSettings["VendrCheckout:RootPath"]?.ToString();
                 return !string.IsNullOrWhiteSpace(rootPath) ? rootPath : "/App_Plugins/VendrCheckout";
             } 
         }
