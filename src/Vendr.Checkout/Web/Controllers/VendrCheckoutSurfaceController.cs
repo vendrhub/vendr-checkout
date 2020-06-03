@@ -18,6 +18,8 @@ namespace Vendr.Checkout.Web.Controllers
             _vendrApi = vendrAPi;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ApplyDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
@@ -70,6 +72,8 @@ namespace Vendr.Checkout.Web.Controllers
             return RedirectToCurrentUmbracoPage();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UpdateOrderInformation(VendrUpdateOrderInformationDto model)
         {
             try
@@ -137,6 +141,8 @@ namespace Vendr.Checkout.Web.Controllers
             return RedirectToCurrentUmbracoPage();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UpdateOrderShippingMethod(VendrUpdateOrderShippingMethodDto model)
         {
             try
@@ -167,6 +173,8 @@ namespace Vendr.Checkout.Web.Controllers
             return RedirectToCurrentUmbracoPage();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UpdateOrderPaymentMethod(VendrUpdateOrderPaymentMethodDto model)
         {
             try
