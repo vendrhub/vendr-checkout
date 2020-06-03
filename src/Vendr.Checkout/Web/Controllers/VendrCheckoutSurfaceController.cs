@@ -196,6 +196,7 @@ namespace Vendr.Checkout.Web.Controllers
 
             return RedirectToCurrentUmbracoPage();
         }
+
         private string GetIPAddress()
         {
             var context = System.Web.HttpContext.Current;
