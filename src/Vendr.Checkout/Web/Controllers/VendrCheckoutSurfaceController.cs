@@ -93,8 +93,8 @@ namespace Vendr.Checkout.Web.Controllers
                             { "billingCity", model.BillingAddress.City },
                             { "billingZipCode", model.BillingAddress.ZipCode },
                             { "billingTelephone", model.BillingAddress.Telephone },
-
-                            { "comments", model.Comments }
+                            { "comments", model.Comments },
+                            { "ipAddress", GetIPAddress() }
                         })
                         .SetPaymentCountryRegion(model.BillingAddress.Country, null);
 
@@ -195,6 +195,21 @@ namespace Vendr.Checkout.Web.Controllers
                 return RedirectToUmbracoPage(model.NextStep.Value);
 
             return RedirectToCurrentUmbracoPage();
+        }
+
+        private string GetIPAddress()
+        {
+            var context = System.Web.HttpContext.Current;
+            if (context == null) return string.Empty;
+
+            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (!string.IsNullOrEmpty(ipAddress))
+            {
+                string[] addresses = ipAddress.Split(',');
+                if (addresses.Length != 0)
+                    return addresses[0];
+            }
+            return context.Request.ServerVariables["REMOTE_ADDR"];
         }
     }
 }
