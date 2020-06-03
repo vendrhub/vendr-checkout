@@ -2,7 +2,7 @@
 
 A ready made checkout flow for [Vendr](http://vendr.net) , the eCommerce solution for [Umbraco v8](https://umbraco.com)
 
-![Screenshot](assets/002.png)
+<img src="assets/002.png" style="border: solid 1px #ccc;" />
 
 ## About
 
