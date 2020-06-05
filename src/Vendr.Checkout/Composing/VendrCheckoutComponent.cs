@@ -83,6 +83,9 @@ namespace Vendr.Checkout.Composing
 
         private bool IsConfirmationPageType(IPublishedContent node)
         {
+            if (node == null || node.ContentType == null || !node.HasProperty("vendrStepType"))
+                return false;
+
             return node.ContentType.Alias == VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage && node.Value<string>("vendrStepType") == "Confirmation";
         }
 
