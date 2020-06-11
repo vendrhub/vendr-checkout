@@ -39,8 +39,7 @@ namespace Vendr.Checkout.Composing
                         // Single node refresh
 
                         var node = umbNew.UmbracoContext.Content.GetById(payload.Id);
-
-                        if (IsConfirmationPageType(node))
+                        if (node != null && IsConfirmationPageType(node))
                         {
                             SyncZeroValuePaymentProviderContinueUrl(node);
                         }
@@ -50,16 +49,18 @@ namespace Vendr.Checkout.Composing
                         // Branch refresh
 
                         var rootNode = umbNew.UmbracoContext.Content.GetById(payload.Id);
-
-                        var nodeType = umbNew.UmbracoContext.Content.GetContentType(VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage);
-                        if (nodeType == null)
-                            continue;
-
-                        var nodes = umbNew.UmbracoContext.Content.GetByContentType(nodeType);
-
-                        foreach (var node in nodes.Where(x => IsConfirmationPageType(x) && x.Path.StartsWith(rootNode.Path)))
+                        if (rootNode != null)
                         {
-                            SyncZeroValuePaymentProviderContinueUrl(node);
+                            var nodeType = umbNew.UmbracoContext.Content.GetContentType(VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage);
+                            if (nodeType == null)
+                                continue;
+
+                            var nodes = umbNew.UmbracoContext.Content.GetByContentType(nodeType);
+
+                            foreach (var node in nodes?.Where(x => IsConfirmationPageType(x) && x.Path.StartsWith(rootNode.Path)))
+                            {
+                                SyncZeroValuePaymentProviderContinueUrl(node);
+                            }
                         }
                     }
                     else if (payload.ChangeTypes.HasType(TreeChangeTypes.RefreshAll)) 
@@ -72,7 +73,7 @@ namespace Vendr.Checkout.Composing
 
                         var nodes = umbNew.UmbracoContext.Content.GetByContentType(nodeType);
 
-                        foreach (var node in nodes.Where(x => IsConfirmationPageType(x)))
+                        foreach (var node in nodes?.Where(x => IsConfirmationPageType(x)))
                         {
                             SyncZeroValuePaymentProviderContinueUrl(node);
                         }
@@ -91,6 +92,9 @@ namespace Vendr.Checkout.Composing
 
         private void SyncZeroValuePaymentProviderContinueUrl(IPublishedContent confirmationNode)
         {
+            if (confirmationNode == null) 
+                return;
+
             var store = confirmationNode.Value<StoreReadOnly>(Core.Constants.Properties.StorePropertyAlias, fallback: Fallback.ToAncestors);
             if (store == null)
                 return;
