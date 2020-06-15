@@ -1,0 +1,5 @@
+branches:
+  master:
+    regex: ^ma[ster|in]
+  hotfix:
+    mode: ContinuousDeployment
