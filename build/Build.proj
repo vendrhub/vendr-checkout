@@ -18,6 +18,8 @@
         <ProjectName>Checkout</ProjectName>
         <ProjectId>Vendr.$(ProjectName)</ProjectId>
         <MinUmbracoVersion>8.2.0</MinUmbracoVersion>
+
+        <GitVersionConfig>$(BuildToolsDir)\GitVersion\GitVersion.yml</GitVersionConfig>
 	</PropertyGroup>
 
     <ItemGroup>
