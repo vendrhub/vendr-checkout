@@ -1,0 +1,14 @@
+branches:
+  master:
+    regex: ^ma[ster|in]
+  release:
+    mode: ContinuousDeployment
+  feature:
+    mode: ContinuousDeployment
+  pull-request:
+    regex: ^(pull|pull\-requests|pr|patch)[/-]
+    mode: ContinuousDeployment
+  hotfix:
+    mode: ContinuousDeployment
+  support:
+    mode: ContinuousDeployment
