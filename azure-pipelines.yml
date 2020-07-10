@@ -55,19 +55,23 @@ stages:
         deploy:
 
           steps:
-          - task: NuGetCommand@2
-            displayName: 'Deploy to unstable feed'
+          -task: DotNetCoreInstaller@0
             inputs:
-              command: 'push'
-              packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
-              nuGetFeedType: 'internal'
-              publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
+              version: 2.2.103
 
-          - task: NuGetCommand@2
-            displayName: 'Deploy to NuGet.org'
-            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-            inputs:
-              command: push
-              nuGetFeedType: external
-              packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
-              publishFeedCredentials: '$(nuGetOrgServiceCreds)'
+          - powershell: |
+            # get the umbraco package file
+            $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\" -Recurse -File -Include *.zip | Select-Object -First 1).FullName
+            
+            # assign the filename to a variable        
+            echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
+
+          - script: |
+              dotnet tool install --global Umbraco.Tools.Packages
+            displayName: 'Install UmbPack'
+
+          - script: |
+              umbpack push -k $env:OUR_UMBRACO_API_KEY -w v860,v850,v840,v830,v820 -c false $env:umbracoPackageFile 
+            displayName: 'Deploy to Our Umbraco'
+            env:
+              OUR_UMBRACO_API_KEY: $(our-umbraco-api-key)
