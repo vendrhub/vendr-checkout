@@ -59,6 +59,13 @@ stages:
             inputs:
               version: 2.2.103
 
+          - powershell: |
+              # get the umbraco package file (assumes there is just one zip file package)
+              $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\packages\" -File -Include *.zip | Select-Object -First 1).FullName
+              # assign the filename to a variable        
+              echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
+            displayName: 'Get Umbraco Package path'
+
           # Unstable Deploy
           - task: NuGetCommand@2
             displayName: 'Deploy to unstable feed'
@@ -77,13 +84,6 @@ stages:
               nuGetFeedType: external
               packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
               publishFeedCredentials: '$(nuGetOrgServiceCreds)'
-
-          - powershell: |
-              # get the umbraco package file (assumes there is just one zip file package)
-              $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\packages\" -File -Include *.zip | Select-Object -First 1).FullName
-              # assign the filename to a variable        
-              echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
-            displayName: 'Get Umbraco Package path'
 
           - script: |
               dotnet tool install --global Umbraco.Tools.Packages
