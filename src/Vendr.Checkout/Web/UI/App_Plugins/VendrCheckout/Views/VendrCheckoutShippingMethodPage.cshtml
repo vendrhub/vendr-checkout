@@ -4,7 +4,9 @@
 
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
-    var shippingMethods = VendrApi.Instance.GetShippingMethods(store.Id);
+    var shippingMethods = VendrApi.Instance.GetShippingMethodsAllowedIn(currentOrder.ShippingInfo.CountryId.HasValue
+            ? currentOrder.ShippingInfo.CountryId.Value 
+            : currentOrder.PaymentInfo.CountryId.Value);
 
     var checkoutPage = Model.GetCheckoutPage();
     var nextStepPage = Model.GetNextStepPage();
