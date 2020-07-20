@@ -5,6 +5,9 @@
 
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+    var paymentCountry = currentOrder.PaymentInfo.CountryId.HasValue
+        ? VendrApi.Instance.GetCountry(currentOrder.PaymentInfo.CountryId.Value)
+        : null;
     var paymentMethods = VendrApi.Instance.GetPaymentMethodsAllowedIn(currentOrder.PaymentInfo.CountryId.Value);
 
     var checkoutPage = Model.GetCheckoutPage();
@@ -12,7 +15,9 @@
 
     var currentPaymentMethodId = currentOrder.PaymentInfo.PaymentMethodId.HasValue
         ? currentOrder.PaymentInfo.PaymentMethodId.Value
-        : paymentMethods.First().Id;
+        : paymentCountry != null && paymentCountry.DefaultPaymentMethodId.HasValue && paymentMethods.Any(x => x.Id == paymentCountry.DefaultPaymentMethodId.Value)
+            ? paymentCountry.DefaultPaymentMethodId.Value
+            : paymentMethods.First().Id;
 
     var zeroValuePaymentMethod = paymentMethods.FirstOrDefault(x => x.Alias == VendrCheckoutConstants.PaymentMethods.Aliases.ZeroValue);
 }
