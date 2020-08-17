@@ -18,6 +18,8 @@ namespace Vendr.Checkout.Web.Dtos
 
         public Guid Country { get; set; }
 
+        public Guid? Region { get; set; }
+
         public string Telephone { get; set; }
     }
 }

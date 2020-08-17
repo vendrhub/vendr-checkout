@@ -100,7 +100,7 @@ namespace Vendr.Checkout.Web.Controllers
                             { "comments", model.Comments },
                             { "ipAddress", GetIPAddress() }
                         })
-                        .SetPaymentCountryRegion(model.BillingAddress.Country, null);
+                        .SetPaymentCountryRegion(model.BillingAddress.Country, model.BillingAddress.Region);
 
                     if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
                     {
@@ -115,7 +115,8 @@ namespace Vendr.Checkout.Web.Controllers
                             { "shippingZipCode", model.ShippingSameAsBilling? model.BillingAddress.ZipCode : model.ShippingAddress.ZipCode },
                             { "shippingTelephone", model.ShippingSameAsBilling? model.BillingAddress.Telephone : model.ShippingAddress.Telephone }
                         })
-                        .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country, null);
+                        .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country, 
+                            model.ShippingSameAsBilling ? model.BillingAddress.Region : model.ShippingAddress.Region);
                     }
                     else
                     {
