@@ -59,18 +59,6 @@ stages:
         deploy:
 
           steps:
-          - task: DotNetCoreInstaller@0
-            inputs:
-              version: 2.2.103
-
-          - powershell: |
-              # get the umbraco package file (assumes there is just one zip file package)
-              $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\packages\*" -File -Include $(packageName).*.zip | Select-Object -First 1).FullName
-              # assign the filename to a variable        
-              echo "$f" 
-              echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
-            displayName: 'Get Umbraco Package path'
-
           # Unstable Deploy
           - task: NuGetCommand@2
             displayName: 'Deploy to unstable feed'
@@ -81,6 +69,20 @@ stages:
               publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
 
           # Release Deploy
+          - task: UseDotNet@2
+            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+            inputs:
+              version: 3.0.100
+
+          - powershell: |
+              # get the umbraco package file (assumes there is just one zip file package)
+              $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\packages\*" -File -Include $(packageName).*.zip | Select-Object -First 1).FullName
+              # assign the filename to a variable        
+              echo "$f" 
+              echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
+            displayName: 'Get Umbraco Package path'
+            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+
           - task: NuGetCommand@2
             displayName: 'Deploy to NuGet.org'
             condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
