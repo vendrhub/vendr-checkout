@@ -86,7 +86,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
             else
             {
                 var safeExisting = false;
-                var hasSettingsGroup = existing.PropertyGroups.Contains("settings");
+                var hasSettingsGroup = existing.PropertyGroups.Contains("Settings");
                 var settingsGroup = hasSettingsGroup
                     ? existing.PropertyGroups["Settings"]
                     : new PropertyGroup(new PropertyTypeCollection(true, checkoutStepProps)) 
@@ -202,7 +202,7 @@ namespace Vendr.Checkout.Pipeline.Implement.Tasks
             else
             {
                 var safeExisting = false;
-                var hasSettingsGroup = existing.PropertyGroups.Contains("settings");
+                var hasSettingsGroup = existing.PropertyGroups.Contains("Settings");
                 var settingsGroup = hasSettingsGroup
                     ? existing.PropertyGroups["Settings"]
                     : new PropertyGroup(new PropertyTypeCollection(true, checkoutPageProps))

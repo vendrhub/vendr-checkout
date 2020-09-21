@@ -1,4 +1,5 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+﻿@using Newtonsoft.Json;
+@inherits Umbraco.Web.Mvc.UmbracoViewPage
 @{
     Layout = "VendrCheckoutMaster.cshtml";
 
@@ -70,9 +71,17 @@
         <select name="billingAddress.Country" placeholder="Country" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full">
             @foreach (var country in countries)
             {
-                <option value="@(country.Id)" @Html.Raw(currentOrder.PaymentInfo.CountryId == country.Id ? "selected=\"selected\"" : "")>@(country.Name)</option>
+                <option value="@(country.Id)" @Html.Raw(currentOrder.PaymentInfo.CountryId == country.Id ? "selected=\"selected\"" : "")
+                        data-regions="@(JsonConvert.SerializeObject(VendrApi.Instance.GetRegions(country.StoreId, country.Id).Select(x => new {
+                            id = x.Id,
+                            name = x.Name
+                        })))">
+                    @(country.Name)
+                </option>
             }
         </select>
+        <select name="billingAddress.Region" placeholder="Region" class="hidden placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
+                data-value="@currentOrder.PaymentInfo.RegionId"></select>
         <input name="billingAddress.ZipCode" type="text" placeholder="Postcode" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
                value="@(currentOrder.Properties["billingZipCode"])" required />
     </div>
@@ -107,9 +116,17 @@
                 <select name="shippingAddress.Country" placeholder="Country" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full">
                     @foreach (var country in countries)
                     {
-                        <option value="@(country.Id)" @Html.Raw(currentOrder.PaymentInfo.CountryId == country.Id ? "selected=\"selected\"" : "")>@(country.Name)</option>
+                        <option value="@(country.Id)" @Html.Raw(currentOrder.ShippingInfo.CountryId == country.Id ? "selected=\"selected\"" : "")
+                                data-regions="@(JsonConvert.SerializeObject(VendrApi.Instance.GetRegions(country.StoreId, country.Id).Select(x => new {
+                                    id = x.Id,
+                                    name = x.Name
+                                })))">
+                            @(country.Name)
+                        </option>
                     }
                 </select>
+                <select name="shippingAddress.Region" placeholder="Region" class="hidden placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
+                        data-value="@currentOrder.ShippingInfo.RegionId"></select>
                 <input name="shippingAddress.ZipCode" type="text" placeholder="Postcode" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
                        value="@(currentOrder.Properties["shippingZipCode"])" />
             </div>
