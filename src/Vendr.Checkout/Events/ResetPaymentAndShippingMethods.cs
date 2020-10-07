@@ -1,4 +1,5 @@
-﻿using Vendr.Core.Events.Notification;
+﻿using System.Configuration;
+using Vendr.Core.Events.Notification;
 
 namespace Vendr.Checkout.Events
 {
@@ -66,12 +67,12 @@ namespace Vendr.Checkout.Events
             }
         }
     }
-
+     
     public class OrderShippingMethodChangingHandler : NotificationEventHandlerBase<OrderShippingMethodChangingNotification>
     {
         public override void Handle(OrderShippingMethodChangingNotification evt)
         {
-            if (!evt.Order.IsFinalized)
+            if (!evt.Order.IsFinalized && ConfigurationManager.AppSettings["VendrCheckout:ResetPaymentMethodOnShippingMethodChange"] != "false")
             {
                 evt.Order.ClearPaymentMethod();
             }
