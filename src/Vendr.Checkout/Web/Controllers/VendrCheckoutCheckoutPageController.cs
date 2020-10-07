@@ -9,6 +9,11 @@ namespace Vendr.Checkout.Web.Controllers
     {
         public override ActionResult Index(ContentModel model)
         {
+            // If the page has a template, use it
+            if (model.Content.TemplateId.HasValue && model.Content.TemplateId.Value > 0)
+                return base.Index(model);
+
+            // No template so redirect to the first child if one exists
             if (model.Content.Children != null)
             {
                 var firstChild = model.Content.Children.FirstOrDefault();
@@ -18,6 +23,7 @@ namespace Vendr.Checkout.Web.Controllers
                 }
             }
 
+            // Still nothing so 404
             return new HttpNotFoundResult();
         }
     }
