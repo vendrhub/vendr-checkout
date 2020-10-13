@@ -6,6 +6,9 @@ using Vendr.Checkout.Web.Dtos;
 using Vendr.Core;
 using Vendr.Core.Web.Api;
 using Vendr.Core.Exceptions;
+using Umbraco.Core;
+using VendrConstants = Vendr.Core.Constants;
+using System.Linq;
 
 namespace Vendr.Checkout.Web.Controllers
 {
@@ -40,12 +43,17 @@ namespace Vendr.Checkout.Web.Controllers
             {
                 ModelState.AddModelError("", "Failed to redeem discount code: "+ ex.Message);
 
-                return CurrentUmbracoPage();
+                return IsAjaxRequest()
+                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    : CurrentUmbracoPage();
             }
 
-            return RedirectToCurrentUmbracoPage();
+            return IsAjaxRequest()
+                ? (ActionResult)Json(new { success = true })
+                : RedirectToCurrentUmbracoPage();
         }
 
+        [HttpGet]
         public ActionResult RemoveDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
@@ -66,10 +74,14 @@ namespace Vendr.Checkout.Web.Controllers
             {
                 ModelState.AddModelError("", "Failed to unredeem discount code: " + ex.Message);
 
-                return CurrentUmbracoPage();
+                return IsAjaxRequest()
+                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) }, JsonRequestBehavior.AllowGet)
+                    : CurrentUmbracoPage();
             }
 
-            return RedirectToCurrentUmbracoPage();
+            return IsAjaxRequest()
+                ? (ActionResult)Json(new { success = true }, JsonRequestBehavior.AllowGet)
+                : RedirectToCurrentUmbracoPage();
         }
 
         [HttpPost]
@@ -82,16 +94,16 @@ namespace Vendr.Checkout.Web.Controllers
 
                 using (var uow = _vendrApi.Uow.Create())
                 {
-                    var store = CurrentPage.GetStore();
+                    var store = CurrentPage.GetStore(); 
                     var order = _vendrApi.GetCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .SetProperties(new Dictionary<string, string>
                         {
-                            { Constants.Properties.Customer.EmailPropertyAlias, model.Email },
+                            { VendrConstants.Properties.Customer.EmailPropertyAlias, model.Email },
                             { "marketingOptIn", model.MarketingOptIn ? "1" : "0" },
 
-                            { Constants.Properties.Customer.FirstNamePropertyAlias, model.BillingAddress.FirstName },
-                            { Constants.Properties.Customer.LastNamePropertyAlias, model.BillingAddress.LastName },
+                            { VendrConstants.Properties.Customer.FirstNamePropertyAlias, model.BillingAddress.FirstName },
+                            { VendrConstants.Properties.Customer.LastNamePropertyAlias, model.BillingAddress.LastName },
                             { "billingAddressLine1", model.BillingAddress.Line1 },
                             { "billingAddressLine2", model.BillingAddress.Line2 },
                             { "billingCity", model.BillingAddress.City },
@@ -118,7 +130,7 @@ namespace Vendr.Checkout.Web.Controllers
                         .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country, 
                             model.ShippingSameAsBilling ? model.BillingAddress.Region : model.ShippingAddress.Region);
                     }
-                    else
+                    else 
                     {
                         order.SetShippingCountryRegion(model.BillingAddress.Country, null)
                             .ClearShippingMethod();
@@ -133,13 +145,16 @@ namespace Vendr.Checkout.Web.Controllers
             {
                 ModelState.AddModelError("", "Failed to update information: " + ex.Message);
 
-                return CurrentUmbracoPage();
+                return IsAjaxRequest()
+                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    : CurrentUmbracoPage();
             }
 
-            if (model.NextStep.HasValue)
-                return RedirectToUmbracoPage(model.NextStep.Value);
-
-            return RedirectToCurrentUmbracoPage();
+            return IsAjaxRequest()
+                ? (ActionResult)Json(new { success = true })
+                : model.NextStep.HasValue
+                    ? RedirectToUmbracoPage(model.NextStep.Value)
+                    : RedirectToCurrentUmbracoPage();
         }
 
         [HttpPost]
@@ -165,13 +180,16 @@ namespace Vendr.Checkout.Web.Controllers
             {
                 ModelState.AddModelError("", "Failed to update shipping method: " + ex.Message);
 
-                return CurrentUmbracoPage();
+                return IsAjaxRequest()
+                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    : CurrentUmbracoPage();
             }
 
-            if (model.NextStep.HasValue)
-                return RedirectToUmbracoPage(model.NextStep.Value);
-
-            return RedirectToCurrentUmbracoPage();
+            return IsAjaxRequest()
+                ? (ActionResult)Json(new { success = true })
+                : model.NextStep.HasValue
+                    ? RedirectToUmbracoPage(model.NextStep.Value)
+                    : RedirectToCurrentUmbracoPage();
         }
 
         [HttpPost]
@@ -197,13 +215,16 @@ namespace Vendr.Checkout.Web.Controllers
             {
                 ModelState.AddModelError("", "Failed to update payment method: " + ex.Message);
 
-                return CurrentUmbracoPage();
+                return IsAjaxRequest()
+                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    : CurrentUmbracoPage();
             }
 
-            if (model.NextStep.HasValue)
-                return RedirectToUmbracoPage(model.NextStep.Value);
-
-            return RedirectToCurrentUmbracoPage();
+            return IsAjaxRequest()
+                ? (ActionResult)Json(new { success = true })
+                : model.NextStep.HasValue
+                    ? RedirectToUmbracoPage(model.NextStep.Value)
+                    : RedirectToCurrentUmbracoPage();
         }
 
         private string GetIPAddress()
@@ -219,6 +240,18 @@ namespace Vendr.Checkout.Web.Controllers
                     return addresses[0];
             }
             return context.Request.ServerVariables["REMOTE_ADDR"];
+        }
+
+        private bool IsAjaxRequest()
+        {
+            if (Request.IsAjaxRequest())
+                return true;
+
+            var headerName = "X-Requested-With";
+            var headerValue = "xmlhttprequest";
+
+            return (Request[headerName] != null && Request[headerName].InvariantEquals(headerValue))
+                || (Request.Headers != null && Request.Headers[headerName] != null && Request.Headers[headerName].InvariantEquals(headerValue));
         }
     }
 }
