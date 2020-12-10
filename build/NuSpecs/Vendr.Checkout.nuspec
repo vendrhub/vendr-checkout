@@ -16,7 +16,7 @@
         <tags>umbraco ecommerce vendr</tags>
         <dependencies>
             <group targetFramework="net472">
-                <dependency id="Vendr.Core.Web" version="[1.4.0-rc0000,1.999999)" />
+                <dependency id="Vendr.Core.Web" version="[1.4.0,1.999999)" />
                 <!--<dependency id="UmbracoCms.Core" version="[$MinUmbracoVersion$]" />-->
             </group>
         </dependencies>
