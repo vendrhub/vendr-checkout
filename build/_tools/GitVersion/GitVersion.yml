@@ -3,6 +3,7 @@ branches:
     regex: ^ma[ster|in]
   release:
     mode: ContinuousDeployment
+    tag: rc
   feature:
     mode: ContinuousDeployment
   pull-request:

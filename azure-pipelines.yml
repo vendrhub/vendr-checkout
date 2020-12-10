@@ -8,6 +8,7 @@ trigger:
     include: 
       - dev
       - hotfix/*
+      - release/*
   tags:
     include:
       - v*
