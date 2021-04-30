@@ -7,15 +7,21 @@
     var paymentMethod = Model.PaymentInfo.PaymentMethodId.HasValue
         ? VendrApi.Instance.GetPaymentMethod(Model.PaymentInfo.PaymentMethodId.Value)
         : null;
-    var paymentCountry = Model.PaymentInfo.CountryId.HasValue 
+    var paymentCountry = Model.PaymentInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(Model.PaymentInfo.CountryId.Value)
         : null;
-    var shippingMethod = Model.ShippingInfo.ShippingMethodId.HasValue 
+    var paymentRegion = Model.PaymentInfo.RegionId.HasValue
+        ? VendrApi.Instance.GetRegion(Model.PaymentInfo.RegionId.Value)
+        : null;
+    var shippingMethod = Model.ShippingInfo.ShippingMethodId.HasValue
         ? VendrApi.Instance.GetShippingMethod(Model.ShippingInfo.ShippingMethodId.Value)
         : null;
     var shippingCountry = Model.ShippingInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(Model.ShippingInfo.CountryId.Value)
         : null;
+    var shippingRegion = Model.ShippingInfo.RegionId.HasValue
+      ? VendrApi.Instance.GetRegion(Model.ShippingInfo.RegionId.Value)
+      : null;
 
     // Lookup the vendr checkout page for the associated orders store
     // so that we can extract relevant settings to configure the email template
@@ -90,7 +96,8 @@
                                                     Model.Properties["billingAddressLine2"],
                                                     Model.Properties["billingCity"],
                                                     Model.Properties["billingZipCode"],
-                                                    paymentCountry.Name
+                                                    paymentCountry.Name,
+                                                    paymentRegion != null ? paymentRegion.Name : null
                                                 };
                                                 @Html.Raw(string.Join("<br />", billingParts.Where(x => !string.IsNullOrWhiteSpace(x))))
                                             }
@@ -113,7 +120,8 @@
                                                         Model.Properties["shippingAddressLine2"],
                                                         Model.Properties["shippingCity"],
                                                         Model.Properties["shippingZipCode"],
-                                                        paymentCountry.Name
+                                                        paymentCountry.Name,
+                                                        shippingRegion != null ? shippingRegion.Name : null
                                                     };
                                                     @Html.Raw(string.Join("<br />", shippingParts.Where(x => !string.IsNullOrWhiteSpace(x))))
                                                 }
@@ -292,6 +300,8 @@
                             </table>
                             <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
                             <p style="text-align: center;">
+                                @DateTime.Now.ToShortDateString()
+                                <br />
                                 <a href="@(baseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #@(vendrThemeColor);">Terms of Service</a> | <a href="@(baseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #@(vendrThemeColor);">Privacy Policy</a>
                             </p>
                             <p style="text-align: center; margin-bottom: 0;">@(store.Name), @(vendrStoreAddress)</p>
