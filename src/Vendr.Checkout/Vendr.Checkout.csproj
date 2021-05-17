@@ -301,6 +301,7 @@
     <Compile Include="VendrCheckoutConstants.cs" />
     <Compile Include="Web\Composing\VendrCheckoutWebComposer.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutApiController.cs" />
+    <Compile Include="Web\Controllers\VendrCheckoutBaseController.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutCheckoutStepPageController.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutCheckoutPageController.cs" />
     <Compile Include="Web\Controllers\VendrCheckoutSurfaceController.cs" />
