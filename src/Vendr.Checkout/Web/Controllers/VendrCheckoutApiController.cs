@@ -1,31 +1,50 @@
 ﻿using System;
+using Vendr.Checkout.Services;
+using Vendr.Core.Api;
+
+#if NETFRAMEWORK
 using System.Web.Http;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Core.Services;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 using Umbraco.Web.WebApi.Filters;
-using Vendr.Checkout.Services;
-using Vendr.Core.Api;
+#else
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Web.BackOffice.Controllers;
+using Umbraco.Cms.Web.Common.Attributes;
+using Umbraco.Cms.Web.Common.Authorization;
+#endif
 
 namespace Vendr.Checkout.Web.Controllers
 {
     [PluginController("VendrCheckout")]
     public class VendrCheckoutApiController : UmbracoAuthorizedApiController
     {
-        private IVendrApi _vendrApi;
+        private readonly IVendrApi _vendrApi;
+        private readonly IContentService _contentService;
 
-        public VendrCheckoutApiController(IVendrApi vendrApi)
+        public VendrCheckoutApiController(IVendrApi vendrApi,
+            IContentService contentService)
         {
             _vendrApi = vendrApi;
+            _contentService = contentService;
         }
 
         [HttpGet]
+#if NETFRAMEWORK
         [UmbracoApplicationAuthorize(Constants.Applications.Settings)]
+#else
+        [Authorize(Policy = AuthorizationPolicies.SectionAccessSettings)]
+#endif
         public object InstallVendrCheckout(int siteRootNodeId)
         {
             // Validate the site root node
-            var siteRootNode = Services.ContentService.GetById(siteRootNodeId);
+            var siteRootNode = _contentService.GetById(siteRootNodeId);
 
             var storeId = GetStoreId(siteRootNode);
             if (!storeId.HasValue)
@@ -45,11 +64,11 @@ namespace Vendr.Checkout.Web.Controllers
 
         private Guid? GetStoreId(IContent content)
         {
-            if (content.HasProperty(Core.Constants.Properties.StorePropertyAlias))
-                return content.GetValue<Guid?>(Core.Constants.Properties.StorePropertyAlias);
+            if (content.HasProperty(Vendr.Umbraco.Constants.Properties.StorePropertyAlias))
+                return content.GetValue<Guid?>(Vendr.Umbraco.Constants.Properties.StorePropertyAlias);
 
             if (content.ParentId != -1)
-                return GetStoreId(Services.ContentService.GetById(content.ParentId));
+                return GetStoreId(_contentService.GetById(content.ParentId));
 
             return null;
         }
