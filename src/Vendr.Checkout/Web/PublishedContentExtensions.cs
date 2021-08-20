@@ -1,9 +1,13 @@
-﻿using Umbraco.Web;
-using Umbraco.Core.Models.PublishedContent;
-using Vendr.Core.Models;
+﻿using Vendr.Core.Models;
 using System.Linq;
 
-using Constants = Vendr.Core.Constants;
+#if NETFRAMEWORK
+using Umbraco.Web;
+using Umbraco.Core.Models.PublishedContent;
+#else
+using Umbraco.Cms.Core.Models.PublishedContent;
+using Umbraco.Extensions;
+#endif
 
 namespace Vendr.Checkout.Web
 {
@@ -11,7 +15,7 @@ namespace Vendr.Checkout.Web
     {
         public static StoreReadOnly GetStore(this IPublishedContent content)
         {
-            return content.Value<StoreReadOnly>(Constants.Properties.StorePropertyAlias, fallback:Fallback.ToAncestors);
+            return content.Value<StoreReadOnly>(Umbraco.Constants.Properties.StorePropertyAlias, fallback:Fallback.ToAncestors);
         }
 
         public static IPublishedContent GetCheckoutPage(this IPublishedContent content)

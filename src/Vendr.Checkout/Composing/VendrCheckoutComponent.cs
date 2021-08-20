@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#if NETFRAMEWORK
+
+using System.Linq;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Models.PublishedContent;
@@ -95,7 +97,7 @@ namespace Vendr.Checkout.Composing
             if (confirmationNode == null) 
                 return;
 
-            var store = confirmationNode.Value<StoreReadOnly>(Core.Constants.Properties.StorePropertyAlias, fallback: Fallback.ToAncestors);
+            var store = confirmationNode.Value<StoreReadOnly>(Umbraco.Constants.Properties.StorePropertyAlias, fallback: Fallback.ToAncestors);
             if (store == null)
                 return;
 
@@ -118,3 +120,5 @@ namespace Vendr.Checkout.Composing
         { }
     }
 }
+
+#endif

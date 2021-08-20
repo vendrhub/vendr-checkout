@@ -1,5 +1,10 @@
-﻿using System.Configuration;
+﻿using Vendr.Checkout.Configuration;
+using Vendr.Common.Events;
 using Vendr.Core.Events.Notification;
+
+#if NET
+using Microsoft.Extensions.Options;
+#endif
 
 namespace Vendr.Checkout.Events
 {
@@ -70,9 +75,23 @@ namespace Vendr.Checkout.Events
      
     public class OrderShippingMethodChangingHandler : NotificationEventHandlerBase<OrderShippingMethodChangingNotification>
     {
+        private readonly VendrCheckoutSettings _settings;
+
+#if NETFRAMEWORK
+        public OrderShippingMethodChangingHandler(VendrCheckoutSettings settings)
+        {
+            _settings = settings;
+        }
+#else
+        public OrderShippingMethodChangingHandler(IOptions<VendrCheckoutSettings> settings)
+        {
+            _settings = settings.Value;
+        }
+#endif
+
         public override void Handle(OrderShippingMethodChangingNotification evt)
         {
-            if (!evt.Order.IsFinalized && ConfigurationManager.AppSettings["VendrCheckout:ResetPaymentMethodOnShippingMethodChange"] != "false")
+            if (!evt.Order.IsFinalized && _settings.ResetPaymentMethodOnShippingMethodChange)
             {
                 evt.Order.ClearPaymentMethod();
             }

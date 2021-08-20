@@ -1,37 +1,46 @@
-﻿using Umbraco.Core;
+﻿using Vendr.Checkout.Extensions;
+using Vendr.Checkout.Configuration;
+using Vendr.Checkout.Services;
+using Vendr.Checkout.Pipeline.Implement;
+
+#if NETFRAMEWORK
+using Umbraco.Core;
 using Umbraco.Core.Composing;
-using Vendr.Checkout.Events;
-using Vendr.Core.Composing;
-using Vendr.Core.Events.Notification;
+using IBuilder = Umbraco.Core.Composing.Composition;
+#else
+using Umbraco.Cms.Core.Composing;
+using IBuilder = Umbraco.Cms.Core.DependencyInjection.IUmbracoBuilder;
+#endif
 
 namespace Vendr.Checkout.Composing
 {
     public class VendrCheckoutComposer : IUserComposer
     {
-        public void Compose(Composition composition)
+        public void Compose(IBuilder builder)
         {
+#if NETFRAMEWORK
+            // Register settings
+            builder.Register<VendrCheckoutSettings>(Lifetime.Singleton);
+
             // Register event handlers
-            composition.WithNotificationEvent<OrderProductAddingNotification>()
-                .RegisterHandler<OrderProductAddingHandler>();
+            builder.AddVendrEventHandlers();
 
-            composition.WithNotificationEvent<OrderLineChangingNotification>()
-                .RegisterHandler<OrderLineChangingHandler>();
+            // Register pipeline
+            builder.AddVendrInstallPipeline();
 
-            composition.WithNotificationEvent<OrderLineRemovingNotification>()
-                .RegisterHandler<OrderLineRemovingHandler>();
-
-            composition.WithNotificationEvent<OrderPaymentCountryRegionChangingNotification>()
-                .RegisterHandler<OrderPaymentCountryRegionChangingHandler>();
-
-            composition.WithNotificationEvent<OrderShippingCountryRegionChangingNotification>()
-                .RegisterHandler<OrderShippingCountryRegionChangingHandler>();
-
-            composition.WithNotificationEvent<OrderShippingMethodChangingNotification>()
-                .RegisterHandler<OrderShippingMethodChangingHandler>();
+            // Register services
+            builder.Register<InstallService>(Lifetime.Singleton);
 
             // Register component
-            composition.Components()
+            builder.Components()
                 .Append<VendrCheckoutComponent>();
+#else
+            // If Vendr Checkout hasn't been added manually by now, 
+            // add it automatically with the default configuration.
+            // If Vendr Checkout has already been added manully, then 
+            // the AddVendrCheckout() call will just exit early.
+            builder.AddVendrCheckout();
+#endif
         }
     }
 }

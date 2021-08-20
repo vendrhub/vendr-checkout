@@ -1,5 +1,6 @@
-﻿using Vendr.Checkout.Pipeline.Implement;
+﻿using Vendr.Checkout.Pipeline;
 using Vendr.Core.Models;
+using PipelineRunner = Vendr.Common.Pipelines.Pipeline;
 
 namespace Vendr.Checkout.Services
 {
@@ -7,13 +8,14 @@ namespace Vendr.Checkout.Services
     {
         public void Install(int siteRootNodeId, StoreReadOnly store)
         {
-            var installPipeline = new InstallPipeline();
-
-            installPipeline.Process(new InstallPipelineContext
+            var result = PipelineRunner.Invoke<InstallPipeline, InstallPipelineContext>(new InstallPipelineContext
             {
                 SiteRootNodeId = siteRootNodeId,
                 Store = store
             });
+
+            if (!result.Success)
+                throw result.Exception;
         }
     }
 }

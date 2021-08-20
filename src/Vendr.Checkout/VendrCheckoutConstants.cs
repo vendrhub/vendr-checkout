@@ -5,6 +5,11 @@ namespace Vendr.Checkout
 {
     public static class VendrCheckoutConstants
     {
+        public static class System
+        {
+            public const string ProductName = "VendrCheckout";
+        }
+
         public static IDictionary<string, string> ColorMap = new Dictionary<string, string>
         {
             { "000000", "black" },

@@ -1,4 +1,0 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> 
-  <UsingTask AssemblyFile="$(MSBuildThisFileDirectory)JsonPeek.MSBuild.dll" TaskName="JsonPoke"/>  
-  <UsingTask AssemblyFile="$(MSBuildThisFileDirectory)JsonPeek.MSBuild.dll" TaskName="JsonPeek"/>  
-</Project>
