@@ -23,6 +23,9 @@ class Build : NukeBuild
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
+    [Parameter("Azure pipelines build artifacts staging directory")]
+    readonly AbsolutePath BuildArtifactStagingDirectory;
+
     [Solution] 
     readonly Solution Solution;
 
@@ -33,7 +36,7 @@ class Build : NukeBuild
     readonly Tool UmbPack;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
-    AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
+    AbsolutePath ArtifactsDirectory => BuildArtifactStagingDirectory ?? RootDirectory / "artifacts";
     AbsolutePath ArtifactFilesDirectory => ArtifactsDirectory / "files";
     AbsolutePath ArtifactPackagesDirectory => ArtifactsDirectory / "packages";
 
@@ -131,7 +134,7 @@ class Build : NukeBuild
 
     Target Pack => _ => _
         .DependsOn(Prepare)
-        .Produces(ArtifactsDirectory)
+        .Produces(ArtifactPackagesDirectory)
         .Executes(() =>
         {
             PackNuGetPackages();
