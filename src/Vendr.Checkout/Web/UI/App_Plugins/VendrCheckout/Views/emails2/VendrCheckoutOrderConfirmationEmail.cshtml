@@ -25,9 +25,9 @@
 
     // Lookup the vendr checkout page for the associated orders store
     // so that we can extract relevant settings to configure the email template
-    var contentCache = this.GetService<IPublishedContentCache>();
-    var checkoutContentType = contentCache.GetContentType("vendrCheckoutCheckoutPage");
-    var checkoutPages = contentCache.GetByContentType(checkoutContentType);
+    var ctx = this.GetService<IUmbracoContextAccessor>().GetRequiredUmbracoContext();
+    var checkoutContentType = ctx.Content.GetContentType("vendrCheckoutCheckoutPage");
+    var checkoutPages = ctx.Content.GetByContentType(checkoutContentType);
     var checkoutPage = checkoutPages.First(x => x.GetStore()?.Id == Model.StoreId);
 
     var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url;

@@ -1,14 +1,14 @@
 ﻿@using Umbraco.Web.Composing;
-@inherits VendrRazorTemplateView<OrderReadOnly>
+@inherits VendrRazorTemplateView<GiftCardReadOnly>
 @{
     // Get order entities
     var store = VendrApi.GetStore(Model.StoreId);
 
     // Lookup the vendr checkout page for the associated orders store
     // so that we can extract relevant settings to configure the email template
-    var contentCache = this.GetService<IPublishedContentCache>();
-    var checkoutContentType = contentCache.GetContentType("vendrCheckoutCheckoutPage");
-    var checkoutPages = contentCache.GetByContentType(checkoutContentType);
+    var ctx = this.GetService<IUmbracoContextAccessor>().GetRequiredUmbracoContext();
+    var checkoutContentType = ctx.Content.GetContentType("vendrCheckoutCheckoutPage");
+    var checkoutPages = ctx.Content.GetByContentType(checkoutContentType);
     var checkoutPage = checkoutPages.First(x => x.GetStore()?.Id == Model.StoreId);
 
     var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url;
@@ -48,16 +48,28 @@
                                 }
 
                                 <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
-                                <h2 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #@(vendrThemeColor);">Order Error - #@(Model.OrderNumber)</h2>
+
+                                <h2 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #@(vendrThemeColor);">Here is your Gift Card for @(store.Name)</h2>
+
+                                <table style="background-color: #@(vendrThemeColor); border-radius: 10px; width: 400px; margin: 0 auto 20px;">
+                                    <tr>
+                                        <td style="padding: 40px 20px;">
+                                            <table style="width: 100%;">
+                                                <tr>
+                                                    <td style="color:white; font-size: 60px; line-height: 60px; padding-bottom: 15px;text-align: center;">@(Model.OriginalAmount.Formatted())</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="background-color:white; font-size: 20px; line-height: 20px; color: #@(vendrThemeColor); text-align: center; padding: 5px 10px;">@(Model.Code)</td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+
                                 <p>
-                                    There is a problem with your payment for order <strong>@Model.OrderNumber</strong>.
+                                    Use this card as payment for anything you like at the @(store.Name) store. Enter the redemption code at checkout to redeem your gift card.
                                 </p>
-                                <p>
-                                    Please contact us by replying to this email at your earliest convenience.
-                                </p>
-                                <p class="margin: 0;">
-                                    Your order will not be shipped until this problem has been resolved.
-                                </p>
+
                             </div>
 
                             <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
