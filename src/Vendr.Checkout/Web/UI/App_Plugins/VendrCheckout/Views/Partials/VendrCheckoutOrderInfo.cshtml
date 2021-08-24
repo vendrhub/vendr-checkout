@@ -1,9 +1,8 @@
-﻿@using Umbraco.Web.Composing;
-@model Vendr.Core.Models.OrderReadOnly
+﻿@inherits UmbracoViewPage<OrderReadOnly>
 @{
     var order = Model;
 
-    var currentPage = Current.UmbracoContext.PublishedRequest.PublishedContent;
+    var currentPage = UmbracoContext.PublishedRequest.PublishedContent;
     var checkoutPage = currentPage.GetCheckoutPage();
 
     var paymentCountryName = order.PaymentInfo.CountryId.HasValue

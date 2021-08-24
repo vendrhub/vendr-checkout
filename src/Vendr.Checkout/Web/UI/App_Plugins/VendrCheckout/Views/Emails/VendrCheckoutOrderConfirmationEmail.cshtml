@@ -1,41 +1,40 @@
 @using Vendr.Checkout;
 @using Umbraco.Web.Composing;
-@model OrderReadOnly
+@inherits VendrRazorTemplateView<OrderReadOnly>
 @{
     // Get order entities
-    var store = VendrApi.Instance.GetStore(Model.StoreId);
+    var store = VendrApi.GetStore(Model.StoreId);
     var paymentMethod = Model.PaymentInfo.PaymentMethodId.HasValue
-        ? VendrApi.Instance.GetPaymentMethod(Model.PaymentInfo.PaymentMethodId.Value)
+        ? VendrApi.GetPaymentMethod(Model.PaymentInfo.PaymentMethodId.Value)
         : null;
     var paymentCountry = Model.PaymentInfo.CountryId.HasValue
-        ? VendrApi.Instance.GetCountry(Model.PaymentInfo.CountryId.Value)
+        ? VendrApi.GetCountry(Model.PaymentInfo.CountryId.Value)
         : null;
     var paymentRegion = Model.PaymentInfo.RegionId.HasValue
-        ? VendrApi.Instance.GetRegion(Model.PaymentInfo.RegionId.Value)
+        ? VendrApi.GetRegion(Model.PaymentInfo.RegionId.Value)
         : null;
     var shippingMethod = Model.ShippingInfo.ShippingMethodId.HasValue
-        ? VendrApi.Instance.GetShippingMethod(Model.ShippingInfo.ShippingMethodId.Value)
+        ? VendrApi.GetShippingMethod(Model.ShippingInfo.ShippingMethodId.Value)
         : null;
     var shippingCountry = Model.ShippingInfo.CountryId.HasValue
-        ? VendrApi.Instance.GetCountry(Model.ShippingInfo.CountryId.Value)
+        ? VendrApi.GetCountry(Model.ShippingInfo.CountryId.Value)
         : null;
     var shippingRegion = Model.ShippingInfo.RegionId.HasValue
-      ? VendrApi.Instance.GetRegion(Model.ShippingInfo.RegionId.Value)
+      ? VendrApi.GetRegion(Model.ShippingInfo.RegionId.Value)
       : null;
 
     // Lookup the vendr checkout page for the associated orders store
     // so that we can extract relevant settings to configure the email template
-    var checkoutContentType = Current.UmbracoContext.Content.GetContentType("vendrCheckoutCheckoutPage");
-    var checkoutPages = Current.UmbracoContext.Content.GetByContentType(checkoutContentType);
+    var contentCache = this.GetService<IPublishedContentCache>();
+    var checkoutContentType = contentCache.GetContentType("vendrCheckoutCheckoutPage");
+    var checkoutPages = contentCache.GetByContentType(checkoutContentType);
     var checkoutPage = checkoutPages.First(x => x.GetStore()?.Id == Model.StoreId);
 
     var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url;
     var vendrStoreTsAndCsUrl = checkoutPage.Value<IPublishedContent>("vendrTermsAndConditionsPage")?.Url;
     var vendrStorePrivacyPolicyUrl = checkoutPage.Value<IPublishedContent>("vendrPrivacyPolicyPage")?.Url;
     var vendrStoreAddress = checkoutPage.Value<string>("vendrStoreAddress");
-    var vendrThemeColor = checkoutPage.Value<string>("vendrThemeColor", defaultValue:"000000");
-
-    var baseUrl = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+    var vendrThemeColor = checkoutPage.Value<string>("vendrThemeColor", defaultValue: "000000");
 }
 <style type="text/css">
     #vendr, #vendr td, #vendr p {
@@ -44,9 +43,10 @@
         line-height: 18px;
         color: #5f6a70;
     }
-    #vendr td {
-        vertical-align: top;
-    }
+
+        #vendr td {
+            vertical-align: top;
+        }
 </style>
 <div id="vendr" style="font-family: sans-serif; font-size: 14px; line-height: 18px; color: #5f6a70;">
     <table style="background-color: #f5f5f5; width: 100%;">
@@ -60,17 +60,17 @@
 
                                 @if (!string.IsNullOrWhiteSpace(vendrStoreLogoUrl))
                                 {
-                                    <a href="@(baseUrl)" target="_blank"><img src="@(baseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=100" alt="@(store.Name)" border="0" /></a>
+                                    <a href="@(BaseUrl)" target="_blank"><img src="@(BaseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=100" alt="@(store.Name)" border="0" /></a>
                                 }
                                 else
                                 {
-                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(baseUrl)" style="color: #000;" target="_blank">@(store.Name)</a></h1>
+                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(BaseUrl)" style="color: #000;" target="_blank">@(store.Name)</a></h1>
                                 }
 
                                 <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
                                 <h2 style="margin: 0 0 20px; font-size: 20px; line-height: 28px; color: #@(vendrThemeColor);">Order Confirmation - #@(Model.OrderNumber)</h2>
                                 <p>
-                                    Thank you for your order with <a href="@(baseUrl)" target="_blank" style="color: #@(vendrThemeColor);">@(store.Name)</a>, your order details can be found below.
+                                    Thank you for your order with <a href="@(BaseUrl)" target="_blank" style="color: #@(vendrThemeColor);">@(store.Name)</a>, your order details can be found below.
                                 </p>
                             </div>
 
@@ -108,7 +108,7 @@
                                         }
                                     </td>
                                     @if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
-                                    { 
+                                    {
                                         <td style="width: 50%;">
                                             <h2 style="margin: 0 0 20px; font-size: 16px; line-height: 20px;">Shipping Information</h2>
                                             <p style="margin: 0;">
@@ -336,7 +336,7 @@
                             <p style="text-align: center;">
                                 @DateTime.Now.ToShortDateString()
                                 <br />
-                                <a href="@(baseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #@(vendrThemeColor);">Terms of Service</a> | <a href="@(baseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #@(vendrThemeColor);">Privacy Policy</a>
+                                <a href="@(BaseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #@(vendrThemeColor);">Terms of Service</a> | <a href="@(BaseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #@(vendrThemeColor);">Privacy Policy</a>
                             </p>
                             <p style="text-align: center; margin-bottom: 0;">@(store.Name), @(vendrStoreAddress)</p>
 

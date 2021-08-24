@@ -1,13 +1,14 @@
 ﻿@using Umbraco.Web.Composing;
-@model OrderReadOnly
+@inherits VendrRazorTemplateView<OrderReadOnly>
 @{
     // Get order entities
-    var store = VendrApi.Instance.GetStore(Model.StoreId);
+    var store = VendrApi.GetStore(Model.StoreId);
 
     // Lookup the vendr checkout page for the associated orders store
     // so that we can extract relevant settings to configure the email template
-    var checkoutContentType = Current.UmbracoContext.Content.GetContentType("vendrCheckoutCheckoutPage");
-    var checkoutPages = Current.UmbracoContext.Content.GetByContentType(checkoutContentType);
+    var contentCache = this.GetService<IPublishedContentCache>();
+    var checkoutContentType = contentCache.GetContentType("vendrCheckoutCheckoutPage");
+    var checkoutPages = contentCache.GetByContentType(checkoutContentType);
     var checkoutPage = checkoutPages.First(x => x.GetStore()?.Id == Model.StoreId);
 
     var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url;
@@ -15,8 +16,6 @@
     var vendrStorePrivacyPolicyUrl = checkoutPage.Value<IPublishedContent>("vendrPrivacyPolicyPage")?.Url;
     var vendrStoreAddress = checkoutPage.Value<string>("vendrStoreAddress");
     var vendrThemeColor = checkoutPage.Value<string>("vendrThemeColor", defaultValue: "000000");
-
-    var baseUrl = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
 }
 <style type="text/css">
     #vendr, #vendr td, #vendr p {
@@ -41,11 +40,11 @@
 
                                 @if (!string.IsNullOrWhiteSpace(vendrStoreLogoUrl))
                                 {
-                                    <a href="@(baseUrl)" target="_blank"><img src="@(baseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=100" alt="@(store.Name)" border="0" /></a>
+                                    <a href="@(BaseUrl)" target="_blank"><img src="@(BaseUrl + vendrStoreLogoUrl)?mode=max&width=200&height=100" alt="@(store.Name)" border="0" /></a>
                                 }
                                 else
                                 {
-                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(baseUrl)" style="color: #000;" target="_blank">@(store.Name)</a></h1>
+                                    <h1 class="margin: 0 0 20px; font-size: 30px; line-height: 38px; color: ##000;"><a href="@(BaseUrl)" style="color: #000;" target="_blank">@(store.Name)</a></h1>
                                 }
 
                                 <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
@@ -63,7 +62,7 @@
 
                             <hr style="border: 0; height: 1px; background: #ebebe9; margin: 20px 0;" />
                             <p style="text-align: center;">
-                                <a href="@(baseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #@(vendrThemeColor);">Terms of Service</a> | <a href="@(baseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #@(vendrThemeColor);">Privacy Policy</a>
+                                <a href="@(BaseUrl + vendrStoreTsAndCsUrl)" target="_blank" style="color: #@(vendrThemeColor);">Terms of Service</a> | <a href="@(BaseUrl + vendrStorePrivacyPolicyUrl)" target="_blank" style="color: #@(vendrThemeColor);">Privacy Policy</a>
                             </p>
                             <p style="text-align: center; margin-bottom: 0;">@(store.Name), @(vendrStoreAddress)</p>
 
