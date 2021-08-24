@@ -170,6 +170,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     x.SortOrder = 30;
                 }),
                 CreatePropertyType(booleanDataType.Value, x => {
+                    x.Alias = "vendrCollectShippingInfo";
                     x.Name = "Collect Shipping Info";
                     x.Description = "Select whether to collect shipping information or not. Not necessary if you are only dealing with digital downloads.";
                     x.SortOrder = 40;
