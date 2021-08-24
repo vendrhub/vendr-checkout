@@ -23,86 +23,86 @@ variables:
     value: 'Vendr.Checkout'
 
 stages:
-- stage: Build
-  displayName: Build stage
 
-  jobs:
-  - job: Build
-    displayName: Build
+  - stage: build
+    displayName: 'Build'
+    dependsOn: [  ]
     pool:
       vmImage: $(vmImageName)
+    jobs:
 
-    steps:
-    - task: MSBuild@1
-      displayName: 'Build solution'
-      inputs:
-        solution: 'build/build.proj'
-        configuration: 'Release'
-        msbuildArguments: '-target:PrepareAndPackageAll -property:ArtifactsDir=$(Build.ArtifactStagingDirectory)'
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: $(vmImageName)
 
-    - publish: $(Build.ArtifactStagingDirectory)
-      displayName: 'Publish Artifacts'
-      artifact: artifacts
+          steps:
+            - task: CmdLine@2
+                inputs:
+                  script: './build.cmd Pack'
 
-- stage: Deploy
-  displayName: Deploy stage
-  dependsOn: Build
+            - task: PublishBuildArtifacts@1
+              inputs:
+                pathToPublish: '$(Build.ArtifactStagingDirectory)'
+                artifactName: artifacts
+
+- stage: deploy
+  displayName: 'Deploy'
   condition: succeeded()
+  dependsOn: [ build ]
 
   jobs:
-  - deployment: Deploy
+  - deployment: deploy
     displayName: Deploy
     environment: 'development'
     pool:
       vmImage: $(vmImageName)
-
     strategy:
       runOnce:
         deploy:
+          steps: 
 
-          steps:
+            # Unstable Deploy
+            - task: NuGetCommand@2
+              displayName: 'Deploy to unstable feed'
+              inputs:
+                command: 'push'
+                packagesToPush: '$(Pipeline.Workspace)/artifacts/**/*.nupkg;!$(Pipeline.Workspace)/artifacts/**/*.snupkg'
+                nuGetFeedType: 'internal'
+                publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
 
-          # Unstable Deploy
-          - task: NuGetCommand@2
-            displayName: 'Deploy to unstable feed'
-            inputs:
-              command: 'push'
-              packagesToPush: '$(Pipeline.Workspace)/artifacts/**/*.nupkg;!$(Pipeline.Workspace)/artifacts/**/*.snupkg'
-              nuGetFeedType: 'internal'
-              publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
+            # Release Deploy
+            - task: UseDotNet@2
+              condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              inputs:
+                version: 3.0.100
 
-          # Release Deploy
-          - task: UseDotNet@2
-            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-            inputs:
-              version: 3.0.100
+            - powershell: |
+                # get the umbraco package file (assumes there is just one zip file package)
+                $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\packages\*" -File -Include $(packageName).*.zip | Select-Object -First 1).FullName
+                # assign the filename to a variable        
+                echo "$f" 
+                echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
+              displayName: 'Get Umbraco Package path'
+              condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
 
-          - powershell: |
-              # get the umbraco package file (assumes there is just one zip file package)
-              $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\BuildArtifacts\packages\*" -File -Include $(packageName).*.zip | Select-Object -First 1).FullName
-              # assign the filename to a variable        
-              echo "$f" 
-              echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
-            displayName: 'Get Umbraco Package path'
-            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+            - task: NuGetCommand@2
+              displayName: 'Deploy to NuGet.org'
+              condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              inputs:
+                command: push
+                nuGetFeedType: external
+                packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
+                publishFeedCredentials: '$(nuGetOrgServiceCreds)'
 
-          - task: NuGetCommand@2
-            displayName: 'Deploy to NuGet.org'
-            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-            inputs:
-              command: push
-              nuGetFeedType: external
-              packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
-              publishFeedCredentials: '$(nuGetOrgServiceCreds)'
+            - script: |
+                dotnet tool install --global Umbraco.Tools.Packages
+              condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              displayName: 'Install UmbPack'
 
-          - script: |
-              dotnet tool install --global Umbraco.Tools.Packages
-            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-            displayName: 'Install UmbPack'
-
-          - script: |
-              umbpack push $(umbracoPackageFile) -k %OUR_UMBRACO_API_KEY% -w v860,v850,v840,v830,v820 -c true -a $(packageName).*.zip 
-            condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-            displayName: 'Deploy to Our Umbraco'
-            env:
-              OUR_UMBRACO_API_KEY: $(our-umbraco-api-key)
+            - script: |
+                umbpack push $(umbracoPackageFile) -k %OUR_UMBRACO_API_KEY% -w v860,v850,v840,v830,v820 -c true -a $(packageName).*.zip 
+              condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              displayName: 'Deploy to Our Umbraco'
+              env:
+                OUR_UMBRACO_API_KEY: $(our-umbraco-api-key)
