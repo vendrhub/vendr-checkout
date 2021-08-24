@@ -25,8 +25,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
         private readonly PropertyEditorCollection _propertyEditors;
 
 #if NETFRAMEWORK
-        public CreateVendrCheckoutDataTypesTask(IDataTypeService dataTypeService, PropertyEditorCollection propertyEditors,
-            IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
+        public CreateVendrCheckoutDataTypesTask(IDataTypeService dataTypeService, PropertyEditorCollection propertyEditors)
         {
             _dataTypeService = dataTypeService;
             _propertyEditors = propertyEditors;

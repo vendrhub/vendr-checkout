@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
       <TargetFrameworks>net472;net5.0</TargetFrameworks>
@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-rc002" />
+        <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0-rc002" />
         <PackageReference Include="Vendr.Umbraco.Startup" Version="2.0.0-rc0010" />
     </ItemGroup>
 

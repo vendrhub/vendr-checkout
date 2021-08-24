@@ -1,33 +1,48 @@
 ﻿using System.Linq;
-using System.Web.Mvc;
-using Umbraco.Web.Models;
+
+#if NETFRAMEWORK
+using Umbraco.Web;
+using IActionResult = System.Web.Mvc.ActionResult;
+#else
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Core.Web;
+using Umbraco.Extensions;
+#endif
 
 namespace Vendr.Checkout.Web.Controllers
 {
     public class VendrCheckoutCheckoutPageController : VendrCheckoutBaseController
     {
-        public override ActionResult Index(ContentModel model)
+#if NET
+        public VendrCheckoutCheckoutPageController(ILogger<VendrCheckoutCheckoutPageController> logger, ICompositeViewEngine compositeViewEngine, IUmbracoContextAccessor umbracoContextAccessor)
+            : base(logger, compositeViewEngine, umbracoContextAccessor)
+        { }
+#endif
+
+        public override IActionResult Index()
         {
             // Check the cart is valid before continuing 
             if (!IsValidCart(out var redirectUrl))
                 return Redirect(redirectUrl);
 
             // If the page has a template, use it
-            if (model.Content.TemplateId.HasValue && model.Content.TemplateId.Value > 0)
-                return base.Index(model);
+            if (CurrentPage.TemplateId.HasValue && CurrentPage.TemplateId.Value > 0)
+                return base.Index();
 
             // No template so redirect to the first child if one exists
-            if (model.Content.Children != null)
+            if (CurrentPage.Children != null)
             {
-                var firstChild = model.Content.Children.FirstOrDefault();
+                var firstChild = CurrentPage.Children.FirstOrDefault();
                 if (firstChild != null)
                 {
-                    return RedirectPermanent(firstChild.Url);
+                    return RedirectPermanent(firstChild.Url());
                 }
             }
 
             // Still nothing so 404
-            return new HttpNotFoundResult();
+            return NotFound();
         }
     }
 }

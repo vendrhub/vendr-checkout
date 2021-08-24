@@ -1,4 +1,6 @@
-﻿namespace Vendr.Checkout.Web.Dtos
+﻿using System;
+
+namespace Vendr.Checkout.Web.Dtos
 {
     public class VendrUpdateOrderInformationDto
     {
@@ -14,6 +16,6 @@
 
         public string Comments { get; set; }
 
-        public int? NextStep { get; set; }
+        public Guid? NextStep { get; set; }
     }
 }

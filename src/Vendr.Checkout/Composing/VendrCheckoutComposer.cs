@@ -1,7 +1,6 @@
 ﻿using Vendr.Checkout.Extensions;
 using Vendr.Checkout.Configuration;
 using Vendr.Checkout.Services;
-using Vendr.Checkout.Pipeline.Implement;
 
 #if NETFRAMEWORK
 using Umbraco.Core;
@@ -30,6 +29,9 @@ namespace Vendr.Checkout.Composing
 
             // Register services
             builder.Register<InstallService>(Lifetime.Singleton);
+
+            // Register helpers
+            builder.Register<PathHelper>(Lifetime.Singleton);
 
             // Register component
             builder.Components()

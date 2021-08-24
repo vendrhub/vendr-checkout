@@ -21,7 +21,7 @@ namespace Vendr.Checkout.Web.Events.Notification.Handlers
         }
 
 #if NETFRAMEWORK
-        private IUmbracoContext UmbracoContext => _umbracoContextAccessor.UmbracoContext;
+        private UmbracoContext UmbracoContext => _umbracoContextAccessor.UmbracoContext;
 #else
         private IUmbracoContext UmbracoContext => _umbracoContextAccessor.GetRequiredUmbracoContext();
 #endif

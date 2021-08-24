@@ -6,6 +6,6 @@ namespace Vendr.Checkout.Web.Dtos
     {
         public Guid PaymentMethod { get; set; }
 
-        public int? NextStep { get; set; }
+        public Guid? NextStep { get; set; }
     }
 }

@@ -26,7 +26,7 @@
 {
     @Html.AntiForgeryToken();
 
-    <input type="hidden" name="nextStep" value="@(nextStepPage?.Id)" />
+    <input type="hidden" name="nextStep" value="@(nextStepPage?.Key)" />
 
     <h3 class="text-xl font-medium mb-4 mt-8">Payment Method</h3>
 

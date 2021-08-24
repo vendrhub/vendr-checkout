@@ -1,40 +1,42 @@
-﻿using System;
+﻿using Vendr.Checkout.Configuration;
+
+#if NETFRAMEWORK
+
+#else
+using Microsoft.Extensions.Options;
+#endif
 
 namespace Vendr.Checkout
 {
-    public static class PathHelper
+    public class PathHelper
     {
-        public static string RootPath
-        {
-            get
-            {
-                var rootPath = ConfigurationManager.AppSettings["VendrCheckout:RootPath"]?.ToString();
-                return !string.IsNullOrWhiteSpace(rootPath) ? rootPath : "/App_Plugins/VendrCheckout";
-            } 
-        }
-          
-        private static readonly string VirtualViewPathToken = "~" + RootPath + "/Views/{0}.cshtml";
-        private static readonly string VirtualPartialViewPathToken = "~" + RootPath + "/Views/Partials/{0}.cshtml";
-        private static readonly string VirtualEmailViewPathToken = "~" + RootPath + "/Views/Emails/{0}.cshtml";
+        private readonly string _rootViewPath;
 
-        public static string GetVendrCheckoutViewPath(string viewName)
+#if NETFRAMEWORK
+        public PathHelper(VendrCheckoutSettings settings)
         {
-            return string.Format(VirtualViewPathToken, viewName);
+            _rootViewPath = settings.RootViewPath;
         }
-
-        public static string GetVendrCheckoutPartialViewPath(string viewName)
+#else
+        public PathHelper(IOptions<VendrCheckoutSettings> settings)
         {
-            return string.Format(VirtualPartialViewPathToken, viewName);
+            _rootViewPath = settings.Value.RootViewPath;
+        }
+#endif
+
+        public string GetVendrCheckoutViewPath(string viewName)
+        {
+            return string.Format("~" + _rootViewPath + "/{0}.cshtml", viewName);
         }
 
-        public static string GetVendrCheckoutEmailViewPath(string viewName)
+        public string GetVendrCheckoutPartialViewPath(string viewName)
         {
-            return string.Format(VirtualEmailViewPathToken, viewName);
+            return string.Format("~" + _rootViewPath + "/Partials/{0}.cshtml", viewName);
         }
 
-        public static string GetDomain(Uri requestUrl)
+        public string GetVendrCheckoutEmailViewPath(string viewName)
         {
-            return requestUrl.Scheme + Uri.SchemeDelimiter + requestUrl.Authority;
+            return string.Format("~" + _rootViewPath + "/Emails/{0}.cshtml", viewName);
         }
     }
 }

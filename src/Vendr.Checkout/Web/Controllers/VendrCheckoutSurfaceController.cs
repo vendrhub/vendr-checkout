@@ -1,29 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
+using Vendr.Checkout.Web.Dtos;
+using Vendr.Core.Api;
+using Vendr.Extensions;
+using Vendr.Common.Validation;
+using VendrConstants = Vendr.Core.Constants;
+
+#if NETFRAMEWORK
+using Umbraco.Core;
 using System.Web.Mvc;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
-using Vendr.Checkout.Web.Dtos;
-using Vendr.Core;
-using Vendr.Core.Web.Api;
-using Vendr.Core.Exceptions;
-using Umbraco.Core;
-using VendrConstants = Vendr.Core.Constants;
-using System.Linq;
+using IActionResult = System.Web.Mvc.ActionResult;
+#else
+using Umbraco.Cms.Web.Website.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Infrastructure.Persistence;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.Logging;
+using Umbraco.Cms.Core.Routing;
+using Umbraco.Extensions;
+#endif
 
 namespace Vendr.Checkout.Web.Controllers
 {
-    public class VendrCheckoutSurfaceController : SurfaceController, IRenderController
+    public class VendrCheckoutSurfaceController : SurfaceController
     {
         private readonly IVendrApi _vendrApi;
 
+#if NETFRAMEWORK
         public VendrCheckoutSurfaceController(IVendrApi vendrAPi)
+#else
+        public VendrCheckoutSurfaceController(IUmbracoContextAccessor umbracoContextAccessor, IUmbracoDatabaseFactory databaseFactory, 
+            ServiceContext services, AppCaches appCaches, IProfilingLogger profilingLogger, IPublishedUrlProvider publishedUrlProvider,
+            IVendrApi vendrAPi)
+            : base(umbracoContextAccessor, databaseFactory, services, appCaches, profilingLogger, publishedUrlProvider)
+#endif
         {
             _vendrApi = vendrAPi;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ApplyDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
+        public IActionResult ApplyDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
             {
@@ -44,17 +66,17 @@ namespace Vendr.Checkout.Web.Controllers
                 ModelState.AddModelError("code", "Failed to redeem discount code: "+ ex.Message);
 
                 return IsAjaxRequest()
-                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    ? (IActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
                     : CurrentUmbracoPage();
             }
 
             return IsAjaxRequest()
-                ? (ActionResult)Json(new { success = true })
+                ? (IActionResult)Json(new { success = true })
                 : RedirectToCurrentUmbracoPage();
         }
 
         [HttpGet]
-        public ActionResult RemoveDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
+        public IActionResult RemoveDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
             {
@@ -75,18 +97,18 @@ namespace Vendr.Checkout.Web.Controllers
                 ModelState.AddModelError("", "Failed to unredeem discount code: " + ex.Message);
 
                 return IsAjaxRequest()
-                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) }, JsonRequestBehavior.AllowGet)
+                    ? (IActionResult)JsonGet(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
                     : CurrentUmbracoPage();
             }
 
             return IsAjaxRequest()
-                ? (ActionResult)Json(new { success = true }, JsonRequestBehavior.AllowGet)
+                ? (IActionResult)JsonGet(new { success = true })
                 : RedirectToCurrentUmbracoPage();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateOrderInformation(VendrUpdateOrderInformationDto model)
+        public IActionResult UpdateOrderInformation(VendrUpdateOrderInformationDto model)
         {
             try
             {
@@ -146,12 +168,12 @@ namespace Vendr.Checkout.Web.Controllers
                 ModelState.AddModelError("", "Failed to update information: " + ex.Message);
 
                 return IsAjaxRequest()
-                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    ? (IActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
                     : CurrentUmbracoPage();
             }
 
             return IsAjaxRequest()
-                ? (ActionResult)Json(new { success = true })
+                ? (IActionResult)Json(new { success = true })
                 : model.NextStep.HasValue
                     ? RedirectToUmbracoPage(model.NextStep.Value)
                     : RedirectToCurrentUmbracoPage();
@@ -159,7 +181,7 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateOrderShippingMethod(VendrUpdateOrderShippingMethodDto model)
+        public IActionResult UpdateOrderShippingMethod(VendrUpdateOrderShippingMethodDto model)
         {
             try
             {
@@ -181,12 +203,12 @@ namespace Vendr.Checkout.Web.Controllers
                 ModelState.AddModelError("", "Failed to update shipping method: " + ex.Message);
 
                 return IsAjaxRequest()
-                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    ? (IActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
                     : CurrentUmbracoPage();
             }
 
             return IsAjaxRequest()
-                ? (ActionResult)Json(new { success = true })
+                ? (IActionResult)Json(new { success = true })
                 : model.NextStep.HasValue
                     ? RedirectToUmbracoPage(model.NextStep.Value)
                     : RedirectToCurrentUmbracoPage();
@@ -194,7 +216,7 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateOrderPaymentMethod(VendrUpdateOrderPaymentMethodDto model)
+        public IActionResult UpdateOrderPaymentMethod(VendrUpdateOrderPaymentMethodDto model)
         {
             try
             {
@@ -216,12 +238,12 @@ namespace Vendr.Checkout.Web.Controllers
                 ModelState.AddModelError("", "Failed to update payment method: " + ex.Message);
 
                 return IsAjaxRequest()
-                    ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
+                    ? (IActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
                     : CurrentUmbracoPage();
             }
 
             return IsAjaxRequest()
-                ? (ActionResult)Json(new { success = true })
+                ? (IActionResult)Json(new { success = true })
                 : model.NextStep.HasValue
                     ? RedirectToUmbracoPage(model.NextStep.Value)
                     : RedirectToCurrentUmbracoPage();
@@ -229,29 +251,37 @@ namespace Vendr.Checkout.Web.Controllers
 
         private string GetIPAddress()
         {
-            var context = System.Web.HttpContext.Current;
-            if (context == null) return string.Empty;
-
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            var ipAddress = HttpContext.GetServerVariable("HTTP_X_FORWARDED_FOR");
             if (!string.IsNullOrEmpty(ipAddress))
             {
                 string[] addresses = ipAddress.Split(',');
                 if (addresses.Length != 0)
                     return addresses[0];
             }
-            return context.Request.ServerVariables["REMOTE_ADDR"];
+
+            return HttpContext.GetServerVariable("REMOTE_ADDR");
         }
 
         private bool IsAjaxRequest()
         {
-            if (Request.IsAjaxRequest())
-                return true;
-
             var headerName = "X-Requested-With";
             var headerValue = "xmlhttprequest";
 
+#if NETFRAMEWORK
             return (Request[headerName] != null && Request[headerName].InvariantEquals(headerValue))
                 || (Request.Headers != null && Request.Headers[headerName] != null && Request.Headers[headerName].InvariantEquals(headerValue));
+#else
+            return (Request.Query.ContainsKey(headerName) && Request.Query[headerName].ToString().InvariantEquals(headerValue))
+                || (Request.Form.ContainsKey(headerName) && Request.Form[headerName].ToString().InvariantEquals(headerValue))
+                || (Request.Headers != null && Request.Headers.ContainsKey(headerName) && Request.Headers[headerName].ToString().InvariantEquals(headerValue));
+#endif
         }
+
+        private JsonResult JsonGet(object model)
+#if NETFRAMEWORK
+            => Json(model, JsonRequestBehavior.AllowGet);
+#else
+            => Json(model);
+#endif
     }
 }

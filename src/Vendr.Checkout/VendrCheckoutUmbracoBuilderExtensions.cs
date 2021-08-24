@@ -1,14 +1,14 @@
 ﻿#if NET
 
 using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Notifications;
 using Vendr.Checkout.Configuration;
+using Vendr.Checkout.Events;
 using Vendr.Checkout.Extensions;
-using Vendr.Checkout.Pipeline.Implement;
-using Vendr.Checkout.Pipeline.Implement.Tasks;
 using Vendr.Checkout.Services;
-using Vendr.Extensions;
 
 namespace Vendr.Checkout
 {
@@ -16,9 +16,9 @@ namespace Vendr.Checkout
     {
         public static IUmbracoBuilder AddVendrCheckout(this IUmbracoBuilder builder, Action<VendrCheckoutSettings> defaultOptions = default)
         {
-            // If the Vendr IFactory is registred then we assume everything is already registered so we don't do it again. 
-            //if (builder.Services.FirstOrDefault(x => x.ServiceType == typeof(IFactory)) != null)
-            //    return builder;
+            // If the Vendr Checkout InstallService is registred then we assume everything is already registered so we don't do it again. 
+            if (builder.Services.FirstOrDefault(x => x.ServiceType == typeof(InstallService)) != null)
+                return builder;
 
             // Register configuration
             var options = builder.Services.AddOptions<VendrCheckoutSettings>()
@@ -38,7 +38,11 @@ namespace Vendr.Checkout
             // Register services
             builder.Services.AddSingleton<InstallService>();
 
-            // TODO: SyncZeroValuePaymentProviderContinueUrl
+            // Register helpers
+            builder.Services.AddSingleton<PathHelper>();
+
+            // Register Umbraco event handlers
+            builder.AddNotificationHandler<ContentCacheRefresherNotification, SyncZeroValuePaymentProviderContinueUrl>();
 
             return builder;
         }
