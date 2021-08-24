@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Vendr.Checkout</id>
+        <version>0.0.0</version>
+        <title>Vendr.Checkout</title>
+        <authors>Vendr, Outfield Digital Ltd</authors>
+        <owners>Outfield Digital Ltd</owners>
+        <copyright>Outfield Digital Ltd</copyright>
+        <icon>images\icon.png</icon>
+        <license type="expression">MIT</license>
+        <projectUrl>https://vendr.net/</projectUrl>
+        <description>A ready made checkout flow for Vendr, the eCommerce package for Umbraco</description>
+        <summary>A ready made checkout flow for Vendr, the eCommerce package for Umbraco</summary>
+        <language>en-US</language>
+        <tags>umbraco ecommerce vendr</tags>
+        <dependencies>
+            <group targetFramework="net472">
+                <dependency id="UmbracoCms.Web" version="[8.10.3,8.9999999]" />
+                <dependency id="Vendr.Umbraco.Startup" version="[2.0.0-rc0010,2.999999)" />
+            </group>
+            <group targetFramework="net5.0">
+                <dependency id="Umbraco.Cms.Web.Website" version="[9.0.0-rc002,9.9999999]" />
+                <dependency id="Vendr.Umbraco.Startup" version="[2.0.0-rc0010,2.999999)" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <!-- nuget files -->
+        <file src="$ArtifactFilesDirectory$\assets\logo-128.png" target="images\icon.png" />
+
+        <!-- libs -->
+        <file src="$ProjectDirectory$\bin\$Configuration$\net472\Vendr.Checkout.dll" target="lib\net472\Vendr.Checkout.dll" />
+        <file src="$ProjectDirectory$\bin\$Configuration$\net5.0\Vendr.Checkout.dll" target="lib\net5.0\Vendr.Checkout.dll" />
+
+        <!-- content -->
+        <file src="$ArtifactFilesDirectory$\App_Plugins\**\*" target="App_Plugins" />
+
+        <!-- UmbracoCms props and targets used to copy the content into the solution in .NET Core -->
+        <file src="build\Vendr.Checkout.Umbraco.Web.UI.targets" target="buildTransitive\" />
+        <file src="build\Vendr.Checkout.Umbraco.Web.UI.targets" target="build\net5.0\" />
+
+        <!-- Install script used to copy the content into the solution in .NET Framework -->
+        <file src="tools\install.ps1" target="tools\net472\" />
+
+    </files>
+</package>

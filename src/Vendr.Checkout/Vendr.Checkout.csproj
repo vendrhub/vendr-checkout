@@ -2,16 +2,6 @@
 
   <PropertyGroup>
       <TargetFrameworks>net472;net5.0</TargetFrameworks>
-      <Authors>Vendr, Outfield Digital Ltd</Authors>
-      <Company>Outfield Digital Ltd</Company>
-      <Product>Vendr.Checkout</Product>
-      <Copyright>Outfield Digital Ltd</Copyright>
-      <PackageProjectUrl>https://vendr.net</PackageProjectUrl>
-      <PackageIcon>logo-128.png</PackageIcon>
-      <PackageTags>umbraco ecommerce vendr</PackageTags>
-      <Description>A ready made checkout flow for Vendr, the eCommerce package for Umbraco</Description>
-      <RepositoryUrl>https://github.com/vendrhub/vendr-checkout</RepositoryUrl>
-      <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
@@ -30,16 +20,5 @@
             <Analyzer Remove="@(Analyzer)" Condition="%(FileName) == 'Lucene.Net.CodeAnalysis.CSharp'" />
         </ItemGroup>
     </Target>
-
-    <ItemGroup>
-        <None Include="..\..\assets\logo-128.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </None>
-        <None Include="..\..\LICENSE.md">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </None>
-    </ItemGroup>
     
 </Project>
