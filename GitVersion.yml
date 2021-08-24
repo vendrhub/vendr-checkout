@@ -32,7 +32,7 @@ branches:
     source-branches: ['main', 'develop', 'feature', 'hotfix', 'release-alpha', 'release-beta']
   feature:
     mode: ContinuousDeployment
-    tag: alpha.{BranchName}
+    tag: alpha-{BranchName}
   pull-request:
     regex: ^(pull|pull\-requests|pr|patch)[/-]
     mode: ContinuousDeployment
