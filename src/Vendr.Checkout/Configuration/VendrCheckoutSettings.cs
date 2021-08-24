@@ -12,7 +12,7 @@ namespace Vendr.Checkout.Configuration
 
         public VendrCheckoutSettings()
         {
-            RootViewPath = "/App_Plugins/VendrCheckout";
+            RootViewPath = "/App_Plugins/VendrCheckout/views";
 
 #if NETFRAMEWORK
             var configRootViewPath = ConfigurationManager.AppSettings["VendrCheckout:RootViewPath"]?.ToString();
