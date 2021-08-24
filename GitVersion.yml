@@ -1,0 +1,44 @@
+branches:
+  master:
+    regex: ^ma[ster|in]
+  release-alpha:
+    regex: ^releases?[/-](.*)-alpha$
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
+    pre-release-weight: 1000
+    source-branches: ['main', 'develop', 'feature', 'hotfix']
+  release-beta:
+    regex: ^releases?[/-].*-beta$ 
+    mode: ContinuousDeployment
+    tag: beta
+    increment: Patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
+    pre-release-weight: 2000
+    source-branches: ['main', 'develop', 'feature', 'hotfix', 'release-alpha']
+  release:
+    regex: ^releases?[/-].*(?<!-(alpha|beta))$
+    mode: ContinuousDeployment
+    tag: rc
+    commit-message-incrementing: Disabled
+    pre-release-weight: 3000
+    source-branches: ['main', 'develop', 'feature', 'hotfix', 'release-alpha', 'release-beta']
+  feature:
+    mode: ContinuousDeployment
+    tag: alpha.{BranchName}
+  pull-request:
+    regex: ^(pull|pull\-requests|pr|patch)[/-]
+    mode: ContinuousDeployment
+  hotfix:
+    mode: ContinuousDeployment
+  support:
+    mode: ContinuousDeployment
+    tag: 'support'
+    increment: 'None'

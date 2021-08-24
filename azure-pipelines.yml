@@ -7,6 +7,7 @@ trigger:
   branches:
     include: 
       - dev
+      - feature/*
       - hotfix/*
       - release/*
   tags:
@@ -41,7 +42,7 @@ stages:
 
     - publish: $(Build.ArtifactStagingDirectory)
       displayName: 'Publish Artifacts'
-      artifact: BuildArtifacts
+      artifact: artifacts
 
 - stage: Deploy
   displayName: Deploy stage
@@ -60,12 +61,13 @@ stages:
         deploy:
 
           steps:
+
           # Unstable Deploy
           - task: NuGetCommand@2
             displayName: 'Deploy to unstable feed'
             inputs:
               command: 'push'
-              packagesToPush: '$(Pipeline.Workspace)/BuildArtifacts/**/*.nupkg;!$(Pipeline.Workspace)/BuildArtifacts/**/*.snupkg'
+              packagesToPush: '$(Pipeline.Workspace)/artifacts/**/*.nupkg;!$(Pipeline.Workspace)/artifacts/**/*.snupkg'
               nuGetFeedType: 'internal'
               publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
 
