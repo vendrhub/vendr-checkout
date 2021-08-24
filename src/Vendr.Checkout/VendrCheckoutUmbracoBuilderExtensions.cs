@@ -12,6 +12,11 @@ using Vendr.Checkout.Services;
 
 namespace Vendr.Checkout
 {
+    // ================================================================
+    // IMPORTANT! Whatever you change here, be sure to also update the
+    // v8 equivilent in /Composing/VendrCheckoutComposer.cs
+    // ================================================================
+
     public static class VendrCheckoutUmbracoBuilderExtensions
     {
         public static IUmbracoBuilder AddVendrCheckout(this IUmbracoBuilder builder, Action<VendrCheckoutSettings> defaultOptions = default)

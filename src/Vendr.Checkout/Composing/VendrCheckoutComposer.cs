@@ -13,6 +13,11 @@ using IBuilder = Umbraco.Cms.Core.DependencyInjection.IUmbracoBuilder;
 
 namespace Vendr.Checkout.Composing
 {
+    // ================================================================
+    // IMPORTANT! Whatever you change here, be sure to also update the
+    // v9 equivilent in /VendrCheckoutUmbracoBuilderExtensions.cs
+    // ================================================================
+
     public class VendrCheckoutComposer : IUserComposer
     {
         public void Compose(IBuilder builder)
