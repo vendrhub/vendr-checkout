@@ -10,9 +10,9 @@
     var checkoutPages = ctx.Content.GetByContentType(checkoutContentType);
     var checkoutPage = checkoutPages.First(x => x.GetStore()?.Id == Model.StoreId);
 
-    var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url;
-    var vendrStoreTsAndCsUrl = checkoutPage.Value<IPublishedContent>("vendrTermsAndConditionsPage")?.Url;
-    var vendrStorePrivacyPolicyUrl = checkoutPage.Value<IPublishedContent>("vendrPrivacyPolicyPage")?.Url;
+    var vendrStoreLogoUrl = checkoutPage.Value<IPublishedContent>("vendrStoreLogo")?.Url();
+    var vendrStoreTsAndCsUrl = checkoutPage.Value<IPublishedContent>("vendrTermsAndConditionsPage")?.Url();
+    var vendrStorePrivacyPolicyUrl = checkoutPage.Value<IPublishedContent>("vendrPrivacyPolicyPage")?.Url();
     var vendrStoreAddress = checkoutPage.Value<string>("vendrStoreAddress");
     var vendrThemeColor = checkoutPage.Value<string>("vendrThemeColor", defaultValue: "000000");
 }
