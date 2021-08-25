@@ -21,7 +21,10 @@
             },
             view: 'contentpicker',
             value: null,
-            config: { }
+            config: {
+                startNode: -1,
+                idType: 'udi'
+            }
         };
 
         vm.cancel = function() {
