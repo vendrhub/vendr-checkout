@@ -23,7 +23,7 @@
             value: null,
             config: {
                 startNode: -1,
-                idType: 'udi'
+                idType: 'int'
             }
         };
 

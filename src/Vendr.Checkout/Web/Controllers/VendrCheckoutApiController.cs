@@ -13,6 +13,7 @@ using Umbraco.Web.WebApi.Filters;
 #else
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.BackOffice.Controllers;
@@ -56,7 +57,7 @@ namespace Vendr.Checkout.Web.Controllers
 
             //  Perform the install
             new InstallService()
-                .Install(siteRootNodeId, store);
+                .Install(siteRootNode.Id, store);
 
             // Return success
             return new { success = true };
