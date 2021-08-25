@@ -42,10 +42,10 @@ namespace Vendr.Checkout.Web.Controllers
 #else
         [Authorize(Policy = AuthorizationPolicies.SectionAccessSettings)]
 #endif
-        public object InstallVendrCheckout(int siteRootNodeId)
+        public object InstallVendrCheckout(GuidUdi siteRootNodeId)
         {
             // Validate the site root node
-            var siteRootNode = _contentService.GetById(siteRootNodeId);
+            var siteRootNode = _contentService.GetById(siteRootNodeId.Guid);
 
             var storeId = GetStoreId(siteRootNode);
             if (!storeId.HasValue)
