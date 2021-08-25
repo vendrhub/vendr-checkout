@@ -39,7 +39,7 @@
 
                                 @if (!string.IsNullOrWhiteSpace(vendrStoreLogoUrl))
                                 {
-                                    <a href="@(BaseUrl)" target="_blank"><img src="@Html.Raw(BaseUrl + vendrStoreLogoUrl.GetCropUrl(200, 100, imageCropMode: ImageCropMode.Max))" style="max-width: 200px; max-height: 100px;" alt="@(store.Name)" border="0" /></a>
+                                    <a href="@(BaseUrl)" target="_blank"><img src="@Html.Raw(BaseUrl + vendrStoreLogoUrl.GetCropUrl(200, 100, imageCropMode: ImageCropMode.Max))" alt="@(store.Name)" border="0" /></a>
                                 }
                                 else
                                 {
