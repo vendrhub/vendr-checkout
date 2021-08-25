@@ -37,8 +37,8 @@
         <file src="$ArtifactFilesDirectory$\App_Plugins\**\*" target="App_Plugins" />
 
         <!-- UmbracoCms props and targets used to copy the content into the solution in .NET Core -->
-        <file src="build\Vendr.Checkout.Umbraco.Web.UI.targets" target="buildTransitive\" />
-        <file src="build\Vendr.Checkout.Umbraco.Web.UI.targets" target="build\net5.0\" />
+        <file src="build\Vendr.Checkout.targets" target="buildTransitive\" />
+        <file src="build\Vendr.Checkout.targets" target="build\net5.0\" />
 
         <!-- Install script used to copy the content into the solution in .NET Framework -->
         <file src="tools\install.ps1" target="tools\net472\" />
