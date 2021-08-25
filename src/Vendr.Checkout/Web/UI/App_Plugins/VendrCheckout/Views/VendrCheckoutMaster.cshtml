@@ -42,7 +42,7 @@
             <div class="bg-white p-8 text-center lg:hidden">
                 @if (checkoutPage.HasValue("vendrStoreLogo"))
                 {
-                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" style="max-width: 200px; max-height: 200px;" class="inline-block" alt="@(store.Name)" /></a>
+                    <a href="/"><img src="@Html.Raw(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" style="max-width: 200px; max-height: 200px;" class="inline-block" alt="@(store.Name)" /></a>
                 }
                 else
                 {
@@ -160,7 +160,7 @@
                     <div class="text-center mb-4">
                         @if (checkoutPage.HasValue("vendrStoreLogo"))
                         {
-                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 100, imageCropMode: ImageCropMode.Max))" style="max-width: 200px; max-height: 100px;" class="inline-block" alt="@(store.Name)" /></a>
+                            <a href="/"><img src="@Html.Raw(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 100, imageCropMode: ImageCropMode.Max))" style="max-width: 200px; max-height: 100px;" class="inline-block" alt="@(store.Name)" /></a>
 
                         }
                         else
