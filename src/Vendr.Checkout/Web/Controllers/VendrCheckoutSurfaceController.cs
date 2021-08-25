@@ -13,7 +13,6 @@ using Umbraco.Web;
 using Umbraco.Web.Mvc;
 using IActionResult = System.Web.Mvc.ActionResult;
 #else
-using Umbraco.Cms.Web.Website.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Umbraco.Cms.Core.Web;
@@ -22,6 +21,8 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Logging;
 using Umbraco.Cms.Core.Routing;
+using Umbraco.Cms.Web.Website.Controllers;
+using Umbraco.Cms.Web.Common.Filters;
 using Umbraco.Extensions;
 #endif
 
@@ -45,6 +46,9 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+#if NET
+        [ValidateUmbracoFormRouteString]
+#endif
         public IActionResult ApplyDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
@@ -76,6 +80,9 @@ namespace Vendr.Checkout.Web.Controllers
         }
 
         [HttpGet]
+#if NET
+        [ValidateUmbracoFormRouteString]
+#endif
         public IActionResult RemoveDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
@@ -108,6 +115,9 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+#if NET
+        [ValidateUmbracoFormRouteString]
+#endif
         public IActionResult UpdateOrderInformation(VendrUpdateOrderInformationDto model)
         {
             try
@@ -181,6 +191,9 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+#if NET
+        [ValidateUmbracoFormRouteString]
+#endif
         public IActionResult UpdateOrderShippingMethod(VendrUpdateOrderShippingMethodDto model)
         {
             try
@@ -216,6 +229,9 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+#if NET
+        [ValidateUmbracoFormRouteString]
+#endif
         public IActionResult UpdateOrderPaymentMethod(VendrUpdateOrderPaymentMethodDto model)
         {
             try
