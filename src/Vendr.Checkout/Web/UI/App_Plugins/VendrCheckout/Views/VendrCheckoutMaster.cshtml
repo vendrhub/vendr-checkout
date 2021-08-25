@@ -42,7 +42,7 @@
             <div class="bg-white p-8 text-center lg:hidden">
                 @if (checkoutPage.HasValue("vendrStoreLogo"))
                 {
-                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
+                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" style="max-width: 200px; max-height: 200px;" class="inline-block" alt="@(store.Name)" /></a>
                 }
                 else
                 {
@@ -184,7 +184,7 @@
                                         }
                                         @if (!passedStep && item.Step.Id != Model.Id && canGoBack)
                                         {
-                                            <a href="@item.Step.Url" class="hover:text-@(themeColor)">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</a>
+                                            <a href="@item.Step.Url()" class="hover:text-@(themeColor)">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</a>
                                         }
                                         else
                                         {
