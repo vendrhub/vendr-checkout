@@ -17,5 +17,14 @@ namespace Vendr.Checkout.Web
             return (TService)view.Context.RequestServices.GetService(typeof(TService));
 #endif
         }
+
+        public static bool IsUmbraco8(this RazorPage view)
+        {
+#if NETFRAMEWORK
+            return true;
+#else
+            return false;
+#endif
+        }
     }
 }

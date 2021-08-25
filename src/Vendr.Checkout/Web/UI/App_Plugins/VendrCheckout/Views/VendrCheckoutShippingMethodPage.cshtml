@@ -22,7 +22,10 @@
 
 @using (Html.BeginUmbracoForm("UpdateOrderShippingMethod", "VendrCheckoutSurface"))
 {
-    @Html.AntiForgeryToken();
+    if (this.IsUmbraco8())
+    {
+        @Html.AntiForgeryToken();
+    }
 
     <input type="hidden" name="nextStep" value="@(nextStepPage?.Key)" />
 

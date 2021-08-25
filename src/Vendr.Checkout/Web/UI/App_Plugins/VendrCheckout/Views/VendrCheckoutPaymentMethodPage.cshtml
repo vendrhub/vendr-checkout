@@ -23,7 +23,10 @@
 
 @using (Html.BeginUmbracoForm("UpdateOrderPaymentMethod", "VendrCheckoutSurface"))
 {
-    @Html.AntiForgeryToken();
+    if (this.IsUmbraco8())
+    {
+        @Html.AntiForgeryToken();
+    }
 
     <input type="hidden" name="nextStep" value="@(nextStepPage?.Key)" />
 
@@ -33,7 +36,7 @@
     {
         <ul class="border border-gray-300 rounded">
             @foreach (var item in paymentMethods.Where(x => zeroValuePaymentMethod == null || x.Alias != zeroValuePaymentMethod.Alias)
-                .Select((pm, i) => new { PaymentMethod = pm, Index = i }))
+               .Select((pm, i) => new { PaymentMethod = pm, Index = i }))
             {
                 <li class="border-gray-300 @(item.Index > 0 ? "border-t " : "")">
                     <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-100">

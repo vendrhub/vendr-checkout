@@ -16,7 +16,10 @@
     <div class="pb-4 mb-4 border-b border-gray-300 ">
         @using (Html.BeginUmbracoForm("ApplyDiscountOrGiftCardCode", "VendrCheckoutSurface", null, new { @class = "flex w-full m-0" }))
         {
-            @Html.AntiForgeryToken();
+            if (this.IsUmbraco8())
+            {
+                @Html.AntiForgeryToken();
+            }
 
             <input type="text" name="code" placeholder="Discount / Gift Card Code" class="flex-1 py-2 px-4 border rounded placeholder-gray-700" />
             <button class="ml-4 bg-@(themeColor) text-white px-4 rounded hover:bg-gray-900" type="submit">Apply</button>
@@ -40,7 +43,10 @@
 
 @using (Html.BeginUmbracoForm("UpdateOrderInformation", "VendrCheckoutSurface"))
 {
-    @Html.AntiForgeryToken();
+    if (this.IsUmbraco8())
+    {
+        @Html.AntiForgeryToken();
+    }
 
     <input type="hidden" name="nextStep" value="@(nextStepPage?.Key)" />
 
