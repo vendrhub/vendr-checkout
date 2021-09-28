@@ -102,6 +102,9 @@ namespace Vendr.Checkout.Web.Controllers
                             { VendrConstants.Properties.Customer.EmailPropertyAlias, model.Email },
                             { "marketingOptIn", model.MarketingOptIn ? "1" : "0" },
 
+                            { "customerCompany", model.CompanyName },
+                            { "taxCode", model.TaxCode },
+
                             { VendrConstants.Properties.Customer.FirstNamePropertyAlias, model.BillingAddress.FirstName },
                             { VendrConstants.Properties.Customer.LastNamePropertyAlias, model.BillingAddress.LastName },
                             { "billingAddressLine1", model.BillingAddress.Line1 },

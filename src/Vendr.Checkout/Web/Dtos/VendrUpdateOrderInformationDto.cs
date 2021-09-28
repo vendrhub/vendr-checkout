@@ -6,6 +6,10 @@
 
         public bool MarketingOptIn { get; set; }
 
+        public string CompanyName { get; set; }
+
+        public string TaxCode { get; set; }
+
         public VendrOrderAddressDto BillingAddress { get; set; }
 
         public VendrOrderAddressDto ShippingAddress { get; set; }

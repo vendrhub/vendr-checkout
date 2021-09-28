@@ -53,6 +53,15 @@
 
     <h3 class="text-xl font-medium mb-4 mt-8">Billing Address</h3>
 
+    @*
+    <div class="flex -mx-1">
+        <input name="companyName" type="text" placeholder="Company name" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
+            value="@(currentOrder.Properties["customerCompany"])" />
+        <input name="taxCode" type="text" placeholder="Tax code" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
+            value="@(currentOrder.Properties["taxCode"])" />
+    </div>
+	*@
+
     <div class="flex -mx-1">
         <input name="billingAddress.Firstname" type="text" placeholder="First name" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 mx-1 w-full"
                value="@(currentOrder.CustomerInfo.FirstName)" required />
