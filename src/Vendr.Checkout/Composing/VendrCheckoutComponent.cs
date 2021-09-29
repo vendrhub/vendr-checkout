@@ -5,7 +5,6 @@ using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services.Changes;
 using Umbraco.Web;
 using Umbraco.Web.Cache;
-using Umbraco.Web.Routing;
 using Vendr.Core.Api;
 using Vendr.Core.Models;
 
@@ -22,36 +21,7 @@ namespace Vendr.Checkout.Composing
 
         public void Initialize()
         {
-            PublishedRequest.Prepared += RedirectEmptyCart;
             ContentCacheRefresher.CacheUpdated += SyncZeroValuePaymentProviderContinueUrl;
-        }
-
-        private void RedirectEmptyCart(object sender, System.EventArgs e)
-        {
-            var request = sender as PublishedRequest;
-
-            if (request.HasPublishedContent)
-            {
-                var currentPage = request.PublishedContent;
-
-                if (currentPage.ContentType.Alias == VendrCheckoutConstants.ContentTypes.Aliases.CheckoutPage
-                    || currentPage.ContentType.Alias == VendrCheckoutConstants.ContentTypes.Aliases.CheckoutStepPage)
-                {
-                    var store = currentPage.Value<StoreReadOnly>(Core.Constants.Properties.StorePropertyAlias, fallback: Fallback.ToAncestors);
-                    var order = !IsConfirmationPageType(currentPage)
-                        ? VendrApi.Instance.GetCurrentOrder(store.Id)
-                        : VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);
-
-                    if (order == null || order.OrderLines.Count == 0)
-                    {
-                        var backPage = currentPage.Value<IPublishedContent>("vendrCheckoutBackPage", fallback: Fallback.ToAncestors);
-                        if (backPage != null)
-                        {
-                            request.SetRedirect(backPage.Url);
-                        }
-                    }
-                }
-            }
         }
 
         private void SyncZeroValuePaymentProviderContinueUrl(ContentCacheRefresher sender, CacheRefresherEventArgs e)

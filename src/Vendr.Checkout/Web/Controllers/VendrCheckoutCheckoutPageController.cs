@@ -1,14 +1,17 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Umbraco.Web.Models;
-using Umbraco.Web.Mvc;
 
 namespace Vendr.Checkout.Web.Controllers
 {
-    public class VendrCheckoutCheckoutPageController : RenderMvcController
+    public class VendrCheckoutCheckoutPageController : VendrCheckoutBaseController
     {
         public override ActionResult Index(ContentModel model)
         {
+            // Check the cart is valid before continuing 
+            if (!IsValidCart(out var redirectUrl))
+                return Redirect(redirectUrl);
+
             // If the page has a template, use it
             if (model.Content.TemplateId.HasValue && model.Content.TemplateId.Value > 0)
                 return base.Index(model);
