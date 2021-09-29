@@ -6,7 +6,6 @@
 trigger:
   branches:
     include: 
-      - v1/dev
       - v1/hotfix/*
       - v1/release/*
   tags:
