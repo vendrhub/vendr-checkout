@@ -5,13 +5,13 @@
   </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-        <PackageReference Include="UmbracoCms.Web" Version="8.17.0-rc2" />
-        <PackageReference Include="Vendr.Umbraco.Startup" Version="2.0.0-rc0049" />
+        <PackageReference Include="UmbracoCms.Web" Version="8.17.0" />
+        <PackageReference Include="Vendr.Umbraco.Startup" Version="2.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
         <PackageReference Include="Umbraco.Cms.Web.Website" Version="9.0.0" />
-        <PackageReference Include="Vendr.Umbraco.Startup" Version="2.0.0-rc0049" />
+        <PackageReference Include="Vendr.Umbraco.Startup" Version="2.0.0" />
     </ItemGroup>
 
     <!-- Workaround for this bug (replace the analyzer name with the one you need to exclude (filename only, no extension) -->
