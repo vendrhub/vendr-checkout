@@ -6,10 +6,9 @@
 trigger:
   branches:
     include: 
-      - dev
-      - feature/*
-      - hotfix/*
-      - release/*
+      - v2/feature/*
+      - v2/hotfix/*
+      - v2/release/*
   tags:
     include:
       - v*
