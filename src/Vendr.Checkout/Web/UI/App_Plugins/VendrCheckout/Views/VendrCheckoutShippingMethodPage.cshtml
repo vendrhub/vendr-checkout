@@ -26,7 +26,7 @@
 
     <input type="hidden" name="nextStep" value="@(nextStepPage?.Id)" />
 
-    <h3 class="text-xl font-medium mb-4">Shipping Method</h3>
+    <h3 class="text-xl font-medium mb-4">@Umbraco.GetDictionaryValue("VendrCheckout.ShippingMethod", "Shipping Method")</h3>
     <ul class="border border-gray-300 rounded">
         @foreach (var item in shippingMethods.Select((sm, i) => new { ShippingMethod = sm, Index = i }))
         {
