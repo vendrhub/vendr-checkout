@@ -104,7 +104,9 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     x.Icon = "icon-settings-alt color-green";
                     x.PropertyGroups = new PropertyGroupCollection(new[]{
                         new PropertyGroup(new PropertyTypeCollection(true, checkoutStepProps)) {
+                            Alias = "settings",
                             Name = "Settings",
+                            Type = PropertyGroupType.Group,
                             SortOrder =100
                         }
                     });
@@ -122,7 +124,9 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     ? existing.PropertyGroups["Settings"]
                     : new PropertyGroup(new PropertyTypeCollection(true, checkoutStepProps)) 
                     {
+                        Alias = "settings",
                         Name = "Settings",
+                        Type = PropertyGroupType.Group,
                         SortOrder =100
                     };
 
@@ -222,7 +226,9 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     };
                     x.PropertyGroups = new PropertyGroupCollection(new[]{
                         new PropertyGroup(new PropertyTypeCollection(true, checkoutPageProps)) {
+                            Alias = "settings",
                             Name = "Settings",
+                            Type = PropertyGroupType.Group,
                             SortOrder = 50
                         }
                     });
@@ -238,7 +244,9 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     ? existing.PropertyGroups["Settings"]
                     : new PropertyGroup(new PropertyTypeCollection(true, checkoutPageProps))
                     {
+                        Alias = "settings",
                         Name = "Settings",
+                        Type = PropertyGroupType.Group,
                         SortOrder = 100
                     };
 
