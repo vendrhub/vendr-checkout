@@ -105,6 +105,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     x.PropertyGroups = new PropertyGroupCollection(new[]{
                         new PropertyGroup(new PropertyTypeCollection(true, checkoutStepProps)) {
                             Name = "Settings",
+                            Alias = "Settings",
                             SortOrder =100
                         }
                     });
@@ -123,6 +124,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     : new PropertyGroup(new PropertyTypeCollection(true, checkoutStepProps)) 
                     {
                         Name = "Settings",
+                        Alias = "Settings",
                         SortOrder =100
                     };
 
@@ -223,6 +225,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     x.PropertyGroups = new PropertyGroupCollection(new[]{
                         new PropertyGroup(new PropertyTypeCollection(true, checkoutPageProps)) {
                             Name = "Settings",
+                            Alias = "Settings",
                             SortOrder = 50
                         }
                     });
@@ -239,6 +242,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
                     : new PropertyGroup(new PropertyTypeCollection(true, checkoutPageProps))
                     {
                         Name = "Settings",
+                        Alias = "Settings",
                         SortOrder = 100
                     };
 
