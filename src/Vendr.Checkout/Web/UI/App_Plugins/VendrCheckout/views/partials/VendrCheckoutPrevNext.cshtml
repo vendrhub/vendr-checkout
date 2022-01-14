@@ -13,7 +13,7 @@
     }
     else if (backPage != null)
     {
-        <div><a href="@(backPage.Url())" class="text-@(themeColor) hover:text-gray-900 hover:underline"><i class="fa fa-angle-left"></i> @string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Navigation.ReturnTo", "Return to "), prevStep.Name)</a></div>
+        <div><a href="@(backPage.Url())" class="text-@(themeColor) hover:text-gray-900 hover:underline"><i class="fa fa-angle-left"></i> @string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Navigation.ReturnTo", "Return to "), backPage.Name)</a></div>
     }
     else
     {
