@@ -22,7 +22,7 @@
     @if (nextStep != null)
     {
         <div class="mb-4 w-full md:mb-0 md:w-auto">
-            <button id="continue" class="bg-@(themeColor) text-white px-4 py-4 w-full rounded hover:bg-gray-900" type="submit">@string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Navigation.ContinueTo", "Continue to {0}"), nextStep.Name)</button>
+            <button id="continue" class="bg-@(themeColor) text-white px-4 py-4 w-full rounded hover:bg-gray-900 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-300" type="submit">@string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Navigation.ContinueTo", "Continue to {0}"), nextStep.Name)</button>
         </div>
     }
 </div>

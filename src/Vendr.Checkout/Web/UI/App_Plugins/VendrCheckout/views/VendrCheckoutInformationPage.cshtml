@@ -100,7 +100,7 @@
             <input name="shippingSameAsBilling" type="checkbox" class="mr-2" value="true" @Html.Raw(currentOrder.Properties["shippingSameAsBilling"] == "1" || !currentOrder.Properties.ContainsKey("shippingSameAsBilling") ? "checked=\"checked\"" : "") /> @Umbraco.GetDictionaryValue("VendrCheckout.Information.ShippingSameAsBilling", "Shipping address is same as billing address")
         </label>
 
-        <div id="shipping-info" style="display: none;">
+        <div id="shipping-info" class="hidden">
 
             <h3 class="text-xl font-medium mb-4 mt-8">@Umbraco.GetDictionaryValue("VendrCheckout.Information.ShippingAddress", "Shipping Address")</h3>
 
