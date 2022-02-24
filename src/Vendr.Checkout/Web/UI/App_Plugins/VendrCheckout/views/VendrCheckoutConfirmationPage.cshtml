@@ -1,6 +1,6 @@
 ﻿@inherits UmbracoViewPage
 @{
-    Layout = "VendrCheckoutMaster.cshtml";
+    Layout = "VendrCheckoutLayout.cshtml";
     
     ViewData["finalized"] = true;
     ViewData["canGoBack"] = false;
@@ -12,7 +12,7 @@
 }
 
 <div class="border border-gray-300 p-6 rounded mb-8 text-center">
-    <span class="inline-flex items-center justify-center text-6xl border-2 border-green-500 rounded-full mb-4 w-24 h-24"><i class="fa fa-check text-green-500"></i></span>
+    <span class="inline-flex items-center justify-center text-6xl border-4 border-green-500 rounded-full mb-4 w-24 h-24"><svg viewBox="0 0 20 20" class="inline-block w-16 h-16 fill-current text-green-500"><use href="#ico-check" /></svg></span>
     <h3 class="text-xl font-medium mb-4">@string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Confirmation.ThankYou", "Thank you for your order #{0}"), currentOrder.OrderNumber ?? currentOrder.CartNumber)</h3>
     <p class="mb-4">@Html.Raw(string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Confirmation.ConfirmationEmailSent", "A confirmation email has been sent to {0}"), "<strong>" + currentOrder.CustomerInfo.Email + "</strong>"))</p>
     <p><a href="/" class="inline-block bg-@(themeColor) text-white px-4 py-4 rounded hover:bg-gray-900">@Umbraco.GetDictionaryValue("VendrCheckout.Confirmation.ReturnToStore", "Return to store")</a></p>

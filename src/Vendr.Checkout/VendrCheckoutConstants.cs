@@ -13,15 +13,15 @@ namespace Vendr.Checkout
         public static IDictionary<string, string> ColorMap = new Dictionary<string, string>
         {
             { "000000", "black" },
-            { "f56565", "red-500" },
-            { "ed8936", "orange-500" },
-            { "ecc94b", "yellow-500" },
-            { "48bb78", "green-500" },
-            { "38b2ac", "teal-500" },
-            { "4299e1", "blue-500" },
-            { "667eea", "indigo-500" },
-            { "9f7aea", "purple-500" },
-            { "ed64a6", "pink-500" }
+            { "ef4444", "red-500" },
+            { "f97316", "orange-500" },
+            { "eab308", "yellow-500" },
+            { "22c55e", "green-500" },
+            { "14b8a6", "teal-500" },
+            { "3b82f6", "blue-500" },
+            { "6366f1", "indigo-500" },
+            { "a855f7", "purple-500" },
+            { "ec4899", "pink-500" }
         };
 
         public static class DataTypes

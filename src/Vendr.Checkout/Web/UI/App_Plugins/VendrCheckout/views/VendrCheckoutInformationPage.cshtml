@@ -1,7 +1,7 @@
 ﻿@using Newtonsoft.Json;
 @inherits UmbracoViewPage
 @{
-    Layout = "VendrCheckoutMaster.cshtml";
+    Layout = "VendrCheckoutLayout.cshtml";
 
     var store = Model.GetStore();
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
@@ -21,7 +21,7 @@
                 @Html.AntiForgeryToken();
             }
 
-            <input type="text" name="code" placeholder="@Umbraco.GetDictionaryValue("VendrCheckout.Information.DiscountGiftCode", "Discount / Gift Card Code")" class="flex-1 py-2 px-4 border rounded placeholder-gray-700" />
+            <input type="text" name="code" placeholder="@Umbraco.GetDictionaryValue("VendrCheckout.Information.DiscountGiftCode", "Discount / Gift Card Code")" class="flex-1 py-2 px-4 border border-gray-300 rounded placeholder-gray-700" />
             <button class="ml-4 bg-@(themeColor) text-white px-4 rounded hover:bg-gray-900" type="submit">@Umbraco.GetDictionaryValue("VendrCheckout.Information.Apply", "Apply")</button>
         }
 
@@ -30,11 +30,11 @@
             <ul class="mt-4 block">
                 @foreach (var discountCode in currentOrder.DiscountCodes)
                 {
-                    <li class="inline-block mr-2"><a href="@Url.SurfaceAction("RemoveDiscountOrGiftCardCode",  "VendrCheckoutSurface", new { Code = discountCode.Code })" class="inline-block bg-gray-300 px-2 rounded hover:bg-gray-900 hover:text-white"><i class="fa fa-times mr-1"></i> @discountCode.Code</a></li>
+                    <li class="inline-block mr-2"><a href="@Url.SurfaceAction("RemoveDiscountOrGiftCardCode",  "VendrCheckoutSurface", new { Code = discountCode.Code })" class="inline-flex bg-gray-300 px-2 py-1 rounded hover:bg-gray-900 hover:text-white"><svg viewBox="0 0 20 20" class="inline-block w-5 h-5 fill-current mr-1"><use href="#ico-delete" /></svg> @discountCode.Code</a></li>
                 }
                 @foreach (var giftCard in currentOrder.GiftCards)
                 {
-                    <li class="inline-block mr-2"><a href="@Url.SurfaceAction("RemoveDiscountOrGiftCardCode",  "VendrCheckoutSurface", new { Code = giftCard.Code })" class="inline-block bg-gray-300 px-2 rounded hover:bg-gray-900 hover:text-white"><i class="fa fa-times mr-1"></i> @giftCard.Code</a></li>
+                    <li class="inline-block mr-2"><a href="@Url.SurfaceAction("RemoveDiscountOrGiftCardCode",  "VendrCheckoutSurface", new { Code = giftCard.Code })" class="inline-flex bg-gray-300 px-2 py-1 rounded hover:bg-gray-900 hover:text-white"><svg viewBox="0 0 20 20" class="inline-block w-5 h-5 fill-current mr-1"><use href="#ico-delete" /></svg> @giftCard.Code</a></li>
                 }
             </ul>
         }
@@ -96,9 +96,9 @@
 
     if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
     {
-<label class="flex items-center mb-2 cursor-pointer">
-    <input name="shippingSameAsBilling" type="checkbox" class="mr-2" value="true" @Html.Raw(currentOrder.Properties["shippingSameAsBilling"] == "1" || !currentOrder.Properties.ContainsKey("shippingSameAsBilling") ? "checked=\"checked\"" : "") /> @Umbraco.GetDictionaryValue("VendrCheckout.Information.ShippingSameAsBilling", "Shipping address is same as billing address")
-</label>
+        <label class="flex items-center mb-2 cursor-pointer">
+            <input name="shippingSameAsBilling" type="checkbox" class="mr-2" value="true" @Html.Raw(currentOrder.Properties["shippingSameAsBilling"] == "1" || !currentOrder.Properties.ContainsKey("shippingSameAsBilling") ? "checked=\"checked\"" : "") /> @Umbraco.GetDictionaryValue("VendrCheckout.Information.ShippingSameAsBilling", "Shipping address is same as billing address")
+        </label>
 
         <div id="shipping-info" style="display: none;">
 
@@ -142,7 +142,7 @@
         </div>
     }
 
-<h3 class="text-xl font-medium mb-4 mt-8">@Umbraco.GetDictionaryValue("VendrCheckout.Information.Comments", "Comments")</h3>
+    <h3 class="text-xl font-medium mb-4 mt-8">@Umbraco.GetDictionaryValue("VendrCheckout.Information.Comments", "Comments")</h3>
     <textarea name="comments" placeholder="@Umbraco.GetDictionaryValue("VendrCheckout.Information.EnterComments", "Enter comments here")" class="block placeholder-gray-700 border border-gray-300 rounded py-2 px-4 mb-2 w-full h-32">@(currentOrder.Properties["comments"])</textarea>
 
     @Html.VendrCheckoutPartial("VendrCheckoutPrevNext")

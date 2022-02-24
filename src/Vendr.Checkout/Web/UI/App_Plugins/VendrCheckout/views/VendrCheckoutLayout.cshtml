@@ -26,15 +26,14 @@
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <meta name="robots" content="noindex, nofollow" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.2.0/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/app_plugins/vendrcheckout/css/vendrcheckout.css" rel="stylesheet">
     @RenderSection("head", false)
 </head>
 <body>
     <div class="relative text-sm">
 
         <!-- Faux column -->
-        <div class="absolute right-0 w-1/2 h-full lg:bg-gray-100"></div>
+        <div class="absolute right-0 w-1/2 h-full lg:bg-gray-50"></div>
 
         <!-- Layout -->
         <div class="relative flex flex-col min-h-full max-w-6xl mx-auto lg:flex-row-reverse lg:flex-row">
@@ -50,13 +49,13 @@
                 }
             </div>
 
-            <a id="order-summary-toggle" href="#" class="flex items-center justify-between border-t border-b border-gray-300 bg-gray-100 lg:hidden">
+            <a id="order-summary-toggle" href="#" class="flex items-center justify-between border-t border-b border-gray-300 bg-gray-50 lg:hidden"> 
                 <span class="py-4 pl-8 pr-2 text-lg">
-                    <span id="order-summary-toggle__text-closed"><i class="fa fa-shopping-cart mr-2"></i> @Umbraco.GetDictionaryValue("VendrCheckout.OrderSummary.ShowSummary", "Show Order Summary") <i class="fa fa-angle-down ml-1"></i></span>
-                    <span id="order-summary-toggle__text-open" class="hidden"><i class="fa fa-shopping-cart mr-2"></i> @Umbraco.GetDictionaryValue("VendrCheckout.OrderSummary.HideSummary", "Hide Order Summary") <i class="fa fa-angle-up ml-1"></i></span>
+                    <span id="order-summary-toggle__text-closed" class="flex items-center"><svg viewBox="0 0 20 20" class="inline-block w-5 h-5 fill-current mr-2"><use href="#ico-cart" /></svg> @Umbraco.GetDictionaryValue("VendrCheckout.OrderSummary.ShowSummary", "Show Order Summary") <svg viewBox="0 0 20 20" class="inline-block w-5 h-5 fill-current ml-1"><use href="#ico-chevron-down" /></svg></span>
+                    <span id="order-summary-toggle__text-open" class="flex items-center hidden"><svg viewBox="0 0 20 20" class="inline-block w-5 h-5 fill-current mr-2"><use href="#ico-cart" /></svg> @Umbraco.GetDictionaryValue("VendrCheckout.OrderSummary.HideSummary", "Hide Order Summary") <svg viewBox="0 0 20 20" class="inline-block w-5 h-5 fill-current ml-1"><use href="#ico-chevron-up" /></svg></span>
                 </span>
                 <span class="py-4 pr-8 pl-2 text-lg font-medium">
-                    @currentOrder.TotalPrice.Value.Formatted()
+                    @currentOrder.TransactionAmount.Value.Formatted()
                 </span>
             </a>
 
@@ -69,13 +68,6 @@
                             <div class="flex items-center">
 
                                 <div class="flex flex-1 items-center">
-
-                                    @* TODO: Add support for product thumbnail image
-                            <span class="bg-gray-300 h-12 w-12 flex items-center justify-center rounded mr-4">
-                                <i class="fa fa-coffee fa-lg"></i>
-                            </span>
-                                    *@
-
                                     <div><span class="font-medium">@(orderLine.Name) x @((int)orderLine.Quantity)</span><br /><span class="text-xs text-gray-500">@(orderLine.Sku)</span></div>
                                 </div>
 
@@ -180,7 +172,7 @@
                                     <li class="@(item.Index > 0 ? "pl-2" : "") flex items-baseline">
                                         @if (item.Index > 0)
                                         {
-                                            <i class="fa fa-angle-right text-gray-500 pr-2"></i>
+                                            <span class="text-gray-500 mr-2">&rsaquo;</span>
                                         }
                                         @if (!passedStep && item.Step.Id != Model.Id && canGoBack)
                                         {
@@ -207,6 +199,31 @@
         </div>
 
     </div>
+
+    <!-- Sprites -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
+        <symbol id="ico-cart" viewBox="0 0 20 20">
+            <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+        </symbol>
+        <symbol id="ico-check" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </symbol>
+        <symbol id="ico-delete" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </symbol>
+        <symbol id="ico-chevron-left" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </symbol>
+        <symbol id="ico-chevron-right" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </symbol>
+        <symbol id="ico-chevron-up" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </symbol>
+        <symbol id="ico-chevron-down" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </symbol>
+    </svg>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js" integrity="sha384-6UVI3atWyL/qZbDIJb7HW8PyHhFNMiX5rYNY2gAYcaYJjYk5cNIQShSQPBleGMYu" crossorigin="anonymous" defer></script>
