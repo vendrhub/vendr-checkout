@@ -179,7 +179,7 @@
                                         }
                                         @if (!passedStep && item.Step.Id != Model.Id && canGoBack)
                                         {
-                                            <a href="@item.Step.Url()" class="hocus:text-@(themeColor)">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</a>
+                                            <a href="@item.Step.Url()" class="hover:text-@(themeColor)">@(item.Step.Value<string>("vendrShortStepName", defaultValue: item.Step.Name))</a>
                                         }
                                         else
                                         {
