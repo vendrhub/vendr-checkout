@@ -3,21 +3,37 @@
     Layout = "VendrCheckoutLayout.cshtml";
 
     var store = Model.GetStore();
-    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
-    var shippingCountryId = currentOrder.ShippingInfo.CountryId.HasValue
-        ? currentOrder.ShippingInfo.CountryId.Value
-        : currentOrder.PaymentInfo.CountryId.Value;
-    var shippingCountry = VendrApi.Instance.GetCountry(shippingCountryId);
-    var shippingMethods = VendrApi.Instance.GetShippingMethodsAllowedIn(shippingCountryId);
 
-    var checkoutPage = Model.GetCheckoutPage();
-    var nextStepPage = Model.GetNextStepPage();
+    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+
+    var shippingCountryId = currentOrder.ShippingInfo.CountryId.HasValue
+        ? currentOrder.ShippingInfo.CountryId
+        : currentOrder.PaymentInfo.CountryId;
+
+    var shippingRegionId = currentOrder.ShippingInfo.CountryId.HasValue
+        ? currentOrder.ShippingInfo.RegionId
+        : currentOrder.PaymentInfo.RegionId;
+
+    var shippingCountry = shippingCountryId.HasValue
+        ? VendrApi.Instance.GetCountry(shippingCountryId.Value)
+        : null;
+
+    var shippingRegion = shippingRegionId.HasValue
+        ? VendrApi.Instance.GetCountry(shippingRegionId.Value)
+        : null;
+
+    var shippingMethods = VendrApi.Instance.GetShippingMethodsAllowedIn(shippingCountryId.Value, shippingRegionId);
 
     var currentShippingMethodId = currentOrder.ShippingInfo.ShippingMethodId.HasValue
         ? currentOrder.ShippingInfo.ShippingMethodId.Value
-        : shippingCountry != null && shippingCountry.DefaultShippingMethodId.HasValue && shippingMethods.Any(x => x.Id == shippingCountry.DefaultShippingMethodId.Value)
-            ? shippingCountry.DefaultShippingMethodId.Value
-            : shippingMethods.First().Id;
+        : shippingRegion != null && shippingRegion.DefaultShippingMethodId.HasValue && shippingMethods.Any(x => x.Id == shippingRegion.DefaultShippingMethodId.Value)
+            ? shippingRegion.DefaultShippingMethodId.Value
+            : shippingCountry != null && shippingCountry.DefaultShippingMethodId.HasValue && shippingMethods.Any(x => x.Id == shippingCountry.DefaultShippingMethodId.Value)
+                ? shippingCountry.DefaultShippingMethodId.Value
+                : shippingMethods.First().Id;
+
+    var checkoutPage = Model.GetCheckoutPage();
+    var nextStepPage = Model.GetNextStepPage();
 }
 
 @using (Html.BeginUmbracoForm("UpdateOrderShippingMethod", "VendrCheckoutSurface"))

@@ -3,22 +3,31 @@
     Layout = "VendrCheckoutLayout.cshtml";
 
     var store = Model.GetStore();
+
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+
     var paymentCountry = currentOrder.PaymentInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(currentOrder.PaymentInfo.CountryId.Value)
         : null;
-    var paymentMethods = VendrApi.Instance.GetPaymentMethodsAllowedIn(currentOrder.PaymentInfo.CountryId.Value);
+    var paymentRegion = currentOrder.PaymentInfo.RegionId.HasValue
+        ? VendrApi.Instance.GetCountry(currentOrder.PaymentInfo.RegionId.Value)
+        : null;
 
-    var checkoutPage = Model.GetCheckoutPage();
-    var nextStepPage = Model.GetNextStepPage();
+    var paymentMethods = VendrApi.Instance.GetPaymentMethodsAllowedIn(currentOrder.PaymentInfo.CountryId.Value,
+        currentOrder.PaymentInfo.RegionId);
 
     var currentPaymentMethodId = currentOrder.PaymentInfo.PaymentMethodId.HasValue
         ? currentOrder.PaymentInfo.PaymentMethodId.Value
-        : paymentCountry != null && paymentCountry.DefaultPaymentMethodId.HasValue && paymentMethods.Any(x => x.Id == paymentCountry.DefaultPaymentMethodId.Value)
-            ? paymentCountry.DefaultPaymentMethodId.Value
-            : paymentMethods.First().Id;
+        : paymentRegion != null && paymentRegion.DefaultPaymentMethodId.HasValue && paymentMethods.Any(x => x.Id == paymentRegion.DefaultPaymentMethodId.Value)
+            ? paymentRegion.DefaultPaymentMethodId.Value
+            : paymentCountry != null && paymentCountry.DefaultPaymentMethodId.HasValue && paymentMethods.Any(x => x.Id == paymentCountry.DefaultPaymentMethodId.Value)
+                ? paymentCountry.DefaultPaymentMethodId.Value
+                : paymentMethods.First().Id;
 
     var zeroValuePaymentMethod = paymentMethods.FirstOrDefault(x => x.Alias == VendrCheckoutConstants.PaymentMethods.Aliases.ZeroValue);
+
+    var checkoutPage = Model.GetCheckoutPage();
+    var nextStepPage = Model.GetNextStepPage();
 }
 
 @using (Html.BeginUmbracoForm("UpdateOrderPaymentMethod", "VendrCheckoutSurface"))
