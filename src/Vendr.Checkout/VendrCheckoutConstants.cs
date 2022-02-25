@@ -10,6 +10,21 @@ namespace Vendr.Checkout
             public const string ProductName = "VendrCheckout";
         }
 
+        [Obsolete("Use ColorMap instead")]
+        public static IDictionary<string, string> ColorMapV1 = new Dictionary<string, string>
+        {
+            { "000000", "black" },
+            { "f56565", "red-500" },
+            { "ed8936", "orange-500" },
+            { "ecc94b", "yellow-500" },
+            { "48bb78", "green-500" },
+            { "38b2ac", "teal-500" },
+            { "4299e1", "blue-500" },
+            { "667eea", "indigo-500" },
+            { "9f7aea", "purple-500" },
+            { "ed64a6", "pink-500" }
+        };
+
         public static IDictionary<string, string> ColorMap = new Dictionary<string, string>
         {
             { "000000", "black" },

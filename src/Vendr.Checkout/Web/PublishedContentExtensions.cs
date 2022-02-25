@@ -32,7 +32,13 @@ namespace Vendr.Checkout.Web
         {
             var themeColor = GetCheckoutPage(content).Value("vendrThemeColor", defaultValue: "000000");
 
-            return VendrCheckoutConstants.ColorMap[themeColor];
+            if (VendrCheckoutConstants.ColorMap.ContainsKey(themeColor))
+                return VendrCheckoutConstants.ColorMap[themeColor];
+
+            if (VendrCheckoutConstants.ColorMapV1.ContainsKey(themeColor))
+                return VendrCheckoutConstants.ColorMapV1[themeColor];
+
+            return VendrCheckoutConstants.ColorMap.First().Value;
         }
 
         public static IPublishedContent GetPreviousPage(this IPublishedContent content)
