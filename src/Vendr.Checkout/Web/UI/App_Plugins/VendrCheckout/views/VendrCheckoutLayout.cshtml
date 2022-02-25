@@ -6,14 +6,17 @@
     var canGoBack = (bool)(ViewData["canGoBack"] ?? true);
 
     var store = Model.GetStore();
+
     var currentOrder = !finalized
         ? VendrApi.Instance.GetCurrentOrder(store.Id)
         : VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);
+
     var currentPaymentMethod = currentOrder.PaymentInfo.PaymentMethodId.HasValue
         ? VendrApi.Instance.GetPaymentMethod(currentOrder.PaymentInfo.PaymentMethodId.Value)
         : null;
 
     var checkoutPage = Model.GetCheckoutPage();
+
     var themeColor = Model.GetThemeColor();
 
 }
@@ -88,8 +91,8 @@
                 @if (checkoutPage.Value<bool>("vendrCollectShippingInfo"))
                 {
                     var currentShippingMethod = currentOrder.ShippingInfo.ShippingMethodId.HasValue
-                    ? VendrApi.Instance.GetShippingMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
-                    : null;
+                        ? VendrApi.Instance.GetShippingMethod(currentOrder.ShippingInfo.ShippingMethodId.Value)
+                        : null;
 
                     if (currentShippingMethod != null)
                     {
@@ -225,7 +228,6 @@
         </symbol>
     </svg>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js" integrity="sha512-6ORWJX/LrnSjBzwefdNUyLCMTIsGoNP6NftMy2UAm1JBm6PRZCO1d7OHBStWpVFZLO+RerTvqX/Z9mBFfCJZ4A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="/app_plugins/vendrcheckout/scripts/vendrcheckout.js" defer></script>
 
     @RenderSection("foot", false)

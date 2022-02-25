@@ -6,6 +6,7 @@
     ViewData["canGoBack"] = false;
 
     var store = Model.GetStore();
+
     var currentOrder = VendrApi.Instance.GetCurrentFinalizedOrder(store.Id);
 
     var themeColor = Model.GetThemeColor();

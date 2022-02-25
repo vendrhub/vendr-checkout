@@ -4,11 +4,14 @@
     Layout = "VendrCheckoutLayout.cshtml";
 
     var store = Model.GetStore();
+
     var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+
     var countries = VendrApi.Instance.GetCountries(store.Id);
 
     var checkoutPage = Model.GetCheckoutPage();
     var nextStepPage = Model.GetNextStepPage();
+
     var themeColor = Model.GetThemeColor();
 }
 
