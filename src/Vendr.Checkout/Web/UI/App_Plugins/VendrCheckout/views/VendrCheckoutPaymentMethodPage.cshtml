@@ -22,7 +22,7 @@
             ? paymentRegion.DefaultPaymentMethodId.Value
             : paymentCountry != null && paymentCountry.DefaultPaymentMethodId.HasValue && paymentMethods.Any(x => x.Id == paymentCountry.DefaultPaymentMethodId.Value)
                 ? paymentCountry.DefaultPaymentMethodId.Value
-                : paymentMethods.First().Id;
+                : paymentMethods.FirstOrDefault()?.Id;
 
     var zeroValuePaymentMethod = paymentMethods.FirstOrDefault(x => x.Alias == VendrCheckoutConstants.PaymentMethods.Aliases.ZeroValue);
 
@@ -49,7 +49,7 @@
             {
                 <li class="border-gray-300 @(item.Index > 0 ? "border-t " : "")">
                     <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-50">
-                        <input name="paymentMethod" type="radio" value="@item.PaymentMethod.Id" class="mr-3" @Html.Raw(currentPaymentMethodId == item.PaymentMethod.Id ? "checked=\"checked\"" : "") required />
+                        <input name="paymentMethod" type="radio" value="@item.PaymentMethod.Id" class="mr-3" @Html.Raw(currentPaymentMethodId.HasValue && currentPaymentMethodId.Value == item.PaymentMethod.Id ? "checked=\"checked\"" : "") required />
                         <span class="font-medium">@(item.PaymentMethod.Name)</span>
                         <span class="flex-1 text-right">@(item.PaymentMethod.CalculatePrice()?.Formatted())</span>
                     </label>
