@@ -51,7 +51,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
             var textareaDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(Constants.DataTypes.Guids.TextareaGuid));
             var booleanDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(Constants.DataTypes.Guids.CheckboxGuid));
             var contentPickerDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(Constants.DataTypes.Guids.ContentPickerGuid));
-            var mediaPickerDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(Constants.DataTypes.Guids.MediaPickerGuid));
+            var imagePickerDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(Constants.DataTypes.Guids.MediaPicker3SingleImageGuid));
             var themeColorPickerDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(VendrCheckoutConstants.DataTypes.Guids.ThemeColorPickerGuid));
             var stepPickerDataType = new Lazy<IDataType>(() => _dataTypeService.GetDataType(VendrCheckoutConstants.DataTypes.Guids.StepPickerGuid));
 
@@ -155,7 +155,7 @@ namespace Vendr.Checkout.Pipeline.Tasks
 
             // Checkout Page
             var checkoutPageProps = new[]{
-                CreatePropertyType(mediaPickerDataType.Value, x => {
+                CreatePropertyType(imagePickerDataType.Value, x => {
                     x.Alias = "vendrStoreLogo";
                     x.Name = "Store Logo";
                     x.Description = "A logo image for the store to appear at the top of the checkout screens and order emails.";

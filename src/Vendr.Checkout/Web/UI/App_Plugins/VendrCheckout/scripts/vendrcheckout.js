@@ -1,154 +1,94 @@
 ﻿(function () {
 
     // Initialization
-    function initSm() {
+    function init() {
 
-        $("body").on("click.sm", "#order-summary-toggle", function (e) {
+        // Setup order summary toggle
+        document.getElementById("order-summary-toggle").addEventListener("click", function (e) {
             e.preventDefault();
-            var toShow = $("#order-summary").hasClass("hidden");
-            if (toShow) {
-                showMobileOrderSummary();
-            } else {
-                hideMobileOrderSummary();
-            }
+            var osEl = document.getElementById("order-summary");
+            var showOrderSummary = osEl.classList.contains("hidden");
+            osEl.classList.toggle("hidden", !showOrderSummary);
+            document.getElementById("order-summary-toggle__text-open").classList.toggle("hidden", !showOrderSummary);
+            document.getElementById("order-summary-toggle__text-closed").classList.toggle("hidden", showOrderSummary);
         });
-
-        hideMobileOrderSummary();
-
-    }
-
-    function initLg() {
-
-        $("body").off(".sm");
-
-    }
-
-    function initCommon() {
 
         // Display billing address regions if any
-        $("select[name='billingAddress.Country']").on("change", function () {
-            showRegions("billing", $(this).children("option:selected").data("regions"));
-        }).triggerHandler("change");
-
-        // Display shipping address regions if any
-        $("select[name='shippingAddress.Country']").on("change", function () {
-            showRegions("shipping", $(this).children("option:selected").data("regions"));
-        }).triggerHandler("change");
-
-        // Toggle shipping address display
-        $("input[name=shippingSameAsBilling]").on("click", function () {
-            showHideShippingInfo(true);
+        document.querySelectorAll("select[name='billingAddress.Country']").forEach(el => {
+            var h = () => { toggleShippingRequiredInputValidation(); showRegions("billing", JSON.parse(el.selectedOptions[0].dataset.regions)); }
+            el.addEventListener("change", h);
+            h();
         });
 
-        var acceptTerms = $("#acceptTerms");
-        if (acceptTerms.length > 0) {
-            acceptTerms.on("click", enableDisableContinueButton);
-            enableDisableContinueButton();
-        }
+        // Display shipping address regions if any
+        document.querySelectorAll("select[name='shippingAddress.Country']").forEach(el => {
+            var h = () => { toggleShippingRequiredInputValidation(); showRegions("shipping", JSON.parse(el.selectedOptions[0].dataset.regions)); }
+            el.addEventListener("change", h);
+            h();
+        });
 
-        var errors = $(".validation-summary-errors");
-        if (errors.length > 0) {
-            Toastify({
-                text: errors.find("ul li:first-child").text(),
-                duration: 3000,
-                gravity: "bottom", // `top` or `bottom`
-                position: 'center', // `left`, `center` or `right`
-                backgroundColor: "#f56565",
-                className: "",
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-            }).showToast();
-        }
+        // Toggle shipping address display
+        document.querySelectorAll("input[name=shippingSameAsBilling]").forEach(el => {
+            var h = () => { document.getElementById("shipping-info").classList.toggle("hidden", el.checked); toggleShippingRequiredInputValidation(); }
+            el.addEventListener("change", h);
+            h();
+        });
 
-        showHideShippingInfo(false);
+        // Enable / disable continue button when accepting terms
+        var acceptTermsEl = document.getElementById("accept-terms");
+        if (acceptTermsEl) {
+            var h = () => document.getElementById("continue").disabled = !acceptTermsEl.checked;
+            acceptTermsEl.addEventListener("click", h);
+            h();
+        }
     }
 
-    function showMobileOrderSummary() {
-        $("#order-summary").removeClass("hidden");
-        $("#order-summary-toggle__text-open").removeClass("hidden");
-        $("#order-summary-toggle__text-closed").addClass("hidden");
-    }
-
-    function hideMobileOrderSummary() {
-        $("#order-summary").addClass("hidden");
-        $("#order-summary-toggle__text-open").addClass("hidden");
-        $("#order-summary-toggle__text-closed").removeClass("hidden");
-    }
-
-    function showHideShippingInfo(clearValues) {
-        var hideShippingInfo = $("input[name=shippingSameAsBilling]").is(":checked");
-        if (hideShippingInfo) {
-            $("#shipping-info").hide();
-        } else {
-            if (clearValues) {
-                //$("input[type=text][name^=shipping]").val("");
-            }
-            $("#shipping-info").show();
-        }
+    // Helper functions
+    function toggleShippingRequiredInputValidation() {
+        var shippingSameAsBillingEl = document.querySelector("input[name=shippingSameAsBilling]");
+        var shippingSameAsBilling = shippingSameAsBillingEl && shippingSameAsBillingEl.checked;
+        document.querySelectorAll("#shipping-info [required]").forEach(el => {
+            el.disabled = shippingSameAsBilling; // Disable any shipping required fields (this overrides the required validation)
+        });
     }
 
     function showRegions(addressType, regions) {
+        var sl = document.querySelector("select[name='" + addressType + "Address.Region']");
+        var slVal = sl.dataset.value;
 
-        var sl = $("select[name='" + addressType + "Address.Region']");
-        var slVal = sl.data("value");
+        sl.innerHTML = "";
 
-        sl.empty();
+        var hasRegions = regions.length > 0;
+        if (hasRegions) {
+            var containsValue = false;
 
-        var containsValue = false;
+            var opt = document.createElement('option');
+            opt.value = "";
+            opt.text = sl.dataset.placeholder;
+            opt.disabled = true;
+            opt.selected = true;
+            sl.appendChild(opt);
 
-        regions.forEach(function (itm, idx) {
-            sl.append($('<option>', {
-                value: itm.id,
-                text: itm.name
-            }));
-            if (slVal && itm.id === slVal)
-                containsValue = true;
-        });
+            regions.forEach(function (itm, idx) {
+                var opt = document.createElement('option');
+                opt.value = itm.id;
+                opt.text = itm.name;
+                sl.appendChild(opt);
+                if (slVal && itm.id === slVal)
+                    containsValue = true;
+            });
 
-        if (containsValue) {
-            sl.val(slVal);
+            if (containsValue) {
+                sl.value = slVal;
+            }
         }
 
-        if (regions.length > 0) {
-            sl.removeClass("hidden")
-                .addClass("block");
-        } else {
-            sl.removeClass("block")
-                .addClass("hidden");
-        }
-
+        sl.required = hasRegions;
+        sl.disabled = !hasRegions;
     };
 
-    function enableDisableContinueButton() {
-
-        var enableContinueButton = $("#acceptTerms").is(":checked");
-        if (enableContinueButton) {
-            $("#continue").attr("disabled", false)
-                .css("backgroundColor", "")
-                .css("color", "")
-                .css("cursor", "");
-        } else {
-            $("#continue").attr("disabled", true)
-                .css("backgroundColor", "#f7fafc")
-                .css("color", "#ddd")
-                .css("cursor", "no-drop");
-        }
-
-    }
-
-    // Setup responsive states
-    ssm.addState({
-        id: 'sm',
-        query: '(max-width: 1023px)',
-        onEnter: initSm
-    });
-
-    ssm.addState({
-        id: 'lg',
-        query: '(min-width: 1024px)',
-        onEnter: initLg
-    });
-
-    initCommon();
+    // Trigger init
+    init();
 
 })();
 

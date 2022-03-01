@@ -1,23 +1,39 @@
 ﻿@inherits UmbracoViewPage
 @{
-    Layout = "VendrCheckoutMaster.cshtml";
+    Layout = "VendrCheckoutLayout.cshtml";
 
     var store = Model.GetStore();
-    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
-    var shippingCountryId = currentOrder.ShippingInfo.CountryId.HasValue
-        ? currentOrder.ShippingInfo.CountryId.Value
-        : currentOrder.PaymentInfo.CountryId.Value;
-    var shippingCountry = VendrApi.Instance.GetCountry(shippingCountryId);
-    var shippingMethods = VendrApi.Instance.GetShippingMethodsAllowedIn(shippingCountryId);
 
-    var checkoutPage = Model.GetCheckoutPage();
-    var nextStepPage = Model.GetNextStepPage();
+    var currentOrder = VendrApi.Instance.GetCurrentOrder(store.Id);
+
+    var shippingCountryId = currentOrder.ShippingInfo.CountryId.HasValue
+        ? currentOrder.ShippingInfo.CountryId
+        : currentOrder.PaymentInfo.CountryId;
+
+    var shippingRegionId = currentOrder.ShippingInfo.CountryId.HasValue
+        ? currentOrder.ShippingInfo.RegionId
+        : currentOrder.PaymentInfo.RegionId;
+
+    var shippingCountry = shippingCountryId.HasValue
+        ? VendrApi.Instance.GetCountry(shippingCountryId.Value)
+        : null;
+
+    var shippingRegion = shippingRegionId.HasValue
+        ? VendrApi.Instance.GetCountry(shippingRegionId.Value)
+        : null;
+
+    var shippingMethods = VendrApi.Instance.GetShippingMethodsAllowedIn(shippingCountryId.Value, shippingRegionId);
 
     var currentShippingMethodId = currentOrder.ShippingInfo.ShippingMethodId.HasValue
         ? currentOrder.ShippingInfo.ShippingMethodId.Value
-        : shippingCountry != null && shippingCountry.DefaultShippingMethodId.HasValue && shippingMethods.Any(x => x.Id == shippingCountry.DefaultShippingMethodId.Value)
-            ? shippingCountry.DefaultShippingMethodId.Value
-            : shippingMethods.First().Id;
+        : shippingRegion != null && shippingRegion.DefaultShippingMethodId.HasValue && shippingMethods.Any(x => x.Id == shippingRegion.DefaultShippingMethodId.Value)
+            ? shippingRegion.DefaultShippingMethodId.Value
+            : shippingCountry != null && shippingCountry.DefaultShippingMethodId.HasValue && shippingMethods.Any(x => x.Id == shippingCountry.DefaultShippingMethodId.Value)
+                ? shippingCountry.DefaultShippingMethodId.Value
+                : shippingMethods.FirstOrDefault()?.Id;
+
+    var checkoutPage = Model.GetCheckoutPage();
+    var nextStepPage = Model.GetNextStepPage();
 }
 
 @using (Html.BeginUmbracoForm("UpdateOrderShippingMethod", "VendrCheckoutSurface"))
@@ -34,8 +50,8 @@
         @foreach (var item in shippingMethods.Select((sm, i) => new { ShippingMethod = sm, Index = i }))
         {
             <li class="border-gray-300 @(item.Index > 0 ? "border-t " : "")">
-                <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-100">
-                    <input name="shippingMethod" type="radio" value="@item.ShippingMethod.Id" class="mr-3" @Html.Raw(currentShippingMethodId == item.ShippingMethod.Id ? "checked=\"checked\"" : "") required />
+                <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-50">
+                    <input name="shippingMethod" type="radio" value="@item.ShippingMethod.Id" class="mr-3" @Html.Raw(currentShippingMethodId.HasValue && currentShippingMethodId.Value == item.ShippingMethod.Id ? "checked=\"checked\"" : "") required />
                     <span class="font-medium">@(item.ShippingMethod.Name)</span>
                     <span class="flex-1 text-right">@(item.ShippingMethod.CalculatePrice()?.Formatted())</span>
                 </label>

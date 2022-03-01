@@ -3,13 +3,23 @@
     var order = Model;
 
     var currentPage = UmbracoContext.PublishedRequest.PublishedContent;
+
     var checkoutPage = currentPage.GetCheckoutPage();
 
     var paymentCountryName = order.PaymentInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(order.PaymentInfo.CountryId.Value).Name
         : null;
+
+    var paymentRegionName = order.PaymentInfo.RegionId.HasValue
+        ? VendrApi.Instance.GetRegion(order.PaymentInfo.RegionId.Value).Name
+        : null;
+
     var shippingCountryName = order.ShippingInfo.CountryId.HasValue
         ? VendrApi.Instance.GetCountry(order.ShippingInfo.CountryId.Value).Name
+        : null;
+
+    var shippingRegionName = order.ShippingInfo.RegionId.HasValue
+        ? VendrApi.Instance.GetRegion(order.ShippingInfo.RegionId.Value).Name
         : null;
 }
 <div class="border border-gray-300 p-6 rounded mb-8">
@@ -27,6 +37,7 @@
                     order.Properties["billingAddressLine2"],
                     order.Properties["billingCity"],
                     paymentCountryName,
+                    paymentRegionName,
                     order.Properties["billingZipCode"]
                 }.Where(x => !x.IsNullOrWhiteSpace())))
             </p>
@@ -43,6 +54,7 @@
                         order.Properties["shippingAddressLine2"],
                         order.Properties["shippingCity"],
                         shippingCountryName,
+                        shippingRegionName,
                         order.Properties["shippingZipCode"]
                     }.Where(x => !x.IsNullOrWhiteSpace())))
                 </p>
