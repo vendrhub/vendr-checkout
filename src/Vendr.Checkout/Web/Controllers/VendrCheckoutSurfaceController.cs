@@ -41,7 +41,7 @@ namespace Vendr.Checkout.Web.Controllers
             }
             catch (ValidationException ex)
             {
-                ModelState.AddModelError("code", "Failed to redeem discount code: "+ ex.Message);
+                ModelState.AddModelError("", "Failed to redeem discount code: " + ex.Message);
 
                 return IsAjaxRequest()
                     ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
