@@ -41,7 +41,7 @@ namespace Vendr.Checkout.Web.Controllers
             }
             catch (ValidationException ex)
             {
-                ModelState.AddModelError("", "Failed to redeem discount code: " + ex.Message);
+                ModelState.AddModelError("", string.Format(Umbraco.GetDictionaryValue("VendrCheckout.Information.InvalidDiscountGiftCode", "Failed to redeem discount code: {0}"), ex.Message));
 
                 return IsAjaxRequest()
                     ? (ActionResult)Json(new { success = false, errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage) })
