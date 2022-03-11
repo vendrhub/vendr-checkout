@@ -16,6 +16,7 @@
     var checkoutPage = Model.GetCheckoutPage();
     var themeColor = Model.GetThemeColor();
 
+    var storeLogo = checkoutPage.Value<IPublishedContent>("vendrStoreLogo");
 }
 <html lang="@UICulture">
 <head>
@@ -40,9 +41,9 @@
         <div class="relative flex flex-col min-h-full max-w-6xl mx-auto lg:flex-row-reverse lg:flex-row">
 
             <div class="bg-white p-8 text-center lg:hidden">
-                @if (checkoutPage.HasValue("vendrStoreLogo"))
+                @if (storeLogo != null)
                 {
-                    <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
+                    <a href="/"><img src="@(Url.GetCropUrl(storeLogo, 200, 200, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
                 }
                 else
                 {
@@ -158,10 +159,9 @@
                 <div class="hidden lg:block">
 
                     <div class="text-center mb-4">
-                        @if (checkoutPage.HasValue("vendrStoreLogo"))
+                        @if (storeLogo != null)
                         {
-                            <a href="/"><img src="@(Url.GetCropUrl(checkoutPage.Value<IPublishedContent>("vendrStoreLogo"), 200, 100, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
-
+                            <a href="/"><img src="@(Url.GetCropUrl(storeLogo, 200, 100, imageCropMode: ImageCropMode.Max))" class="inline-block" alt="@(store.Name)" /></a>
                         }
                         else
                         {
