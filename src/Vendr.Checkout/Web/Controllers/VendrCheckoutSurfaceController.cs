@@ -288,7 +288,7 @@ namespace Vendr.Checkout.Web.Controllers
                 || (Request.Headers != null && Request.Headers[headerName] != null && Request.Headers[headerName].InvariantEquals(headerValue));
 #else
             return (Request.Query.ContainsKey(headerName) && Request.Query[headerName].ToString().InvariantEquals(headerValue))
-                || (Request.Form.ContainsKey(headerName) && Request.Form[headerName].ToString().InvariantEquals(headerValue))
+                || (Request.HasFormContentType && Request.Form.ContainsKey(headerName) && Request.Form[headerName].ToString().InvariantEquals(headerValue))
                 || (Request.Headers != null && Request.Headers.ContainsKey(headerName) && Request.Headers[headerName].ToString().InvariantEquals(headerValue));
 #endif
         }
