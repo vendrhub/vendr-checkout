@@ -15,7 +15,7 @@ trigger:
 
 variables:
   - name: 'vmImageName'
-    value: 'vs2017-win2016'
+    value: 'windows-latest'
   - name: 'nuGetOrgServiceCreds'
     value: 'NuGet.org (Vendr)'
   - name: 'packageName'

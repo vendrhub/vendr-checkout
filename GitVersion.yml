@@ -2,7 +2,7 @@ branches:
   master:
     regex: ^(v[0-9]+\/)?ma(ster|in)$
   release-alpha:
-    regex: ^releases?[/-](.*)-alpha$
+    regex: ^(v[0-9]+\/)?releases?[/-](.*)-alpha$
     mode: ContinuousDeployment
     tag: alpha
     increment: Patch
