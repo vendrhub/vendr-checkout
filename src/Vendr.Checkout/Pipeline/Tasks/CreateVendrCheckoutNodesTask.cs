@@ -1,5 +1,7 @@
 ﻿using Vendr.Common.Pipelines;
 using Vendr.Common.Pipelines.Tasks;
+using System.Reflection;
+using System.Linq;
 
 #if NETFRAMEWORK
 using Umbraco.Core.Models;
@@ -69,7 +71,22 @@ namespace Vendr.Checkout.Pipeline.Tasks
             checkoutStepNode.SetValue("vendrShortStepName", shortName);
             checkoutStepNode.SetValue("vendrStepType", $"[\"{stepType}\"]");
 
-            _contentService.Save(checkoutStepNode);
+            // _contentService.Save(checkoutStepNode);
+
+            // In Umbraco v10 contentService.Save optional parameter userId was switched to a nullable int
+            // and so this causes a Method Not Found error and so we have to call it via reflection instead.
+            var m = _contentService.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .FirstOrDefault(x => x.Name.Equals("Save", System.StringComparison.InvariantCultureIgnoreCase)
+                    && x.GetParameters()[0].ParameterType == typeof(IContent));
+
+            if (m != null)
+            {
+                var p = m.GetParameters()
+                    .Select((x, i) => (object)(i == 0 ? checkoutStepNode : (x.HasDefaultValue ? x.DefaultValue : null)))
+                    .ToArray();
+
+                m.Invoke(_contentService, p);
+            }
         }
     }
 }
