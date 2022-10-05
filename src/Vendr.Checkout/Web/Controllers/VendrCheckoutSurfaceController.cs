@@ -4,15 +4,6 @@ using Vendr.Checkout.Web.Dtos;
 using Vendr.Core.Api;
 using Vendr.Extensions;
 using Vendr.Common.Validation;
-using VendrConstants = Vendr.Core.Constants;
-
-#if NETFRAMEWORK
-using Umbraco.Core;
-using System.Web.Mvc;
-using Umbraco.Web;
-using Umbraco.Web.Mvc;
-using IActionResult = System.Web.Mvc.ActionResult;
-#else
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Umbraco.Cms.Core.Web;
@@ -24,7 +15,8 @@ using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Web.Website.Controllers;
 using Umbraco.Cms.Web.Common.Filters;
 using Umbraco.Extensions;
-#endif
+
+using VendrConstants = Vendr.Core.Constants;
 
 namespace Vendr.Checkout.Web.Controllers
 {
@@ -32,28 +24,22 @@ namespace Vendr.Checkout.Web.Controllers
     {
         private readonly IVendrApi _vendrApi;
 
-#if NETFRAMEWORK
-        public VendrCheckoutSurfaceController(IVendrApi vendrAPi)
-#else
         public VendrCheckoutSurfaceController(IUmbracoContextAccessor umbracoContextAccessor, IUmbracoDatabaseFactory databaseFactory, 
             ServiceContext services, AppCaches appCaches, IProfilingLogger profilingLogger, IPublishedUrlProvider publishedUrlProvider,
             IVendrApi vendrAPi)
             : base(umbracoContextAccessor, databaseFactory, services, appCaches, profilingLogger, publishedUrlProvider)
-#endif
         {
             _vendrApi = vendrAPi;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-#if NET
         [ValidateUmbracoFormRouteString]
-#endif
         public IActionResult ApplyDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
             {
-                using (var uow = _vendrApi.Uow.Create())
+                _vendrApi.Uow.Execute(uow =>
                 {
                     var store = CurrentPage.GetStore();
                     var order = _vendrApi.GetCurrentOrder(store.Id)
@@ -63,7 +49,7 @@ namespace Vendr.Checkout.Web.Controllers
                     _vendrApi.SaveOrder(order);
 
                     uow.Complete();
-                }
+                });
             }
             catch (ValidationException ex)
             {
@@ -80,14 +66,12 @@ namespace Vendr.Checkout.Web.Controllers
         }
 
         [HttpGet]
-#if NET
         [ValidateUmbracoFormRouteString]
-#endif
         public IActionResult RemoveDiscountOrGiftCardCode(VendrDiscountOrGiftCardCodeDto model)
         {
             try
             {
-                using (var uow = _vendrApi.Uow.Create())
+                _vendrApi.Uow.Execute(uow =>
                 {
                     var store = CurrentPage.GetStore();
                     var order = _vendrApi.GetCurrentOrder(store.Id)
@@ -97,7 +81,7 @@ namespace Vendr.Checkout.Web.Controllers
                     _vendrApi.SaveOrder(order);
 
                     uow.Complete();
-                }
+                });
             }
             catch (ValidationException ex)
             {
@@ -115,18 +99,16 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-#if NET
         [ValidateUmbracoFormRouteString]
-#endif
         public IActionResult UpdateOrderInformation(VendrUpdateOrderInformationDto model)
         {
             try
             {
                 var checkoutPage = CurrentPage.GetCheckoutPage();
 
-                using (var uow = _vendrApi.Uow.Create())
+                _vendrApi.Uow.Execute(uow =>
                 {
-                    var store = CurrentPage.GetStore(); 
+                    var store = CurrentPage.GetStore();
                     var order = _vendrApi.GetCurrentOrder(store.Id)
                         .AsWritable(uow)
                         .SetProperties(new Dictionary<string, string>
@@ -159,10 +141,10 @@ namespace Vendr.Checkout.Web.Controllers
                             { "shippingZipCode", model.ShippingSameAsBilling? model.BillingAddress.ZipCode : model.ShippingAddress.ZipCode },
                             { "shippingTelephone", model.ShippingSameAsBilling? model.BillingAddress.Telephone : model.ShippingAddress.Telephone }
                         })
-                        .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country, 
+                        .SetShippingCountryRegion(model.ShippingSameAsBilling ? model.BillingAddress.Country : model.ShippingAddress.Country,
                             model.ShippingSameAsBilling ? model.BillingAddress.Region : model.ShippingAddress.Region);
                     }
-                    else 
+                    else
                     {
                         order.SetShippingCountryRegion(model.BillingAddress.Country, null)
                             .ClearShippingMethod();
@@ -171,7 +153,7 @@ namespace Vendr.Checkout.Web.Controllers
                     _vendrApi.SaveOrder(order);
 
                     uow.Complete();
-                }
+                });
             }
             catch (ValidationException ex)
             {
@@ -191,14 +173,12 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-#if NET
         [ValidateUmbracoFormRouteString]
-#endif
         public IActionResult UpdateOrderShippingMethod(VendrUpdateOrderShippingMethodDto model)
         {
             try
             {
-                using (var uow = _vendrApi.Uow.Create())
+                _vendrApi.Uow.Execute(uow =>
                 {
                     var checkoutPage = CurrentPage.GetCheckoutPage();
                     var store = CurrentPage.GetStore();
@@ -209,7 +189,7 @@ namespace Vendr.Checkout.Web.Controllers
                     _vendrApi.SaveOrder(order);
 
                     uow.Complete();
-                }
+                });
             }
             catch (ValidationException ex)
             {
@@ -229,14 +209,12 @@ namespace Vendr.Checkout.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-#if NET
         [ValidateUmbracoFormRouteString]
-#endif
         public IActionResult UpdateOrderPaymentMethod(VendrUpdateOrderPaymentMethodDto model)
         {
             try
             {
-                using (var uow = _vendrApi.Uow.Create())
+                _vendrApi.Uow.Execute(uow =>
                 {
                     var checkoutPage = CurrentPage.GetCheckoutPage();
                     var store = CurrentPage.GetStore();
@@ -247,7 +225,7 @@ namespace Vendr.Checkout.Web.Controllers
                     _vendrApi.SaveOrder(order);
 
                     uow.Complete();
-                }
+                });
             }
             catch (ValidationException ex)
             {
@@ -283,21 +261,12 @@ namespace Vendr.Checkout.Web.Controllers
             var headerName = "X-Requested-With";
             var headerValue = "xmlhttprequest";
 
-#if NETFRAMEWORK
-            return (Request[headerName] != null && Request[headerName].InvariantEquals(headerValue))
-                || (Request.Headers != null && Request.Headers[headerName] != null && Request.Headers[headerName].InvariantEquals(headerValue));
-#else
             return (Request.Query.ContainsKey(headerName) && Request.Query[headerName].ToString().InvariantEquals(headerValue))
                 || (Request.HasFormContentType && Request.Form.ContainsKey(headerName) && Request.Form[headerName].ToString().InvariantEquals(headerValue))
                 || (Request.Headers != null && Request.Headers.ContainsKey(headerName) && Request.Headers[headerName].ToString().InvariantEquals(headerValue));
-#endif
         }
 
         private JsonResult JsonGet(object model)
-#if NETFRAMEWORK
-            => Json(model, JsonRequestBehavior.AllowGet);
-#else
             => Json(model);
-#endif
     }
 }

@@ -1,8 +1,4 @@
-﻿#if NETFRAMEWORK
-using System.Configuration;
-#endif
-
-namespace Vendr.Checkout.Configuration
+﻿namespace Vendr.Checkout.Configuration
 {
     public class VendrCheckoutSettings
     {
@@ -13,14 +9,6 @@ namespace Vendr.Checkout.Configuration
         public VendrCheckoutSettings()
         {
             RootViewPath = "/App_Plugins/VendrCheckout/views";
-
-#if NETFRAMEWORK
-            var configRootViewPath = ConfigurationManager.AppSettings["VendrCheckout:RootViewPath"]?.ToString();
-            if (!string.IsNullOrWhiteSpace(configRootViewPath))
-                RootViewPath = configRootViewPath;
-
-            ResetPaymentMethodOnShippingMethodChange = ConfigurationManager.AppSettings["VendrCheckout:ResetPaymentMethodOnShippingMethodChange"] != "false";
-#endif
         }
     }
 }

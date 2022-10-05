@@ -2,14 +2,6 @@
 using System.Linq;
 using Vendr.Core.Models;
 using Vendr.Core.Api;
-
-#if NETFRAMEWORK
-using Umbraco.Core.Sync;
-using Umbraco.Core.Services.Changes;
-using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Web;
-using Umbraco.Web.Cache;
-#else
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Models.PublishedContent;
@@ -18,21 +10,15 @@ using Umbraco.Cms.Core.Sync;
 using Umbraco.Cms.Core.Services.Changes;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
-#endif
 
 namespace Vendr.Checkout.Events
 {
-#if NETFRAMEWORK
-    public class SyncZeroValuePaymentProviderContinueUrl
-    {
-#else
     public class SyncZeroValuePaymentProviderContinueUrl : INotificationHandler<ContentCacheRefresherNotification>
     {
         public void Handle(ContentCacheRefresherNotification notification)
         {
             Handle(notification.MessageObject, notification.MessageType);
         }
-#endif
 
         private IUmbracoContextFactory _umbracoContextFactory;
         private IVendrApi _vendrApi;

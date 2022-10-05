@@ -1,9 +1,7 @@
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.NuGet;
 using Nuke.Common.Tools.GitVersion;
@@ -14,7 +12,6 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.NuGet.NuGetTasks;
 using System.Collections.Generic;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 class Build : NukeBuild
 {
@@ -29,11 +26,8 @@ class Build : NukeBuild
     [Solution] 
     readonly Solution Solution;
 
-    [GitVersion(Framework = "net5.0")]
+    [GitVersion(Framework = "net6.0")]
     readonly GitVersion GitVersion;
-
-    [PackageExecutable(packageId: "Umbraco.Tools.Packages", packageExecutable: "UmbPack.dll")]
-    readonly Tool UmbPack;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath ArtifactsDirectory => BuildArtifactStagingDirectory ?? RootDirectory / "artifacts";
@@ -124,21 +118,12 @@ class Build : NukeBuild
             .SetOutputDirectory(ArtifactPackagesDirectory));
     }
 
-    private void PackUmbracoPackage()
-    {
-        var umbracoPackageXmlDir = BuildProjectDirectory / "Umbraco";
-        var vendrUmbracoPackageXmlFile = umbracoPackageXmlDir / $"Checkout.package.xml";
-
-        UmbPack($"pack {vendrUmbracoPackageXmlFile} -n {{name}}.{{version}}.zip -v {GitVersion.NuGetVersion} -o {ArtifactPackagesDirectory} -p Configuration={Configuration};ArtifactsDirectory={ArtifactsDirectory}", workingDirectory: RootDirectory);
-    }
-
     Target Pack => _ => _
         .DependsOn(Prepare)
         .Produces(ArtifactPackagesDirectory)
         .Executes(() =>
         {
             PackNuGetPackages();
-            PackUmbracoPackage();
         });
 
 }

@@ -5,12 +5,7 @@ using Vendr.Checkout.Web.Events.Notification.Handlers;
 using Vendr.Core.Events.Notification;
 using Vendr.Extensions;
 using Vendr.Umbraco.Web.Events.Notification;
-
-#if NETFRAMEWORK
-using IBuilder = Umbraco.Core.Composing.Composition;
-#else
 using IBuilder = Umbraco.Cms.Core.DependencyInjection.IUmbracoBuilder;
-#endif
 
 namespace Vendr.Checkout.Extensions
 {

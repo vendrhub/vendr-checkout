@@ -11,11 +11,6 @@
 
 @using (Html.BeginPaymentForm(currentOrder))
 {
-    if (this.IsUmbraco8())
-    {
-        @Html.AntiForgeryToken();
-    }
-
     <div class="border border-gray-300 rounded">
         <label class="flex items-center py-4 px-4 cursor-pointer hover:bg-gray-50">
             <input id="accept-terms" type="checkbox" value="1" class="mr-3" />

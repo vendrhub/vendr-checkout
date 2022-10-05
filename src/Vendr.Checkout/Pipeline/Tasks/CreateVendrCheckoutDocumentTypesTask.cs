@@ -1,17 +1,10 @@
 ﻿using System;
 using Vendr.Common.Pipelines.Tasks;
 using Vendr.Common.Pipelines;
-
-#if NETFRAMEWORK
-using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
-#else
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
-#endif
 
 namespace Vendr.Checkout.Pipeline.Tasks
 {
@@ -20,13 +13,6 @@ namespace Vendr.Checkout.Pipeline.Tasks
         private readonly IContentTypeService _contentTypeService;
         private readonly IDataTypeService _dataTypeService;
 
-#if NETFRAMEWORK
-        public CreateVendrCheckoutDocumentTypesTask(IContentTypeService contentTypeService, IDataTypeService dataTypeService)
-        {
-            _contentTypeService = contentTypeService;
-            _dataTypeService = dataTypeService;
-        }
-#else
         private readonly IShortStringHelper _shortStringHelper;
 
         public CreateVendrCheckoutDocumentTypesTask(IContentTypeService contentTypeService, IDataTypeService dataTypeService,
@@ -36,7 +22,6 @@ namespace Vendr.Checkout.Pipeline.Tasks
             _dataTypeService = dataTypeService;
             _shortStringHelper = shortStringHelper;
         }
-#endif
 
         public override PipelineResult<InstallPipelineContext> Execute(PipelineArgs<InstallPipelineContext> args)
         {
@@ -277,11 +262,8 @@ namespace Vendr.Checkout.Pipeline.Tasks
 
         private ContentType CreateContentType(int parentId, Action<ContentType> config)
         {
-#if NETFRAMEWORK
-            var contentType = new ContentType(parentId);
-#else
             var contentType = new ContentType(_shortStringHelper, parentId);
-#endif
+
             config.Invoke(contentType);
 
             return contentType;
@@ -289,11 +271,8 @@ namespace Vendr.Checkout.Pipeline.Tasks
 
         private PropertyType CreatePropertyType(IDataType dataType, Action<PropertyType> config)
         {
-#if NETFRAMEWORK
-            var propertyType = new PropertyType(dataType);
-#else
             var propertyType = new PropertyType(_shortStringHelper, dataType);
-#endif
+
             config.Invoke(propertyType);
 
             return propertyType;

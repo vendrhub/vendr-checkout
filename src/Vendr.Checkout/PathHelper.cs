@@ -1,10 +1,5 @@
 ﻿using Vendr.Checkout.Configuration;
-
-#if NETFRAMEWORK
-
-#else
 using Microsoft.Extensions.Options;
-#endif
 
 namespace Vendr.Checkout
 {
@@ -12,17 +7,10 @@ namespace Vendr.Checkout
     {
         private readonly string _rootViewPath;
 
-#if NETFRAMEWORK
-        public PathHelper(VendrCheckoutSettings settings)
-        {
-            _rootViewPath = settings.RootViewPath;
-        }
-#else
         public PathHelper(IOptions<VendrCheckoutSettings> settings)
         {
             _rootViewPath = settings.Value.RootViewPath;
         }
-#endif
 
         public string GetVendrCheckoutViewPath(string viewName)
         {

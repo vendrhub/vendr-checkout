@@ -6,16 +6,16 @@
 trigger:
   branches:
     include: 
-      - v2/feature/*
-      - v2/hotfix/*
-      - v2/release/*
+      - v3/feature/*
+      - v3/hotfix/*
+      - v3/release/*
   tags:
     include:
       - v*
 
 variables:
   - name: 'vmImageName'
-    value: 'windows-latest'
+    value: 'windows-2019'
   - name: 'nuGetOrgServiceCreds'
     value: 'NuGet.org (Vendr)'
   - name: 'packageName'
@@ -34,6 +34,12 @@ stages:
         displayName: 'Build'
         dependsOn: [ ]
         steps:
+              
+          - task: UseDotNet@2
+            displayName: 'Use .NET Core sdk 6.0.x'
+            inputs:
+               version: 6.0.x
+               # includePreviewVersions: true
 
           - task: CmdLine@2
             inputs:
@@ -70,20 +76,6 @@ stages:
                   publishVstsFeed: '576196d3-9f20-4a86-8fd6-b0d7428fe5ee/cfadaa44-aa4e-45d7-8303-91a38d020c50'
 
               # Release Deploy
-              - task: UseDotNet@2
-                condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-                inputs:
-                  version: 3.0.100
-
-              - powershell: |
-                  # get the umbraco package file (assumes there is just one zip file package)
-                  $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\artifacts\packages\*" -File -Include $(packageName).*.zip | Select-Object -First 1).FullName
-                  # assign the filename to a variable        
-                  echo "$f" 
-                  echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
-                displayName: 'Get Umbraco Package path'
-                condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-
               - task: NuGetCommand@2
                 displayName: 'Deploy to NuGet.org'
                 condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
@@ -93,14 +85,28 @@ stages:
                   packagesToPush: '$(Pipeline.Workspace)/artifacts/**/*.nupkg;!$(Pipeline.Workspace)/artifacts/**/*.snupkg'
                   publishFeedCredentials: '$(nuGetOrgServiceCreds)'
 
-              - script: |
-                  dotnet tool install --global Umbraco.Tools.Packages
-                condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-                displayName: 'Install UmbPack'
+              # - task: UseDotNet@2
+              #   condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              #   inputs:
+              #     version: 3.0.100
 
-              - script: |
-                  umbpack push $(umbracoPackageFile) -k %OUR_UMBRACO_API_KEY% -w v860,v850,v840,v830,v820 -c true -a $(packageName).*.zip 
-                condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
-                displayName: 'Deploy to Our Umbraco'
-                env:
-                  OUR_UMBRACO_API_KEY: $(our-umbraco-api-key)
+              # - powershell: |
+              #     # get the umbraco package file (assumes there is just one zip file package)
+              #     $f = (Get-ChildItem -Path "$(Pipeline.Workspace)\artifacts\packages\*" -File -Include $(packageName).*.zip | Select-Object -First 1).FullName
+              #     # assign the filename to a variable        
+              #     echo "$f" 
+              #     echo "##vso[task.setvariable variable=umbracoPackageFile]$f" 
+              #   displayName: 'Get Umbraco Package path'
+              #   condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+
+              # - script: |
+              #     dotnet tool install --global Umbraco.Tools.Packages
+              #   condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              #   displayName: 'Install UmbPack'
+
+              # - script: |
+              #     umbpack push $(umbracoPackageFile) -k %OUR_UMBRACO_API_KEY% -w v860,v850,v840,v830,v820 -c true -a $(packageName).*.zip 
+              #   condition: and(succeeded(), startsWith(variables['build.sourceBranch'], 'refs/tags/v'))
+              #   displayName: 'Deploy to Our Umbraco'
+              #   env:
+              #     OUR_UMBRACO_API_KEY: $(our-umbraco-api-key)

@@ -2,16 +2,9 @@
 using Vendr.Common.Pipelines.Tasks;
 using System.Reflection;
 using System.Linq;
-
-#if NETFRAMEWORK
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
-using Umbraco.Core.Scoping;
-#else
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
-#endif
 
 namespace Vendr.Checkout.Pipeline.Tasks
 {

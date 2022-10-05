@@ -1,9 +1,5 @@
-﻿#if NETFRAMEWORK
-using Umbraco.Core.Composing;
-using RazorPage = System.Web.Mvc.WebViewPage;
-#else
+﻿
 using Microsoft.AspNetCore.Mvc.Razor;
-#endif
 
 namespace Vendr.Checkout.Web
 {
@@ -11,20 +7,7 @@ namespace Vendr.Checkout.Web
     {
         public static TService GetService<TService>(this RazorPage view)
         {
-#if NETFRAMEWORK
-            return (TService)Current.Factory.GetInstance(typeof(TService));
-#else
             return (TService)view.Context.RequestServices.GetService(typeof(TService));
-#endif
-        }
-
-        public static bool IsUmbraco8(this RazorPage view)
-        {
-#if NETFRAMEWORK
-            return true;
-#else
-            return false;
-#endif
         }
     }
 }

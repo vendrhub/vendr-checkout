@@ -1,13 +1,7 @@
 ﻿using Vendr.Core.Models;
 using System.Linq;
-
-#if NETFRAMEWORK
-using Umbraco.Web;
-using Umbraco.Core.Models.PublishedContent;
-#else
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Extensions;
-#endif
 
 namespace Vendr.Checkout.Web
 {

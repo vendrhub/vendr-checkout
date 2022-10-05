@@ -1,16 +1,6 @@
 ﻿using System;
 using Vendr.Checkout.Services;
 using Vendr.Core.Api;
-
-#if NETFRAMEWORK
-using System.Web.Http;
-using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
-using Umbraco.Web.Mvc;
-using Umbraco.Web.WebApi;
-using Umbraco.Web.WebApi.Filters;
-#else
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Umbraco.Cms.Core;
@@ -19,7 +9,6 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Web.BackOffice.Controllers;
 using Umbraco.Cms.Web.Common.Attributes;
 using Umbraco.Cms.Web.Common.Authorization;
-#endif
 
 namespace Vendr.Checkout.Web.Controllers
 {
@@ -37,11 +26,7 @@ namespace Vendr.Checkout.Web.Controllers
         }
 
         [HttpGet]
-#if NETFRAMEWORK
-        [UmbracoApplicationAuthorize(Constants.Applications.Settings)]
-#else
         [Authorize(Policy = AuthorizationPolicies.SectionAccessSettings)]
-#endif
         public object InstallVendrCheckout(GuidUdi siteRootNodeId)
         {
             // Validate the site root node

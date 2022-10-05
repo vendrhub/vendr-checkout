@@ -3,19 +3,11 @@ using System.Linq;
 using Vendr.Common.Pipelines;
 using Vendr.Common.Pipelines.Tasks;
 using System;
-
-#if NETFRAMEWORK
-using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.PropertyEditors;
-using Umbraco.Core.Services;
-#else
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Serialization;
-#endif
 
 namespace Vendr.Checkout.Pipeline.Tasks
 {
@@ -24,13 +16,6 @@ namespace Vendr.Checkout.Pipeline.Tasks
         private readonly IDataTypeService _dataTypeService;
         private readonly PropertyEditorCollection _propertyEditors;
 
-#if NETFRAMEWORK
-        public CreateVendrCheckoutDataTypesTask(IDataTypeService dataTypeService, PropertyEditorCollection propertyEditors)
-        {
-            _dataTypeService = dataTypeService;
-            _propertyEditors = propertyEditors;
-        }
-#else
         private readonly IConfigurationEditorJsonSerializer _configurationEditorJsonSerializer;
 
         public CreateVendrCheckoutDataTypesTask(IDataTypeService dataTypeService, PropertyEditorCollection propertyEditors,
@@ -40,7 +25,6 @@ namespace Vendr.Checkout.Pipeline.Tasks
             _propertyEditors = propertyEditors;
             _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
         }
-#endif
 
         public override PipelineResult<InstallPipelineContext> Execute(PipelineArgs<InstallPipelineContext> args)
         {
@@ -132,11 +116,8 @@ namespace Vendr.Checkout.Pipeline.Tasks
 
         private DataType CreateDataType(IDataEditor dataEditor, Action<DataType> config)
         {
-#if NETFRAMEWORK
-            var dataType = new DataType(dataEditor);
-#else
             var dataType = new DataType(dataEditor, _configurationEditorJsonSerializer);
-#endif
+
             config.Invoke(dataType);
 
             return dataType;

@@ -1,25 +1,17 @@
 ﻿using System.Linq;
-
-#if NETFRAMEWORK
-using Umbraco.Web;
-using IActionResult = System.Web.Mvc.ActionResult;
-#else
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
-#endif
 
 namespace Vendr.Checkout.Web.Controllers
 {
     public class VendrCheckoutCheckoutPageController : VendrCheckoutBaseController
     {
-#if NET
         public VendrCheckoutCheckoutPageController(ILogger<VendrCheckoutCheckoutPageController> logger, ICompositeViewEngine compositeViewEngine, IUmbracoContextAccessor umbracoContextAccessor)
             : base(logger, compositeViewEngine, umbracoContextAccessor)
         { }
-#endif
 
         public override IActionResult Index()
         {

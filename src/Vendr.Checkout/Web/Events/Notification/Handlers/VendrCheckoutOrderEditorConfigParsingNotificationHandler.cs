@@ -1,13 +1,8 @@
 ﻿using System.Linq;
 using Vendr.Common.Events;
 using Vendr.Umbraco.Web.Events.Notification;
-
-#if NETFRAMEWORK
-using Umbraco.Web;
-#else
 using Umbraco.Cms.Core.Web;
 using Umbraco.Extensions;
-#endif
 
 namespace Vendr.Checkout.Web.Events.Notification.Handlers
 {
@@ -20,11 +15,7 @@ namespace Vendr.Checkout.Web.Events.Notification.Handlers
             _umbracoContextAccessor = umbracoContextAccessor;
         }
 
-#if NETFRAMEWORK
-        private UmbracoContext UmbracoContext => _umbracoContextAccessor.UmbracoContext;
-#else
         private IUmbracoContext UmbracoContext => _umbracoContextAccessor.GetRequiredUmbracoContext();
-#endif
 
         public override void Handle(OrderEditorConfigParsingNotification evt)
         {

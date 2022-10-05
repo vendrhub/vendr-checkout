@@ -38,11 +38,6 @@
 
 @using (Html.BeginUmbracoForm("UpdateOrderShippingMethod", "VendrCheckoutSurface"))
 {
-    if (this.IsUmbraco8())
-    {
-        @Html.AntiForgeryToken();
-    }
-
     <input type="hidden" name="nextStep" value="@(nextStepPage?.Key)" />
 
     <h3 class="text-xl font-medium mb-4">@Umbraco.GetDictionaryValue("VendrCheckout.ShippingMethod", "Shipping Method")</h3>

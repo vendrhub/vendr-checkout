@@ -1,6 +1,4 @@
-﻿#if NET
-
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -53,5 +51,3 @@ namespace Vendr.Checkout
         }
     }
 }
-
-#endif

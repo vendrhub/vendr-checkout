@@ -1,10 +1,7 @@
 ﻿using Vendr.Checkout.Configuration;
 using Vendr.Common.Events;
 using Vendr.Core.Events.Notification;
-
-#if NET
 using Microsoft.Extensions.Options;
-#endif
 
 namespace Vendr.Checkout.Events
 {
@@ -77,17 +74,10 @@ namespace Vendr.Checkout.Events
     {
         private readonly VendrCheckoutSettings _settings;
 
-#if NETFRAMEWORK
-        public OrderShippingMethodChangingHandler(VendrCheckoutSettings settings)
-        {
-            _settings = settings;
-        }
-#else
         public OrderShippingMethodChangingHandler(IOptions<VendrCheckoutSettings> settings)
         {
             _settings = settings.Value;
         }
-#endif
 
         public override void Handle(OrderShippingMethodChangingNotification evt)
         {

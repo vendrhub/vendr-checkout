@@ -19,11 +19,6 @@
     <div class="pb-4 mb-4 border-b border-gray-300 ">
         @using (Html.BeginUmbracoForm("ApplyDiscountOrGiftCardCode", "VendrCheckoutSurface", null, new { @class = "flex w-full m-0" }))
         {
-            if (this.IsUmbraco8())
-            {
-                @Html.AntiForgeryToken();
-            }
-
             <input type="text" name="code" placeholder="@Umbraco.GetDictionaryValue("VendrCheckout.Information.DiscountGiftCode", "Discount / Gift Card Code")" class="flex-1 py-2 px-4 border border-gray-300 rounded placeholder-gray-700" />
             <button class="ml-4 bg-@(themeColor) text-white px-4 rounded hover:bg-gray-900" type="submit">@Umbraco.GetDictionaryValue("VendrCheckout.Information.Apply", "Apply")</button>
         }
@@ -46,11 +41,6 @@
 
 @using (Html.BeginUmbracoForm("UpdateOrderInformation", "VendrCheckoutSurface"))
 {
-    if (this.IsUmbraco8())
-    {
-        @Html.AntiForgeryToken();
-    }
-
     <input type="hidden" name="nextStep" value="@(nextStepPage?.Key)" />
 
     <h3 class="text-xl font-medium mb-4">@Umbraco.GetDictionaryValue("VendrCheckout.Information.ContactInformation", "Contact Information")</h3>
