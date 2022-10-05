@@ -29,8 +29,10 @@ namespace Vendr.Checkout.Web
             if (VendrCheckoutConstants.ColorMap.ContainsKey(themeColor))
                 return VendrCheckoutConstants.ColorMap[themeColor];
 
+#pragma warning disable CS0618 // Type or member is obsolete
             if (VendrCheckoutConstants.ColorMapV1.ContainsKey(themeColor))
                 return VendrCheckoutConstants.ColorMapV1[themeColor];
+#pragma warning restore CS0618 // Type or member is obsolete
 
             return VendrCheckoutConstants.ColorMap.First().Value;
         }

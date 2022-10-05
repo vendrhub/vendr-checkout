@@ -15,6 +15,7 @@ namespace Vendr.Checkout.Extensions
         {
             // Reset shipping / payment methods when certain elements of
             // an order change
+#pragma warning disable CS0618 // Type or member is obsolete
             builder.WithNotificationEvent<OrderProductAddingNotification>()
                 .RegisterHandler<OrderProductAddingHandler>();
 
@@ -37,18 +38,21 @@ namespace Vendr.Checkout.Extensions
             // whether there vendr checkout is configured to collect a shipping address
             builder.WithNotificationEvent<OrderEditorConfigParsingNotification>()
                 .RegisterHandler<VendrCheckoutOrderEditorConfigParsingNotificationHandler>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             return builder;
         }
 
         public static IBuilder AddVendrInstallPipeline(this IBuilder builder)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             builder.WithPipeline<InstallPipeline, InstallPipelineContext>()
                 .Append<CreateVendrCheckoutDataTypesTask>()
                 .Append<CreateVendrCheckoutDocumentTypesTask>()
                 .Append<CreateVendrCheckoutNodesTask>()
                 .Append<ConfigureVendrStoreTask>()
                 .Append<CreateZeroValuePaymentMethodTask>();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             return builder;
         }
