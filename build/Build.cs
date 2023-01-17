@@ -26,7 +26,7 @@ class Build : NukeBuild
     [Solution] 
     readonly Solution Solution;
 
-    [GitVersion(Framework = "net6.0")]
+    [GitVersion(Framework = "net7.0")]
     readonly GitVersion GitVersion;
 
     AbsolutePath SourceDirectory => RootDirectory / "src";
