@@ -21,7 +21,7 @@
             </group>
         </dependencies>
     </metadata>
-    <files>
+    <files> 
         <!-- nuget files -->
         <file src="$ArtifactFilesDirectory$\assets\logo-128.png" target="images\icon.png" />
 
