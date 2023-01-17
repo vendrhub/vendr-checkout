@@ -15,8 +15,8 @@
         <language>en-US</language>
         <tags>umbraco ecommerce vendr</tags>
         <dependencies>
-            <group targetFramework="net6.0">
-                <dependency id="Umbraco.Cms.Web.Website" version="[10.0.0,10.9999999]" />
+            <group targetFramework="net7.0">
+                <dependency id="Umbraco.Cms.Web.Website" version="[11.0.0,11.9999999]" />
                 <dependency id="Vendr.Umbraco.Startup" version="[3.0.0,3.999999)" />
             </group>
         </dependencies>
@@ -26,14 +26,14 @@
         <file src="$ArtifactFilesDirectory$\assets\logo-128.png" target="images\icon.png" />
 
         <!-- libs -->
-        <file src="$ProjectDirectory$\bin\$Configuration$\net6.0\Vendr.Checkout.dll" target="lib\net6.0\Vendr.Checkout.dll" />
+        <file src="$ProjectDirectory$\bin\$Configuration$\net7.0\Vendr.Checkout.dll" target="lib\net7.0\Vendr.Checkout.dll" />
 
         <!-- content -->
         <file src="$ArtifactFilesDirectory$\App_Plugins\**\*" target="App_Plugins" />
 
         <!-- UmbracoCms props and targets used to copy the content into the solution in .NET Core -->
         <file src="build\Vendr.Checkout.targets" target="buildTransitive\" />
-        <file src="build\Vendr.Checkout.targets" target="build\net6.0\" />
+        <file src="build\Vendr.Checkout.targets" target="build\net7.0\" />
 
     </files>
 </package>
