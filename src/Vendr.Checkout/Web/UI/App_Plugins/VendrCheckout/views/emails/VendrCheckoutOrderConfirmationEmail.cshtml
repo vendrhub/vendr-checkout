@@ -118,7 +118,7 @@
                                                         Model.Properties["shippingAddressLine2"],
                                                         Model.Properties["shippingCity"],
                                                         Model.Properties["shippingZipCode"],
-                                                        paymentCountry.Name,
+                                                        shippingCountry?.Name,
                                                         shippingRegion != null ? shippingRegion.Name : null
                                                     };
                                                     @Html.Raw(string.Join("<br />", shippingParts.Where(x => !string.IsNullOrWhiteSpace(x))))
@@ -227,7 +227,7 @@
                                         <td style="vertical-align: top; text-align: right; white-space: nowrap;">
                                             @if (Model.ShippingInfo.TotalPrice.WithoutAdjustments.WithoutTax != Model.ShippingInfo.TotalPrice.Value.WithoutTax)
                                             {
-                                                <text><span style="color:#a0aec0; font-size: 12px; text-decoration:line-through;">@Model.ShippingInfo.TotalPrice.WithoutAdjustments</span> </text>
+                                                <text><span style="color:#a0aec0; font-size: 12px; text-decoration:line-through;">@Model.ShippingInfo.TotalPrice.WithoutAdjustments.Formatted().WithoutTax</span> </text>
                                             }
                                             @Model.ShippingInfo.TotalPrice.Value.Formatted().WithoutTax
                                         </td>
@@ -243,7 +243,7 @@
                                         <td style="vertical-align: top; text-align: right; white-space: nowrap;">
                                             @if (Model.PaymentInfo.TotalPrice.WithoutAdjustments.WithoutTax != Model.PaymentInfo.TotalPrice.Value.WithoutTax)
                                             {
-                                                <text><span style="color:#a0aec0; font-size: 12px; text-decoration:line-through;">@Model.PaymentInfo.TotalPrice.WithoutAdjustments</span> </text>
+                                                <text><span style="color:#a0aec0; font-size: 12px; text-decoration:line-through;">@Model.PaymentInfo.TotalPrice.WithoutAdjustments.Formatted().WithoutTax</span> </text>
                                             }
                                             @Model.PaymentInfo.TotalPrice.Value.Formatted().WithoutTax
                                         </td>
