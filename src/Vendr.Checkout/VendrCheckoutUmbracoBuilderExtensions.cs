@@ -7,6 +7,7 @@ using Vendr.Checkout.Configuration;
 using Vendr.Checkout.Events;
 using Vendr.Checkout.Extensions;
 using Vendr.Checkout.Services;
+using Vendr.Extensions;
 
 namespace Vendr.Checkout
 {
@@ -28,7 +29,7 @@ namespace Vendr.Checkout
             options.ValidateDataAnnotations();
 
             // Register event handlers
-            builder.AddVendrEventHandlers();
+            builder.AddVendr(vendrBuilder => { vendrBuilder.AddVendrEventHandlers(); });
 
             // Register pipeline
             builder.AddVendrInstallPipeline();

@@ -3,7 +3,7 @@ using Vendr.Common.Pipelines.Tasks;
 using System.Reflection;
 using System.Linq;
 using Umbraco.Cms.Core.Models;
-using Umbraco.Cms.Core.Scoping;
+using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Cms.Core.Services;
 
 namespace Vendr.Checkout.Pipeline.Tasks

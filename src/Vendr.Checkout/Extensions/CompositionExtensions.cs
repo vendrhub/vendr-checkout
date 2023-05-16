@@ -2,6 +2,7 @@
 using Vendr.Checkout.Pipeline;
 using Vendr.Checkout.Pipeline.Tasks;
 using Vendr.Checkout.Web.Events.Notification.Handlers;
+using Vendr.Core;
 using Vendr.Core.Events.Notification;
 using Vendr.Extensions;
 using Vendr.Umbraco.Web.Events.Notification;
@@ -11,7 +12,7 @@ namespace Vendr.Checkout.Extensions
 {
     internal static class CompositionExtensions
     {
-        public static IBuilder AddVendrEventHandlers(this IBuilder builder)
+        public static void AddVendrEventHandlers(this IVendrBuilder builder)
         {
             // Reset shipping / payment methods when certain elements of
             // an order change
@@ -39,8 +40,6 @@ namespace Vendr.Checkout.Extensions
             builder.WithNotificationEvent<OrderEditorConfigParsingNotification>()
                 .RegisterHandler<VendrCheckoutOrderEditorConfigParsingNotificationHandler>();
 #pragma warning restore CS0618 // Type or member is obsolete
-
-            return builder;
         }
 
         public static IBuilder AddVendrInstallPipeline(this IBuilder builder)
