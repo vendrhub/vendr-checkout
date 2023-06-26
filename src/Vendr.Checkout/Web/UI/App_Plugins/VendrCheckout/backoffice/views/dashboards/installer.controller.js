@@ -7,7 +7,7 @@
         var vm = this;
 
         var dialogOptions = {
-            view: '/app_plugins/vendrcheckout/backoffice/views/dialogs/installer.html',
+            view: '/App_Plugins/VendrCheckout/backoffice/views/dialogs/installer.html',
             size: 'small',
             config: { },
             submit: function (model) {
