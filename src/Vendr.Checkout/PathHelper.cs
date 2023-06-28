@@ -19,12 +19,12 @@ namespace Vendr.Checkout
 
         public string GetVendrCheckoutPartialViewPath(string viewName)
         {
-            return string.Format("~" + _rootViewPath + "/Partials/{0}.cshtml", viewName);
+            return string.Format("~" + _rootViewPath + "/partials/{0}.cshtml", viewName);
         }
 
         public string GetVendrCheckoutEmailViewPath(string viewName)
         {
-            return string.Format("~" + _rootViewPath + "/Emails/{0}.cshtml", viewName);
+            return string.Format("~" + _rootViewPath + "/emails/{0}.cshtml", viewName);
         }
     }
 }
